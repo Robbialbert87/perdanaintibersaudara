@@ -33,32 +33,34 @@
                         </p>
                     </div>
 
-                    <div class="skills-grid row g-4 mb-4">
-                        <div class="col-md-4" data-aos="zoom-in" data-aos-delay="400">
-                            <div class="skill-item p-3 bg-light rounded-4 h-100" style="border-top: 4px solid #065cc2; transition: 0.3s;">
-                                <div class="skill-icon mb-2" style="font-size: 1.8rem; color: #065cc2;">
-                                    <i class="bi bi-shield-check"></i>
+                    <div class="skills-grid mb-4">
+                        <div class="row g-3">
+                            <div class="col-4" data-aos="zoom-in" data-aos-delay="400">
+                                <div class="skill-item p-3 bg-light rounded-4 h-100 text-center" style="border-top: 4px solid #065cc2; transition: 0.3s; min-height: 120px; display: flex; flex-direction: column; align-items: center; justify-content: center;">
+                                    <div class="skill-icon mb-2" style="font-size: 1.8rem; color: #065cc2;">
+                                        <i class="bi bi-shield-check"></i>
+                                    </div>
+                                    <h4 style="font-size: 0.9rem; font-weight: bold; color: #13447f; margin-bottom: 4px;">Legalitas Resmi</h4>
+                                    <p class="small text-secondary mb-0" style="font-size: 0.78rem; line-height: 1.4;">Tersertifikasi Kemenkumham RI dengan NIB aktif.</p>
                                 </div>
-                                <h4 style="font-size: 1.05rem; font-weight: bold; color: #13447f;">Legalitas Resmi</h4>
-                                <p class="small text-secondary mb-0">Tersertifikasi resmi Kementerian Hukum & HAM RI dengan NIB aktif.</p>
                             </div>
-                        </div>
-                        <div class="col-md-4" data-aos="zoom-in" data-aos-delay="450">
-                            <div class="skill-item p-3 bg-light rounded-4 h-100" style="border-top: 4px solid #2973cc; transition: 0.3s;">
-                                <div class="skill-icon mb-2" style="font-size: 1.8rem; color: #2973cc;">
-                                    <i class="bi bi-cpu"></i>
+                            <div class="col-4" data-aos="zoom-in" data-aos-delay="450">
+                                <div class="skill-item p-3 bg-light rounded-4 h-100 text-center" style="border-top: 4px solid #2973cc; transition: 0.3s; min-height: 120px; display: flex; flex-direction: column; align-items: center; justify-content: center;">
+                                    <div class="skill-icon mb-2" style="font-size: 1.8rem; color: #2973cc;">
+                                        <i class="bi bi-cpu"></i>
+                                    </div>
+                                    <h4 style="font-size: 0.9rem; font-weight: bold; color: #13447f; margin-bottom: 4px;">Teknisi Ahli</h4>
+                                    <p class="small text-secondary mb-0" style="font-size: 0.78rem; line-height: 1.4;">Teknisi elektromedis berpengalaman & bersertifikat.</p>
                                 </div>
-                                <h4 style="font-size: 1.05rem; font-weight: bold; color: #13447f;">Teknisi Ahli</h4>
-                                <p class="small text-secondary mb-0">Didukung teknisi elektromedis berpengalaman & bersertifikat.</p>
                             </div>
-                        </div>
-                        <div class="col-md-4" data-aos="zoom-in" data-aos-delay="500">
-                            <div class="skill-item p-3 bg-light rounded-4 h-100" style="border-top: 4px solid #afcdf1; transition: 0.3s;">
-                                <div class="skill-icon mb-2" style="font-size: 1.8rem; color: #afcdf1;">
-                                    <i class="bi bi-gear-wide-connected"></i>
+                            <div class="col-4" data-aos="zoom-in" data-aos-delay="500">
+                                <div class="skill-item p-3 bg-light rounded-4 h-100 text-center" style="border-top: 4px solid #065cc2; transition: 0.3s; min-height: 120px; display: flex; flex-direction: column; align-items: center; justify-content: center;">
+                                    <div class="skill-icon mb-2" style="font-size: 1.8rem; color: #065cc2;">
+                                        <i class="bi bi-gear-wide-connected"></i>
+                                    </div>
+                                    <h4 style="font-size: 0.9rem; font-weight: bold; color: #13447f; margin-bottom: 4px;">Layanan Cepat</h4>
+                                    <p class="small text-secondary mb-0" style="font-size: 0.78rem; line-height: 1.4;">Respon tanggap untuk perbaikan dan kalibrasi alat.</p>
                                 </div>
-                                <h4 style="font-size: 1.05rem; font-weight: bold; color: #13447f;">Layanan Cepat</h4>
-                                <p class="small text-secondary mb-0">Respon tanggap darurat untuk perbaikan dan kalibrasi alat.</p>
                             </div>
                         </div>
                     </div>

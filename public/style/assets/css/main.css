@@ -200,6 +200,7 @@ h6 {
   transition: 0.3s;
   width: 300px;
   overflow: hidden;
+  overflow-y: auto;
 }
 
 .navmenu .profile-img img {
@@ -332,6 +333,16 @@ h6 {
   overflow: hidden;
 }
 
+/* Backdrop overlay: darkens page behind the sidebar when it's open */
+.mobile-nav-active::before {
+  content: "";
+  position: fixed;
+  inset: 0;
+  background: rgba(0, 0, 0, 0.5);
+  z-index: 996;
+  pointer-events: auto;
+}
+
 .mobile-nav-active .mobile-nav-toggle {
   right: 310px;
   font-size: 36px;
@@ -339,7 +350,9 @@ h6 {
 
 .mobile-nav-active .navmenu {
   position: fixed;
-  overflow: hidden;
+  /* Allow scrolling inside the sidebar when dropdown items expand */
+  overflow-x: hidden;
+  overflow-y: auto;
   top: 0;
   bottom: 0;
   right: 0;

@@ -10,6 +10,7 @@
     @include('partials.style.home.about')
     @include('partials.style.home.layanan')
     @include('partials.style.home.produk')
+    @include('partials.style.home.kegiatan')
     @include('partials.style.home.contact')
 
 @endsection

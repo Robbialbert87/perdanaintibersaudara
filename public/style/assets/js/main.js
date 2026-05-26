@@ -32,20 +32,48 @@
     mobileNavToggleBtn.classList.toggle('bi-list');
     mobileNavToggleBtn.classList.toggle('bi-x');
   }
+
+  function mobileNavClose() {
+    if (document.querySelector('body').classList.contains('mobile-nav-active')) {
+      document.querySelector('body').classList.remove('mobile-nav-active');
+      mobileNavToggleBtn.classList.add('bi-list');
+      mobileNavToggleBtn.classList.remove('bi-x');
+    }
+  }
+
   if (mobileNavToggleBtn) {
     mobileNavToggleBtn.addEventListener('click', mobileNavToogle);
   }
 
   /**
-   * Hide mobile nav on same-page/hash links
+   * Close mobile nav when clicking outside the navmenu (on the backdrop)
    */
-  document.querySelectorAll('#navmenu a').forEach(navmenu => {
-    navmenu.addEventListener('click', () => {
+  document.addEventListener('click', function(e) {
+    const navmenuEl = document.querySelector('.navmenu');
+    const toggleBtn = document.querySelector('.mobile-nav-toggle');
+    if (!navmenuEl || !toggleBtn) return;
+    if (
+      document.querySelector('body').classList.contains('mobile-nav-active') &&
+      !navmenuEl.contains(e.target) &&
+      !toggleBtn.contains(e.target)
+    ) {
+      mobileNavClose();
+    }
+  });
+
+  /**
+   * Hide mobile nav on same-page/hash links (but not on dropdown toggles)
+   */
+  document.querySelectorAll('#navmenu a').forEach(navmenuLink => {
+    navmenuLink.addEventListener('click', function(e) {
+      // Don't close if this is a dropdown toggle
+      if (this.querySelector('.toggle-dropdown') || this.classList.contains('toggle-dropdown')) return;
+      // Don't close if the parent <li> has a sub-dropdown (it's a dropdown parent link)
+      if (this.parentNode.classList.contains('dropdown') && this.parentNode.querySelector('ul')) return;
       if (document.querySelector('.mobile-nav-active')) {
-        mobileNavToogle();
+        mobileNavClose();
       }
     });
-
   });
 
   /**
@@ -54,9 +82,9 @@
   document.querySelectorAll('.navmenu .toggle-dropdown').forEach(navmenu => {
     navmenu.addEventListener('click', function(e) {
       e.preventDefault();
+      e.stopImmediatePropagation();
       this.parentNode.classList.toggle('active');
       this.parentNode.nextElementSibling.classList.toggle('dropdown-active');
-      e.stopImmediatePropagation();
     });
   });
 
