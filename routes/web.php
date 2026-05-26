@@ -4,11 +4,11 @@ use Illuminate\Support\Facades\Route;
 use Laravel\Fortify\Features;
 
 Route::get('/', function () {
-    return view('clinic.index');
+    return view('style.index');
 })->name('home');
 
 Route::get('/about', function () {
-    return view('clinic.about');
+    return view('style.about');
 })->name('about');
 
 
