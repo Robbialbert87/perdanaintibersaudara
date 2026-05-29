@@ -33,7 +33,7 @@
                                     @foreach($product->images as $img)
                                     <div class="swiper-slide">
                                         <div style="aspect-ratio: 1/1; overflow: hidden; background-color: #f8f9fa;" class="d-flex align-items-center justify-content-center">
-                                            <img src="{{ asset('storage/' . $img) }}" alt="{{ $product->name }}" class="img-fluid w-100 h-100 object-fit-cover">
+                                            <img src="{{ Storage::url($img) }}" alt="{{ $product->name }}" class="img-fluid w-100 h-100 object-fit-cover">
                                         </div>
                                     </div>
                                     @endforeach
@@ -45,7 +45,7 @@
                         @else
                             <!-- Single Image -->
                             <div class="rounded-4 shadow-sm" style="border: 1px solid rgba(0,0,0,0.05); overflow: hidden; aspect-ratio: 1/1; background-color: #f8f9fa;">
-                                <img src="{{ asset('storage/' . $product->images[0]) }}" alt="{{ $product->name }}" class="img-fluid w-100 h-100 object-fit-cover">
+                                <img src="{{ Storage::url($product->images[0]) }}" alt="{{ $product->name }}" class="img-fluid w-100 h-100 object-fit-cover">
                             </div>
                         @endif
                     @else

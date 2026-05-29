@@ -54,7 +54,7 @@
                         @foreach($product->images as $img)
                         <div class="col-auto">
                             <div class="card" style="width: 120px;">
-                                <img src="{{ asset('storage/' . $img) }}" class="card-img-top" alt="Product Image" style="height: 100px; object-fit: cover;">
+                                <img src="{{ Storage::url($img) }}" class="card-img-top" alt="Product Image" style="height: 100px; object-fit: cover;">
                                 <div class="card-body p-2 text-center">
                                     <div class="form-check d-inline-block">
                                         <input class="form-check-input" type="checkbox" name="kept_images[]" value="{{ $img }}" id="img_{{ $loop->index }}" checked>

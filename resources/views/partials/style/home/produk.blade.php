@@ -18,7 +18,7 @@
                             <div class="entry-image position-relative" style="aspect-ratio: 4/3; overflow: hidden; background-color: #f0f4f9;">
                                 <a href="{{ route('produk.detail', $product->id) }}">
                                     @if (!empty($product->images) && count($product->images) > 0)
-                                        <img src="{{ asset('storage/' . $product->images[0]) }}"
+                                        <img src="{{ Storage::url($product->images[0]) }}"
                                             alt="{{ $product->name }}"
                                             class="img-fluid w-100 h-100 object-fit-cover"
                                             style="transition: transform 0.3s;"

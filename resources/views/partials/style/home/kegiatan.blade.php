@@ -17,7 +17,7 @@
                             @if (!empty($activity->images) && count($activity->images) > 0)
                                 <div style="aspect-ratio: 16/9; overflow: hidden; background-color: #f0f4f9;">
                                     <a href="{{ route('kegiatan.detail', $activity->id) }}">
-                                        <img src="{{ asset('storage/' . $activity->images[0]) }}"
+                                        <img src="{{ Storage::url($activity->images[0]) }}"
                                             alt="{{ $activity->title }}"
                                             class="card-img-top w-100 h-100 object-fit-cover"
                                             style="transition: transform 0.3s;"

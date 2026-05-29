@@ -54,7 +54,7 @@
                         @foreach($activity->images as $img)
                         <div class="col-auto">
                             <div class="card" style="width: 120px;">
-                                <img src="{{ asset('storage/' . $img) }}" class="card-img-top" alt="Activity Image" style="height: 100px; object-fit: cover;">
+                                <img src="{{ Storage::url($img) }}" class="card-img-top" alt="Activity Image" style="height: 100px; object-fit: cover;">
                                 <div class="card-body p-2 text-center">
                                     <div class="form-check d-inline-block">
                                         <!-- If unchecked, we keep the image. So checkbox value should be 'kept_images[]' if we want to keep it?
