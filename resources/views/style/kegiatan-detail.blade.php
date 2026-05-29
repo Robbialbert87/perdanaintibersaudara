@@ -1,6 +1,6 @@
 @extends('layouts.style')
 
-@section('title', $activity->title . ' - CV. Perdana Inti Bersaudara')
+@section('title', $activity->title . ' - (PIB) Perdana Inti Bersaudara')
 
 @section('body-class', 'activity-detail-page')
 

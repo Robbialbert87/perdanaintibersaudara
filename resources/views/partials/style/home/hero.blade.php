@@ -11,7 +11,7 @@
                         <span class="typed" style="color: #065cc2;" data-typed-items="Radiography Modern, Alat Kesehatan, Layanan Teknis Medis, Maintenance & Repair"></span>
                     </h1>
                     <p class="lead" style="font-size: 1.1rem; line-height: 1.7; color: #314862;">
-                        <strong>CV. Perdana Inti Bersaudara (PIB)</strong> adalah perusahaan yang bergerak di bidang pengadaan alat kesehatan khususnya radiologi. Kami melayani jasa instalasi profesional, perbaikan ahli, dan pemeliharaan berkala untuk peralatan radiologi seperti DR (Digital Radiography) dan CR (Computed Radiography) di seluruh Indonesia.
+                        <strong>(PIB) Perdana Inti Bersaudara</strong> adalah perusahaan yang bergerak di bidang pengadaan alat kesehatan khususnya radiologi. Kami melayani jasa instalasi profesional, perbaikan ahli, dan pemeliharaan berkala untuk peralatan radiologi seperti DR (Digital Radiography) dan CR (Computed Radiography) di seluruh Indonesia.
                     </p>
 
                     <div class="hero-stats" data-aos="fade-up" data-aos-delay="200" style="margin-bottom: 2.5rem;">

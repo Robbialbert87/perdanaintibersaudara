@@ -2,18 +2,18 @@
 <section id="contact" class="contact section">
 
     <!-- Section Title -->
-    <div class="container section-title" data-aos="fade-up">
+    <div class="container section-title">
         <h1 style="font-family: 'Quicksand', sans-serif; font-weight: bold; color: #13447f;">Hubungi Kami</h1>
         <p style="color: #7f9ab7;">Jangan ragu untuk berkonsultasi mengenai alat kesehatan & kebutuhan teknis faskes Anda
         </p>
     </div><!-- End Section Title -->
 
-    <div class="container" data-aos="fade-up" data-aos-delay="100">
+    <div class="container">
 
         <div class="row gy-5">
 
             <!-- Contact Info Box -->
-            <div class="col-lg-5" data-aos="fade-right" data-aos-delay="200">
+            <div class="col-lg-5">
                 <div class="info-box p-4 rounded-4 shadow-sm bg-white" style="border: 1px solid rgba(0,0,0,0.05);">
                     <h3
                         style="font-family: 'Quicksand', sans-serif; font-weight: bold; color: #13447f; margin-bottom: 25px; font-size: 1.5rem;">
@@ -72,7 +72,7 @@
             </div>
 
             <!-- Contact Form -->
-            <div class="col-lg-7" data-aos="fade-left" data-aos-delay="300">
+            <div class="col-lg-7">
                 <form action="#" method="POST" class="php-email-form p-4 rounded-4 shadow-sm bg-white"
                     style="border: 1px solid rgba(0,0,0,0.05);">
                     @csrf

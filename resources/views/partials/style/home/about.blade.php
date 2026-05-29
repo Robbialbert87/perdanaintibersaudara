@@ -4,7 +4,7 @@
     <!-- Section Title -->
     <div class="container section-title" data-aos="fade-up">
         <h2 style="font-family: 'Quicksand', sans-serif; font-weight: bold; color: #13447f;">Tentang Kami</h2>
-        <p style="color: #7f9ab7;">Profil Singkat CV. Perdana Inti Bersaudara</p>
+        <p style="color: #7f9ab7;">Profil Singkat (PIB) Perdana Inti Bersaudara</p>
     </div><!-- End Section Title -->
 
     <div class="container" data-aos="fade-up" data-aos-delay="100">
@@ -27,7 +27,7 @@
             <div class="col-lg-7" data-aos="fade-left" data-aos-delay="300">
                 <div class="about-content">
                     <div class="intro mb-4">
-                        <h2 style="font-family: 'Quicksand', sans-serif; font-weight: bold; color: #13447f; font-size: 2rem;">CV. Perdana Inti Bersaudara</h2>
+                        <h2 style="font-family: 'Quicksand', sans-serif; font-weight: bold; color: #13447f; font-size: 2rem;">(PIB) Perdana Inti Bersaudara</h2>
                         <p style="text-align: justify; font-size: 1.05rem; line-height: 1.8; color: #314862; margin-top: 15px;">
                             Didirikan secara resmi sejak tahun 2020, kami hadir sebagai solusi terintegrasi dalam penyediaan alat kesehatan, peralatan laboratorium, farmasi, serta penyedia jasa teknis elektromedis penunjang faskes. Kami berkomitmen memberikan pelayanan terbaik bagi instansi pemerintah maupun swasta melalui integritas kerja dan keahlian teknis yang teruji.
                         </p>

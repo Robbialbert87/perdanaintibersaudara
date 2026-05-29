@@ -1,6 +1,6 @@
 @extends('layouts.style')
 
-@section('title', $product->name . ' - CV. Perdana Inti Bersaudara')
+@section('title', $product->name . ' - (PIB) Perdana Inti Bersaudara')
 
 @section('body-class', 'product-detail-page')
 
@@ -75,14 +75,18 @@
                         </div>
 
                         <!-- Action Button -->
-                        <div class="action-buttons mt-5">
+                        <div class="action-buttons mt-5 d-flex gap-3 flex-wrap">
                             @php
                                 // Format text WA
-                                $waText = urlencode("Halo CV. Perdana Inti Bersaudara,\n\nSaya tertarik dan ingin menanyakan informasi lebih lanjut mengenai produk *{$product->name}* yang ada di website.\n\nTerima kasih.");
+                                $waText = urlencode("Halo (PIB) Perdana Inti Bersaudara,\n\nSaya tertarik dan ingin menanyakan informasi lebih lanjut mengenai produk *{$product->name}* yang ada di website.\n\nTerima kasih.");
                             @endphp
                             <a href="https://wa.me/6285263056505?text={{ $waText }}" target="_blank" class="btn btn-primary d-inline-flex align-items-center gap-2" style="background-color: #25D366; border-color: #25D366; padding: 12px 30px; border-radius: 50px; font-weight: 600; font-family: 'Quicksand', sans-serif; font-size: 1.1rem; transition: 0.3s;">
                                 <i class="bi bi-whatsapp" style="font-size: 1.2rem;"></i>
                                 Pesan Sekarang
+                            </a>
+                            <a href="{{ route('home') }}#produk" class="btn btn-outline-primary d-inline-flex align-items-center gap-2" style="padding: 12px 30px; border-radius: 50px; font-weight: 600; font-family: 'Quicksand', sans-serif; font-size: 1.1rem; transition: 0.3s;">
+                                <i class="bi bi-arrow-left" style="font-size: 1.2rem;"></i>
+                                Kembali ke Beranda
                             </a>
                         </div>
                         

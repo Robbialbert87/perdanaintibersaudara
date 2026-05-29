@@ -9,11 +9,11 @@
         <nav id="navmenu" class="navmenu">
 
             <div class="profile-img">
-                <img src="{{ asset('style/assets/img/PIBnew.png') }}" alt="CV. Perdana Inti Bersaudara" class="img-fluid rounded-circle" style="background-color: white; padding: 10px;">
+                <img src="{{ asset('style/assets/img/PIBnew.png') }}" alt="(PIB) Perdana Inti Bersaudara" class="img-fluid rounded-circle" style="background-color: white; padding: 10px;">
             </div>
 
             <a href="{{ url('/') }}" class="logo d-flex align-items-center justify-content-center">
-                <h1 class="sitename" style="font-size: 18px; text-align: center; font-weight: bold; margin-top: 10px;">CV. Perdana Inti Bersaudara</h1>
+                <h1 class="sitename" style="font-size: 18px; text-align: center; font-weight: bold; margin-top: 10px;">(PIB) Perdana Inti Bersaudara</h1>
             </a>
 
             <div class="social-links text-center">

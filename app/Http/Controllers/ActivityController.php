@@ -5,21 +5,20 @@ namespace App\Http\Controllers;
 use App\Models\Activity;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Storage;
-use Inertia\Inertia;
 
 class ActivityController extends Controller
 {
     public function index()
     {
         $activities = Activity::latest()->get();
-        return Inertia::render('Activities/Index', [
+        return view('admin.activities.index', [
             'activities' => $activities
         ]);
     }
 
     public function create()
     {
-        return Inertia::render('Activities/Form');
+        return view('admin.activities.form');
     }
 
     public function store(Request $request)
@@ -47,7 +46,7 @@ class ActivityController extends Controller
 
     public function edit(Activity $activity)
     {
-        return Inertia::render('Activities/Form', [
+        return view('admin.activities.form', [
             'activity' => $activity
         ]);
     }

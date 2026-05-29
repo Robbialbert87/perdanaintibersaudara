@@ -5,21 +5,20 @@ namespace App\Http\Controllers;
 use App\Models\Product;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Storage;
-use Inertia\Inertia;
 
 class ProductController extends Controller
 {
     public function index()
     {
         $products = Product::latest()->get();
-        return Inertia::render('Products/Index', [
+        return view('admin.products.index', [
             'products' => $products
         ]);
     }
 
     public function create()
     {
-        return Inertia::render('Products/Form');
+        return view('admin.products.form');
     }
 
     public function store(Request $request)
@@ -47,7 +46,7 @@ class ProductController extends Controller
 
     public function edit(Product $product)
     {
-        return Inertia::render('Products/Form', [
+        return view('admin.products.form', [
             'product' => $product
         ]);
     }

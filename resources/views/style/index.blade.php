@@ -1,6 +1,6 @@
 @extends('layouts.style')
 
-@section('title', 'CV. Perdana Inti Bersaudara - Solusi Digital Radiography & Alat Kesehatan')
+@section('title', '(PIB) Perdana Inti Bersaudara - Solusi Digital Radiography & Alat Kesehatan')
 
 @section('body-class', 'index-page')
 

@@ -1,6 +1,6 @@
 @extends('layouts.style')
 
-@section('title', 'About Us - CV. Perdana Inti Bersaudara')
+@section('title', 'About Us - (PIB) Perdana Inti Bersaudara')
 
 @section('body-class', 'about-page')
 
@@ -29,10 +29,10 @@
                     <div class="card border-0 shadow-sm rounded-4 h-100 bg-white" style="border: 1px solid rgba(0,0,0,0.05) !important;">
                         <div class="card-body p-4 p-lg-5">
                             <h2 style="font-family: 'Quicksand', sans-serif; font-weight: bold; color: #13447f; margin-bottom: 8px;">Company Profile</h2>
-                            <h5 style="color: #065cc2; font-weight: 600; margin-bottom: 25px; padding-bottom: 15px; border-bottom: 2px solid rgba(0,0,0,0.05);">CV. Perdana Inti Bersaudara</h5>
+                            <h5 style="color: #065cc2; font-weight: 600; margin-bottom: 25px; padding-bottom: 15px; border-bottom: 2px solid rgba(0,0,0,0.05);">(PIB) Perdana Inti Bersaudara</h5>
 
                             <p style="text-align: justify; font-size: 1.05rem; line-height: 1.8; color: #314862; margin-bottom: 20px;">
-                                <strong>CV. Perdana Inti Bersaudara</strong> merupakan perusahaan nasional yang bergerak aktif di bidang pengadaan alat kesehatan, laboratorium, farmasi, serta penyediaan layanan teknis penunjang fasilitas kesehatan dan industri. Didirikan secara resmi sejak tahun 2020 di Provinsi Jambi, perusahaan hadir dengan komitmen tinggi untuk menghadirkan layanan yang profesional, terpercaya, dan berorientasi penuh pada standar kualitas tertinggi.
+                                <strong>(PIB) Perdana Inti Bersaudara</strong> merupakan perusahaan nasional yang bergerak aktif di bidang pengadaan alat kesehatan, laboratorium, farmasi, serta penyediaan layanan teknis penunjang fasilitas kesehatan dan industri. Didirikan secara resmi sejak tahun 2020 di Provinsi Jambi, perusahaan hadir dengan komitmen tinggi untuk menghadirkan layanan yang profesional, terpercaya, dan berorientasi penuh pada standar kualitas tertinggi.
                             </p>
 
                             <p style="text-align: justify; font-size: 1.05rem; line-height: 1.8; color: #314862; margin-bottom: 30px;">
@@ -60,7 +60,7 @@
                             </div>
 
                             <p style="text-align: justify; font-size: 1.05rem; line-height: 1.8; color: #314862; margin-bottom: 30px;">
-                                Sebagai entitas badan usaha yang berpayung hukum legalitas lengkap di Kementerian Hukum dan HAM Republik Indonesia, CV. Perdana Inti Bersaudara senantiasa memegang teguh integritas, transparansi administrasi, serta kemudahan dalam setiap kerja sama yang dirintis demi terwujudnya hubungan kemitraan yang berkelanjutan.
+                                Sebagai entitas badan usaha yang berpayung hukum legalitas lengkap di Kementerian Hukum dan HAM Republik Indonesia, (PIB) Perdana Inti Bersaudara senantiasa memegang teguh integritas, transparansi administrasi, serta kemudahan dalam setiap kerja sama yang dirintis demi terwujudnya hubungan kemitraan yang berkelanjutan.
                             </p>
 
                             <div class="p-4 rounded-4" style="background-color: rgba(6, 92, 194, 0.05); border: 1px dashed rgba(6, 92, 194, 0.2);">

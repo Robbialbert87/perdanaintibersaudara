@@ -2,7 +2,7 @@
 
     <div class="container">
         <div class="copyright text-center">
-            <p>© <span>Copyright</span> <strong class="px-1 sitename">CV. Perdana Inti Bersaudara</strong> <span>All Rights Reserved</span></p>
+            <p>© <span>Copyright</span> <strong class="px-1 sitename">(PIB) Perdana Inti Bersaudara</strong> <span>All Rights Reserved</span></p>
         </div>
         <div class="social-links d-flex justify-content-center mt-3">
             <a href="#" class="facebook"><i class="bi bi-facebook"></i></a>
