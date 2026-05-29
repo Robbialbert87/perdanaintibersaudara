@@ -6,6 +6,9 @@
     <meta name="csrf-token" content="{{ csrf_token() }}">
 
     <title>Auth - (PIB) Perdana Inti Bersaudara</title>
+     <!-- Favicons -->
+    <link href="{{ asset('logo1.png') }}" rel="icon">
+    <link href="{{ asset('logo1.png') }}" rel="apple-touch-icon">
 
     <!-- Bootstrap 5 CSS via CDN -->
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet">
