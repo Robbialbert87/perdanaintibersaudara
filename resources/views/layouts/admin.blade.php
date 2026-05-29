@@ -71,7 +71,13 @@
                                 <i class="bi bi-box-seam me-2"></i> Produk
                             </a>
                         </li>
-                        <li class="nav-item mt-4">
+                        <li class="nav-item mt-3 px-3">
+                            <a href="{{ route('home') }}" target="_blank"
+                                class="btn btn-outline-light w-100 d-flex align-items-center justify-content-center gap-2">
+                                <i class="bi bi-globe2"></i> Lihat Website
+                            </a>
+                        </li>
+                        <li class="nav-item mt-2">
                             <form method="POST" action="{{ route('logout') }}" class="px-3">
                                 @csrf
                                 <button type="submit" class="btn btn-danger w-100"><i
@@ -87,6 +93,10 @@
                 <div
                     class="d-flex justify-content-between flex-wrap flex-md-nowrap align-items-center pt-3 pb-2 mb-3 border-bottom">
                     <h1 class="h2">@yield('title')</h1>
+                    <a href="{{ route('home') }}" target="_blank"
+                        class="btn btn-sm btn-outline-secondary d-inline-flex align-items-center gap-1">
+                        <i class="bi bi-globe2"></i> Lihat Website
+                    </a>
                 </div>
 
                 @if (session('success'))
