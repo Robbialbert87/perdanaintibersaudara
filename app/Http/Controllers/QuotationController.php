@@ -131,7 +131,7 @@ class QuotationController extends Controller
     {
         $quotation = \App\Models\Quotation::with(['customer', 'items.product'])->findOrFail($id);
         
-        $pdf = \Barryvdh\DomPDF\Facade\Pdf::loadView('admin.quotations.pdf', compact('quotation'))
+        $pdf = app('dompdf.wrapper')->loadView('admin.quotations.pdf', compact('quotation'))
                 ->setPaper(array(0, 0, 595.28, 935.43), 'portrait'); // F4 size
                 
         // Generate a filename based on quotation number
