@@ -4,6 +4,9 @@ namespace Database\Factories;
 
 use App\Models\Product;
 use Illuminate\Database\Eloquent\Factories\Factory;
+use Illuminate\Support\Facades\Http;
+use Illuminate\Support\Facades\Storage;
+use Illuminate\Support\Str;
 
 class ProductFactory extends Factory
 {
@@ -17,7 +20,6 @@ class ProductFactory extends Factory
             'spesifikasi' => "- Tube: 128 slice\n- Gantry aperture: 70cm\n- Scan speed: 0.35s/rotasi\n- Matrix rekonstruksi: 1024x1024\n- Dosis rendah: Ya (iterative reconstruction)\n- Monitor: 24 inch LED medis",
             'satuan' => 'Unit',
             'harga_default' => 8500000000,
-            'images' => ['products/aY2Pq6W66YAaTvP8zq6omdNMGhZcAsF0TEmrmyMF.jpg']
         ],
         [
             'name' => 'MRI 1.5 Tesla',
@@ -26,7 +28,6 @@ class ProductFactory extends Factory
             'spesifikasi' => "- Kekuatan magnet: 1.5T\n- Bore size: 70cm\n- Gradien: 45 mT/m\n- RF: Multichannel\n- Software: Neuro, Cardio, MSK, Abdomen\n- Sistem pendingin: Cryogen recondensing",
             'satuan' => 'Unit',
             'harga_default' => 15000000000,
-            'images' => ['products/Ijz4TlRqrfnTNd6ReBnbys2tVbWQJJySZdjArfPq.jpg']
         ],
         [
             'name' => 'X-Ray Mobile DR',
@@ -35,7 +36,6 @@ class ProductFactory extends Factory
             'spesifikasi' => "- Generator: 32kW\n- kV range: 40-150 kV\n- mAs: 0.1-400 mAs\n- Detektor: Flat panel wireless 35x43cm\n- Baterai: Lithium-ion, 200 eksposur/charge\n- Monitor: 15 inch touchscreen",
             'satuan' => 'Unit',
             'harga_default' => 1750000000,
-            'images' => ['products/7mkkow6oTkl0t7qZwGHjV0bEjI638iEffn5eEaLr.jpg']
         ],
         [
             'name' => 'USG 4D Color Doppler',
@@ -44,7 +44,6 @@ class ProductFactory extends Factory
             'spesifikasi' => "- Layar: 21.5 inch LED\n- Probe: Convex R60, Linear 50mm, Endocavity\n- Mode: 2D, M-Mode, Color Doppler, PW, CW, 4D\n- Storage: 500GB HDD\n- DICOM 3.0 compatible\n- Battery: 1 jam operasi",
             'satuan' => 'Unit',
             'harga_default' => 950000000,
-            'images' => ['products/qSgBzkoRClb7aJyxBDMpPHgVOqqrZpFBajxiCc87.jpg']
         ],
         [
             'name' => 'ECG 12 Lead Digital',
@@ -53,7 +52,6 @@ class ProductFactory extends Factory
             'spesifikasi' => "- Lead: 12 lead simultaneous\n- Layar: 8.4 inch color TFT\n- Interpretasi: Ya (dewasa & pediatri)\n- Storage: Internal 1000 rekaman\n- Konektivitas: USB, WiFi, LAN\n- Baterai: 4 jam pemakaian",
             'satuan' => 'Unit',
             'harga_default' => 65000000,
-            'images' => ['products/edFCtKsWzyB7t6zbDKMz8a2c5QUM8gIkQf2HWugv.jpg']
         ],
         [
             'name' => 'Ventilator ICU',
@@ -62,7 +60,6 @@ class ProductFactory extends Factory
             'spesifikasi' => "- Mode ventilasi: VC, PC, PSV, SIMV, APRV, BiPAP\n- Layar: 15.6 inch touchscreen\n- Pasien: Dewasa, Pediatri, Neonatus\n- Turbin: Internal (flow 200L/min)\n- Baterai: 2 jam internal\n- Monitoring: Waveform, Loop, CO2, SpO2",
             'satuan' => 'Unit',
             'harga_default' => 450000000,
-            'images' => ['products/Ijz4TlRqrfnTNd6ReBnbys2tVbWQJJySZdjArfPq.jpg']
         ],
         [
             'name' => 'Infusion Pump',
@@ -71,7 +68,6 @@ class ProductFactory extends Factory
             'spesifikasi' => "- Volume: 0.1-9999 mL\n- Akurasi: ±2%\n- Kecepatan: 0.1-2000 mL/jam\n- Security: Anti-free flow, air-in-line detection\n- Database obat: 100+ obat\n- Baterai: 8 jam",
             'satuan' => 'Unit',
             'harga_default' => 35000000,
-            'images' => ['products/7mkkow6oTkl0t7qZwGHjV0bEjI638iEffn5eEaLr.jpg']
         ],
         [
             'name' => 'Patient Monitor',
@@ -80,7 +76,6 @@ class ProductFactory extends Factory
             'spesifikasi' => "- Layar: 12.1 inch LED\n- Parameter: ECG 5-lead, SpO2, NIBP, 2xIBP, Temp, Resp, CO2\n- Alarm: Smart alarm system\n- Central monitoring: Ya\n- Baterai: 4 jam\n- Standar: IEC 60601",
             'satuan' => 'Unit',
             'harga_default' => 125000000,
-            'images' => ['products/qSgBzkoRClb7aJyxBDMpPHgVOqqrZpFBajxiCc87.jpg']
         ],
         [
             'name' => 'Defibrillator AED',
@@ -89,7 +84,6 @@ class ProductFactory extends Factory
             'spesifikasi' => "- Mode: AED + Manual\n- Energi: 2-360J (biphasic)\n- Layar: 5.7 inch LCD\n- Panduan suara: Bahasa Indonesia\n- Berat: 2.5 kg\n- Baterai: 200 kejutan atau 4 jam monitor",
             'satuan' => 'Unit',
             'harga_default' => 85000000,
-            'images' => ['products/edFCtKsWzyB7t6zbDKMz8a2c5QUM8gIkQf2HWugv.jpg']
         ],
         [
             'name' => 'Autoclave Sterilisator',
@@ -98,7 +92,6 @@ class ProductFactory extends Factory
             'spesifikasi' => "- Kapasitas: 200L\n- Chamber: Stainless steel 316L\n- Siklus: 134°C / 121°C\n- Vacuum: Fractionated pre-vacuum\n- Printer: Thermal dot matrix\n- Standar: EN 285, ISO 17665",
             'satuan' => 'Unit',
             'harga_default' => 275000000,
-            'images' => ['products/aY2Pq6W66YAaTvP8zq6omdNMGhZcAsF0TEmrmyMF.jpg']
         ],
         [
             'name' => 'Operating Table Elektrik',
@@ -107,7 +100,6 @@ class ProductFactory extends Factory
             'spesifikasi' => "- Pergerakan: Elektrik (motorized)\n- Posisi: Trendelenburg 30°, RT 30°, Chair, Flex\n- Kapasitas: 250 kg\n- Kolom tengah: Free column untuk C-Arm\n- Remote: Wireless + panel manual\n- Material: Stainless steel anti karat",
             'satuan' => 'Unit',
             'harga_default' => 450000000,
-            'images' => ['products/7mkkow6oTkl0t7qZwGHjV0bEjI638iEffn5eEaLr.jpg']
         ],
         [
             'name' => 'Lead Apron 0.5mm Pb',
@@ -116,7 +108,6 @@ class ProductFactory extends Factory
             'spesifikasi' => "- Lead equivalent: 0.5mm Pb\n- Berat: Mulai 4.5 kg (ukuran M)\n- Bahan: Lead rubber composite\n- Ukuran: S, M, L, XL\n- Sertifikasi: CE, FDA\n- Warna: Biru, Hijau, Hitam",
             'satuan' => 'Buah',
             'harga_default' => 2500000,
-            'images' => ['products/Ijz4TlRqrfnTNd6ReBnbys2tVbWQJJySZdjArfPq.jpg']
         ],
         [
             'name' => 'ECG Paper 112mm x 100mm',
@@ -125,7 +116,6 @@ class ProductFactory extends Factory
             'spesifikasi' => "- Ukuran: 112mm x 100mm\n- Jumlah: 200 sheet/roll\n- Tipe: Thermal paper\n- Kompatibel: Fukuda, Nihon Kohden, Philips, Mindray\n- Pack: 12 roll/pack\n- Warna: Putih dengan grid",
             'satuan' => 'Pack',
             'harga_default' => 180000,
-            'images' => ['products/qSgBzkoRClb7aJyxBDMpPHgVOqqrZpFBajxiCc87.jpg']
         ],
         [
             'name' => 'X-Ray Film 14x17 inch',
@@ -134,7 +124,6 @@ class ProductFactory extends Factory
             'spesifikasi' => "- Ukuran: 14x17 inch (35x43cm)\n- Jenis: Blue sensitive\n- Kecepatan: 400 speed\n- Pack: 100 sheet/box\n- Storage: 2-24°C\n- Merek: Agfa, Fuji, Kodak",
             'satuan' => 'Box',
             'harga_default' => 1200000,
-            'images' => ['products/edFCtKsWzyB7t6zbDKMz8a2c5QUM8gIkQf2HWugv.jpg']
         ],
         [
             'name' => 'Dental Unit Portable',
@@ -143,7 +132,6 @@ class ProductFactory extends Factory
             'spesifikasi' => "- Kompresor: 2L internal\n- Suction: Ya (saliva ejector)\n- Unit air: 2L botol\n- Handpiece: 2 port (high-speed + low-speed)\n- Lampu: LED operatory\n- Berat: 35 kg total",
             'satuan' => 'Unit',
             'harga_default' => 75000000,
-            'images' => ['products/aY2Pq6W66YAaTvP8zq6omdNMGhZcAsF0TEmrmyMF.jpg']
         ],
     ];
 
@@ -152,5 +140,32 @@ class ProductFactory extends Factory
         $product = $this->faker->unique()->randomElement(static::$products);
 
         return $product;
+    }
+
+    public function configure(): static
+    {
+        return $this->afterCreating(function (Product $product) {
+            $images = [];
+            $count = rand(1, 3);
+
+            for ($i = 0; $i < $count; $i++) {
+                $seed = Str::random(10);
+                $url = "https://picsum.photos/seed/{$seed}/800/600";
+                try {
+                    $response = Http::timeout(15)->get($url);
+                    if ($response->successful()) {
+                        $filename = 'products/' . Str::random(40) . '.jpg';
+                        Storage::disk('public')->put($filename, $response->body());
+                        $images[] = $filename;
+                    }
+                } catch (\Exception $e) {
+                    continue;
+                }
+            }
+
+            if (!empty($images)) {
+                $product->update(['images' => $images]);
+            }
+        });
     }
 }
