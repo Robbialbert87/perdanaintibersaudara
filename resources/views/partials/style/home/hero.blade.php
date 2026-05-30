@@ -66,18 +66,17 @@
                             }
                         }
 
-                        /* Fix floating cards on mobile */
+                        .hero-services-swiper .swiper-pagination-bullet {
+                            background: white;
+                            opacity: 0.5;
+                        }
+
+                        .hero-services-swiper .swiper-pagination-bullet-active {
+                            opacity: 1;
+                            background: #065cc2;
+                        }
+
                         @media (max-width: 767.98px) {
-                            .floating-elements {
-                                display: none;
-                            }
-
-                            /* Hide floating cards on small mobile to prevent overflow */
-                            .hero-main-image {
-                                max-width: 100%;
-                                height: auto;
-                            }
-
                             .hero-title {
                                 font-size: 2rem;
                             }
@@ -124,31 +123,69 @@
 
             <div class="col-lg-6 hero-image mt-5 mt-lg-0" data-aos="fade-left" data-aos-delay="200">
                 <div class="image-container position-relative">
-                    <div class="floating-elements">
-                        <div class="floating-card card-1" data-aos="zoom-in" data-aos-delay="300"
-                            style="animation-delay: 0s;">
-                            <i class="bi bi-shield-check" style="color: #065cc2; font-size: 1.5rem;"></i>
-                            <span style="font-weight: 600;">100% Resmi & Legal</span>
+                    <div class="swiper hero-services-swiper rounded-4 overflow-hidden"
+                        style="border: 6px solid white; box-shadow: 0 20px 40px rgba(0,0,0,0.15);">
+                        <div class="swiper-wrapper">
+                            @forelse($services as $service)
+                                <div class="swiper-slide position-relative">
+                                    @if($service->image)
+                                        <img src="{{ Storage::url($service->image) }}"
+                                            alt="{{ $service->title }}"
+                                            class="w-100 object-fit-cover"
+                                            style="aspect-ratio: 4/3; display: block;">
+                                    @else
+                                        <img src="{{ asset('style/assets/img/health/Gemini_Generated_Image_mnrhe1mnrhe1mnrh.png') }}"
+                                            alt="{{ $service->title }}"
+                                            class="w-100 object-fit-cover"
+                                            style="aspect-ratio: 4/3; display: block;">
+                                    @endif
+                                    <div class="position-absolute bottom-0 start-0 w-100 p-3"
+                                        style="background: linear-gradient(transparent, rgba(0,0,0,0.7));">
+                                        <h6 class="text-white mb-0 fw-semibold" style="font-family: 'Quicksand', sans-serif; text-shadow: 0 1px 3px rgba(0,0,0,0.3);">
+                                            {{ $service->title }}
+                                        </h6>
+                                    </div>
+                                </div>
+                            @empty
+                                <div class="swiper-slide">
+                                    <img src="{{ asset('style/assets/img/health/Gemini_Generated_Image_mnrhe1mnrhe1mnrh.png') }}"
+                                        alt="Layanan" class="w-100 object-fit-cover"
+                                        style="aspect-ratio: 4/3; display: block;">
+                                </div>
+                            @endforelse
                         </div>
-                        <div class="floating-card card-2" data-aos="zoom-in" data-aos-delay="400"
-                            style="animation-delay: 2s; top: 40%;">
-                            <i class="bi bi-wrench-adjustable" style="color: #065cc2; font-size: 1.5rem;"></i>
-                            <span style="font-weight: 600;">Instalasi & Perbaikan</span>
-                        </div>
-                        <div class="floating-card card-3" data-aos="zoom-in" data-aos-delay="500"
-                            style="animation-delay: 4s; top: 80%;">
-                            <i class="bi bi-activity" style="color: #065cc2; font-size: 1.5rem;"></i>
-                            <span style="font-weight: 600;">DR & CR Radiologi</span>
-                        </div>
+                        <div class="swiper-pagination hero-services-pagination"></div>
                     </div>
-                    <img src="{{ asset('style/assets/img/health/Gemini_Generated_Image_mnrhe1mnrhe1mnrh.png') }}"
-                        alt="Radiology Equipment Illustration" class="img-fluid hero-main-image w-100"
-                        style="border-radius: 24px; border: 6px solid white; box-shadow: 0 20px 40px rgba(0,0,0,0.15);">
                     <div class="image-overlay position-absolute top-0 start-0 w-100 h-100"
-                        style="border-radius: 24px; background: linear-gradient(45deg, #065cc2, rgba(6, 92, 194, 0.4)); opacity: 0.1;">
+                        style="border-radius: 24px; background: linear-gradient(45deg, #065cc2, rgba(6, 92, 194, 0.4)); opacity: 0.1; pointer-events: none;">
                     </div>
                 </div>
             </div>
+
+            @push('scripts')
+                <script>
+                    document.addEventListener('DOMContentLoaded', function () {
+                        new Swiper('.hero-services-swiper', {
+                            loop: true,
+                            speed: 800,
+                            autoplay: {
+                                delay: 3500,
+                                disableOnInteraction: false,
+                                pauseOnMouseEnter: true
+                            },
+                            pagination: {
+                                el: '.hero-services-pagination',
+                                type: 'bullets',
+                                clickable: true
+                            },
+                            effect: 'fade',
+                            fadeEffect: {
+                                crossFade: true
+                            }
+                        });
+                    });
+                </script>
+            @endpush
 
         </div>
     </div>
