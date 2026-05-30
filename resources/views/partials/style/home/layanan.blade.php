@@ -34,25 +34,9 @@
 
                             <!-- Content -->
                             <div class="card-body p-4 d-flex flex-column flex-grow-1">
-                                <h4 style="font-family: 'Quicksand', sans-serif; font-weight: bold; color: #13447f; font-size: 1.2rem; margin-bottom: 12px;">
+                                <h4 style="font-family: 'Quicksand', sans-serif; font-weight: bold; color: #13447f; font-size: 1.2rem; margin-bottom: 16px;">
                                     {{ $service->title }}
                                 </h4>
-
-                                <p style="font-size: 0.9rem; line-height: 1.6; color: #7f9ab7; margin-bottom: 16px;
-                                    display: -webkit-box; -webkit-line-clamp: 3; -webkit-box-orient: vertical; overflow: hidden;">
-                                    {{ $service->description }}
-                                </p>
-
-                                @if(!empty($service->features))
-                                <ul class="list-unstyled mb-4" style="display: flex; flex-wrap: wrap; gap: 8px 12px;">
-                                    @foreach(array_slice($service->features, 0, 2) as $feature)
-                                    <li style="font-size: 0.83rem; color: #314862; display: flex; align-items: center;">
-                                        <i class="bi bi-check2 me-1" style="color: #065cc2; font-weight: bold;"></i>
-                                        <span>{{ $feature }}</span>
-                                    </li>
-                                    @endforeach
-                                </ul>
-                                @endif
 
                                 <div class="mt-auto">
                                     <a href="{{ route('layanan.detail', $service->id) }}"

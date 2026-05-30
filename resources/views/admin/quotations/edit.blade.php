@@ -33,7 +33,7 @@
                 <div class="col-md-4">
                     <label class="form-label">Perihal (Produk/Jasa) <span class="text-danger">*</span></label>
                     <div id="perihalContainer">
-                        @php $perihalArray = json_decode($quotation->perihal, true) ?? [$quotation->perihal]; @endphp
+                        @php $perihalArray = $quotation->perihal ?? [$quotation->perihal]; @endphp
                         @foreach($perihalArray as $index => $perihal)
                         <div class="input-group mb-2 perihal-row">
                             <span class="input-group-text perihal-number">{{ $index + 1 }}.</span>

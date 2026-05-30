@@ -153,7 +153,7 @@
         $fmtDate = \Carbon\Carbon::parse($quotation->tanggal)->locale('id')->translatedFormat('d F Y');
 
         // Parse Perihal
-        $perihalArray = json_decode($quotation->perihal, true) ?? [$quotation->perihal];
+        $perihalArray = $quotation->perihal ?? [$quotation->perihal];
         $perihalText = implode(', ', $perihalArray);
     @endphp
 

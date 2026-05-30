@@ -28,17 +28,14 @@
                                     {{ \Carbon\Carbon::parse($activity->date)->translatedFormat('d F Y') }}
                                 </small>
                             </div>
-                            <h5 class="card-title mb-2"
+                            <h5 class="card-title mb-0"
                                 style="font-family: 'Quicksand', sans-serif; font-weight: bold; font-size: 1.1rem;">
                                 <a href="{{ route('kegiatan.detail', $activity->id) }}"
                                     style="color: #13447f; text-decoration: none;" class="hover-primary">
                                     {{ $activity->title }}
                                 </a>
                             </h5>
-                            <p class="card-text mb-3"
-                                style="color: #7f9ab7; font-size: 0.9rem; display: -webkit-box; -webkit-line-clamp: 3; -webkit-box-orient: vertical; overflow: hidden;">
-                                {{ $activity->content }}
-                            </p>
+                            <div style="height: 16px;"></div>
                             <a href="{{ route('kegiatan.detail', $activity->id) }}"
                                 class="btn d-flex justify-content-between align-items-center"
                                 style="background-color: #2973cc; color: #fff; border: none; padding: 11px 20px; border-radius: 8px; font-weight: 600; font-size: 0.9rem; transition: background-color 0.3s;">

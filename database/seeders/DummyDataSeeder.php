@@ -24,10 +24,10 @@ class DummyDataSeeder extends Seeder
         Customer::truncate();
         DB::statement('SET FOREIGN_KEY_CHECKS=1');
 
-        $products = Product::factory()->count(15)->create();
+        $products = Product::factory()->count(3)->create();
         $this->command->info('Created ' . $products->count() . ' products.');
 
-        $services = Service::factory()->count(5)->create();
+        $services = Service::factory()->count(14)->create();
         $this->command->info('Created ' . $services->count() . ' services.');
 
         $activities = Activity::factory()->count(7)->create();
@@ -38,7 +38,7 @@ class DummyDataSeeder extends Seeder
 
         $productList = Product::all();
 
-        foreach (range(1, 15) as $i) {
+        foreach (range(1, 10) as $i) {
             $customer = $customers->random();
             $numItems = rand(2, 5);
 

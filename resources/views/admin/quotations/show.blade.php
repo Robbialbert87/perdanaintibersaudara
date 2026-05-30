@@ -37,7 +37,7 @@
                         <td>Perihal</td>
                         <td>:</td>
                         <td>
-                            @php $perihalArray = json_decode($quotation->perihal, true) ?? [$quotation->perihal]; @endphp
+                            @php $perihalArray = $quotation->perihal ?? [$quotation->perihal]; @endphp
                             @if(count($perihalArray) > 1)
                                 <ol class="mb-0 ps-3">
                                     @foreach($perihalArray as $p)

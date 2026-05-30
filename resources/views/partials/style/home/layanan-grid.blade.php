@@ -35,24 +35,9 @@
 
                     <!-- Content -->
                     <div class="p-4 d-flex flex-column flex-grow-1">
-                        <h3 style="font-family: 'Quicksand', sans-serif; font-weight: bold; color: #13447f; font-size: 1.3rem; margin-bottom: 12px;">
+                        <h3 style="font-family: 'Quicksand', sans-serif; font-weight: bold; color: #13447f; font-size: 1.3rem; margin-bottom: 16px;">
                             {{ $service->title }}
                         </h3>
-
-                        <p style="font-size: 0.95rem; line-height: 1.7; color: #5c7694; margin-bottom: 20px;">
-                            {{ $service->description }}
-                        </p>
-
-                        @if(!empty($service->features))
-                        <ul class="list-unstyled mb-4" style="display: grid; grid-template-columns: 1fr 1fr; gap: 8px;">
-                            @foreach($service->features as $feature)
-                            <li style="font-size: 0.85rem; color: #314862; display: flex; align-items: flex-start; gap: 6px;">
-                                <i class="bi bi-check2" style="color: #065cc2; font-size: 1rem; flex-shrink: 0; margin-top: 1px;"></i>
-                                <span style="line-height: 1.4;">{{ $feature }}</span>
-                            </li>
-                            @endforeach
-                        </ul>
-                        @endif
 
                         <!-- CTA Button -->
                         <div class="mt-auto">
