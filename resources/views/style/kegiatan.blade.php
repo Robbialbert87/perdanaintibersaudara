@@ -5,7 +5,5 @@
 @section('body-class', 'kegiatan-page')
 
 @section('content')
-
-
-    @include('partials.style.home.kegiatan')
+    @include('partials.style.kegiatan-grid')
 @endsection

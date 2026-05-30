@@ -5,7 +5,5 @@
 @section('body-class', 'produk-page')
 
 @section('content')
-
-
-    @include('partials.style.home.produk')
+    @include('partials.style.produk-grid')
 @endsection

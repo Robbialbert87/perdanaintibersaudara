@@ -93,6 +93,10 @@
         color: #00a5e5 !important;
     }
 
+    .nav-link.active::after {
+        display: none !important;
+    }
+
     .navbar-nav .nav-link.active::after {
         content: '';
         position: fixed;
