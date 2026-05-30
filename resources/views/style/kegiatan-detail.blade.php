@@ -63,9 +63,9 @@
 
                         <!-- Action Button -->
                         <div class="action-buttons mt-5">
-                            <a href="{{ route('home') }}#kegiatan" class="btn btn-outline-primary d-inline-flex align-items-center gap-2" style="padding: 12px 30px; border-radius: 50px; font-weight: 600; font-family: 'Quicksand', sans-serif; font-size: 1.1rem; transition: 0.3s;">
+                            <a href="{{ route('kegiatan.page') }}" class="btn btn-outline-primary d-inline-flex align-items-center gap-2" style="padding: 12px 30px; border-radius: 50px; font-weight: 600; font-family: 'Quicksand', sans-serif; font-size: 1.1rem; transition: 0.3s;">
                                 <i class="bi bi-arrow-left" style="font-size: 1.2rem;"></i>
-                                Kembali ke Beranda
+                                Kembali ke Kegiatan
                             </a>
                         </div>
                         

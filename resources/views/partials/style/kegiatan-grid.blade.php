@@ -35,10 +35,16 @@
                                     {{ $activity->title }}
                                 </a>
                             </h5>
-                            <p class="card-text mb-0"
+                            <p class="card-text mb-3"
                                 style="color: #7f9ab7; font-size: 0.9rem; display: -webkit-box; -webkit-line-clamp: 3; -webkit-box-orient: vertical; overflow: hidden;">
                                 {{ $activity->content }}
                             </p>
+                            <a href="{{ route('kegiatan.detail', $activity->id) }}"
+                                class="btn d-flex justify-content-between align-items-center"
+                                style="background-color: #2973cc; color: #fff; border: none; padding: 11px 20px; border-radius: 8px; font-weight: 600; font-size: 0.9rem; transition: background-color 0.3s;">
+                                <span>Selengkapnya</span>
+                                <i class="bi bi-arrow-right"></i>
+                            </a>
                         </div>
                     </div>
                 </div>
@@ -60,6 +66,9 @@
             }
             #kegiatan .card:hover {
                 box-shadow: 0 8px 25px rgba(6, 92, 194, 0.15) !important;
+            }
+            #kegiatan .btn:hover {
+                background-color: #13447f !important;
             }
         </style>
     @endpush

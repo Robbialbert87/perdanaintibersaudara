@@ -58,7 +58,7 @@
                                     <a href="{{ route('layanan.detail', $service->id) }}"
                                         class="btn btn-primary w-100 d-flex justify-content-between align-items-center"
                                         style="background-color: #2973cc; border: none; padding: 10px 18px; border-radius: 8px; font-weight: 600; font-size: 0.9rem;">
-                                        <span>Learn More</span>
+                                        <span>Selengkapnya</span>
                                         <i class="bi bi-arrow-right"></i>
                                     </a>
                                 </div>

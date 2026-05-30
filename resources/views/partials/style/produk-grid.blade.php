@@ -27,7 +27,7 @@
                                 @endif
                             </a>
                         </div>
-                        <div class="entry-title-wrapper p-3">
+                        <div class="entry-title-wrapper p-3 d-flex flex-column">
                             <h4 class="entry-title mb-1" style="font-size: 1.1rem; font-weight: bold;">
                                 <a href="{{ route('produk.detail', $product->id) }}"
                                     style="color: #13447f; text-decoration: none; transition: 0.3s;"
@@ -35,8 +35,14 @@
                                     {{ $product->name }}
                                 </a>
                             </h4>
-                            <p class="entry-category text-secondary mb-0 small" style="font-weight: 500;">
+                            <p class="entry-category text-secondary mb-2 small" style="font-weight: 500;">
                                 {{ $product->category }}</p>
+                            <a href="{{ route('produk.detail', $product->id) }}"
+                                class="btn d-flex justify-content-between align-items-center"
+                                style="background-color: #2973cc; color: #fff; border: none; padding: 11px 20px; border-radius: 8px; font-weight: 600; font-size: 0.9rem; transition: background-color 0.3s;">
+                                <span>Selengkapnya</span>
+                                <i class="bi bi-arrow-right"></i>
+                            </a>
                         </div>
                     </div>
                 </div>
@@ -58,6 +64,9 @@
             }
             #produk .portfolio-entry:hover {
                 box-shadow: 0 8px 25px rgba(6, 92, 194, 0.15) !important;
+            }
+            #produk .btn:hover {
+                background-color: #13447f !important;
             }
         </style>
     @endpush
