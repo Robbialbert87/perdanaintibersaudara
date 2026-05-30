@@ -11,6 +11,9 @@ class Product extends Model
         'category',
         'description',
         'images',
+        'spesifikasi',
+        'satuan',
+        'harga_default'
     ];
 
     protected $casts = [

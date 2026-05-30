@@ -1,0 +1,271 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="utf-8">
+    <title>Penawaran {{ $quotation->nomor_surat }}</title>
+    <style>
+        body {
+            font-family: 'Times New Roman', Times, serif;
+            font-size: 11pt;
+            line-height: 1.3;
+            margin: 0;
+            padding: 0;
+        }
+        
+        /* Header / Kop Surat */
+        .header {
+            width: 100%;
+            margin-bottom: 5px;
+            border-bottom: 3px solid black;
+            padding-bottom: 5px;
+        }
+        .header-table {
+            width: 100%;
+            border-collapse: collapse;
+        }
+        .header-logo {
+            width: 90px;
+            text-align: center;
+            vertical-align: top;
+            padding-right: 15px;
+        }
+        .header-content {
+            vertical-align: top;
+            padding-top: 5px;
+        }
+        .header-content h1 {
+            margin: 0;
+            font-size: 18pt;
+            font-weight: bold;
+        }
+        .header-content h3 {
+            margin: 3px 0;
+            font-size: 10pt;
+            font-weight: bold;
+            letter-spacing: 0.5px;
+        }
+        .header-footer {
+            font-size: 8.5pt;
+            display: table;
+            width: 100%;
+            margin-top: 5px;
+            padding-top: 2px;
+            font-weight: bold;
+        }
+        .header-footer-left {
+            display: table-cell;
+            text-align: left;
+        }
+        .header-footer-right {
+            display: table-cell;
+            text-align: right;
+        }
+
+        /* Informasi Surat */
+        .info-table {
+            width: 100%;
+            margin-top: 10px;
+            margin-bottom: 15px;
+        }
+        .info-table td {
+            vertical-align: top;
+        }
+        .date-right {
+            text-align: right;
+            padding-bottom: 10px;
+        }
+
+        /* Kepada Yth */
+        .kepada {
+            margin-bottom: 15px;
+            line-height: 1.4;
+        }
+
+        /* Isi Surat */
+        .isi-surat {
+            text-align: justify;
+            text-indent: 30px;
+            margin-bottom: 15px;
+            line-height: 1.4;
+        }
+        
+        .pembuka {
+            margin-bottom: 5px;
+        }
+
+        /* Tabel Penawaran */
+        .table-items {
+            width: 100%;
+            border-collapse: collapse;
+            margin-bottom: 20px;
+        }
+        .table-items th, .table-items td {
+            border: 1px solid black;
+            padding: 6px 8px;
+            vertical-align: top;
+        }
+        .table-items th {
+            text-align: center;
+            font-weight: bold;
+            background-color: #f9f9f9;
+        }
+        .text-center { text-align: center; }
+        .text-right { text-align: right; }
+        
+        .item-desc {
+            white-space: pre-line;
+            margin-top: 3px;
+        }
+
+        /* Keterangan & Bank */
+        .footer-info {
+            line-height: 1.4;
+        }
+        .keterangan-title {
+            margin-bottom: 5px;
+        }
+        .keterangan-list {
+            margin-top: 0;
+            padding-left: 20px;
+        }
+        .bank-info {
+            margin-top: 15px;
+        }
+        .bank-info p {
+            margin: 2px 0;
+            font-weight: bold;
+        }
+    </style>
+</head>
+<body>
+
+    @php
+        // Prepare Logo
+        $path = public_path('style/assets/img/pib-logo.png');
+        if(!file_exists($path)) {
+            $path = public_path('style/assets/img/PIBnew.png');
+        }
+        $type = pathinfo($path, PATHINFO_EXTENSION);
+        $data = file_exists($path) ? file_get_contents($path) : '';
+        $base64 = 'data:image/' . $type . ';base64,' . base64_encode($data);
+
+        // Format Date
+        $fmtDate = \Carbon\Carbon::parse($quotation->tanggal)->locale('id')->translatedFormat('d F Y');
+
+        // Parse Perihal
+        $perihalArray = json_decode($quotation->perihal, true) ?? [$quotation->perihal];
+        $perihalText = implode(', ', $perihalArray);
+    @endphp
+
+    <div class="header">
+        <table class="header-table">
+            <tr>
+                <td class="header-logo">
+                    @if(file_exists($path))
+                        <img src="{{ $base64 }}" alt="Logo" style="width: 80px;">
+                    @else
+                        <h1>PIB</h1>
+                    @endif
+                </td>
+                <td class="header-content">
+                    <h1>CV. PERDANA INTI BERSAUDARA</h1>
+                    <h3>RADIOLOGI-SERVICE-SPAREPART-TIMBAL-ACCESORIES</h3>
+                    <div class="header-footer">
+                        <div class="header-footer-left">Jl. Kepodang 1 N0. 205 RT 24 Kel. Andil Jaya Jambi HP. 0852 6305 6505</div>
+                        <div class="header-footer-right">E-mail : perdanaintibersaudara@gmail.com</div>
+                    </div>
+                </td>
+            </tr>
+        </table>
+    </div>
+
+    <div class="date-right">
+        Jambi, {{ $fmtDate }}
+    </div>
+
+    <table class="info-table">
+        <tr>
+            <td width="70">No</td>
+            <td width="10">:</td>
+            <td>{{ $quotation->nomor_surat }}</td>
+        </tr>
+        <tr>
+            <td>Perihal</td>
+            <td>:</td>
+            <td>{{ $perihalText }}</td>
+        </tr>
+    </table>
+
+    <div class="kepada">
+        <strong>Kepada Yth:</strong><br>
+        <strong>Direktur</strong><br>
+        <strong>{{ $quotation->customer->nama_instansi }}</strong><br>
+        <strong>Di</strong><br>
+        <span style="margin-left: 20px;"><strong>&nbsp;&nbsp;&nbsp;&nbsp;{{ $quotation->customer->kota ?? 'Tempat' }}</strong></span>
+    </div>
+
+    <div class="pembuka">
+        Dengan Hormat,
+    </div>
+    
+    <div class="isi-surat">
+        Dengan ini kami Perdana Inti Bersaudara (CV) yang berkedudukan di Jambi ingin menawarkan produk berupa {{ strtolower($perihalText) }} kepada {{ $quotation->customer->nama_instansi }}, adapun harga dan spesifikasi yang ditawarkan adalah sebagai berikut:
+    </div>
+
+    <table class="table-items">
+        <thead>
+            <tr>
+                <th width="5%">No</th>
+                <th width="35%">Jenis Kegiatan</th>
+                <th width="20%">Volume</th>
+                <th width="20%">Harga Satuan</th>
+                <th width="20%">Jumlah Harga</th>
+            </tr>
+        </thead>
+        <tbody>
+            @foreach($quotation->items as $index => $item)
+            <tr>
+                <td class="text-center">{{ $index + 1 }}</td>
+                <td>
+                    @if(!empty($item->nama_item))
+                        <strong>{{ $item->nama_item }}</strong><br>
+                    @endif
+                    <div class="item-desc">{!! nl2br(e($item->deskripsi)) !!}</div>
+                </td>
+                <td class="text-center">{{ $item->volume }}</td>
+                <td class="text-right">Rp {{ number_format($item->harga_satuan, 0, ',', '.') }}</td>
+                <td class="text-right">Rp {{ number_format($item->subtotal, 0, ',', '.') }}</td>
+            </tr>
+            @endforeach
+        </tbody>
+        <tfoot>
+            <tr>
+                <td colspan="4" class="text-right" style="font-weight: bold; border: 1px solid black; padding: 6px 8px;"><strong>TOTAL</strong></td>
+                <td class="text-right" style="font-weight: bold; border: 1px solid black; padding: 6px 8px;"><strong>Rp {{ number_format($quotation->total, 0, ',', '.') }}</strong></td>
+            </tr>
+        </tfoot>
+    </table>
+
+    <div class="footer-info">
+        <div class="keterangan-title">Keterangan :</div>
+        @if(!empty($quotation->catatan))
+            <div style="padding-left: 20px; white-space: pre-line;">{!! nl2br(e($quotation->catatan)) !!}</div>
+        @else
+            <ul class="keterangan-list">
+                <li>Harga sudah termasuk ongkir, transportasi dan akomodasi</li>
+                <li>Pembayaran DP 50% setelah serah terima 50%</li>
+                <li>Tidak termasuk PPn</li>
+                <li>Free uji paparan mandiri</li>
+            </ul>
+        @endif
+
+        <div class="bank-info">
+            <p style="text-decoration: underline;">Pembayaran dapat dilakukan melalui:</p>
+            <p>Bank BCA</p>
+            <p>No. Rekening 619 801 2733</p>
+            <p>CV. Perdana Inti Bersaudara</p>
+        </div>
+    </div>
+
+</body>
+</html>

@@ -32,10 +32,35 @@
 
             <div class="mb-3">
                 <label for="description" class="form-label">Deskripsi</label>
-                <textarea class="form-control @error('description') is-invalid @enderror" id="description" name="description" rows="5">{{ old('description', $product->description ?? '') }}</textarea>
+                <textarea class="form-control @error('description') is-invalid @enderror" id="description" name="description" rows="3">{{ old('description', $product->description ?? '') }}</textarea>
                 @error('description')
                     <div class="invalid-feedback">{{ $message }}</div>
                 @enderror
+            </div>
+
+            <div class="mb-3">
+                <label for="spesifikasi" class="form-label">Spesifikasi Detail</label>
+                <textarea class="form-control @error('spesifikasi') is-invalid @enderror" id="spesifikasi" name="spesifikasi" rows="4">{{ old('spesifikasi', $product->spesifikasi ?? '') }}</textarea>
+                @error('spesifikasi')
+                    <div class="invalid-feedback">{{ $message }}</div>
+                @enderror
+            </div>
+
+            <div class="row mb-3">
+                <div class="col-md-6">
+                    <label for="satuan" class="form-label">Satuan</label>
+                    <input type="text" class="form-control @error('satuan') is-invalid @enderror" id="satuan" name="satuan" value="{{ old('satuan', $product->satuan ?? '') }}" placeholder="Contoh: Unit, Pcs, Lot">
+                    @error('satuan')
+                        <div class="invalid-feedback">{{ $message }}</div>
+                    @enderror
+                </div>
+                <div class="col-md-6">
+                    <label for="harga_default" class="form-label">Harga Default</label>
+                    <input type="number" class="form-control @error('harga_default') is-invalid @enderror" id="harga_default" name="harga_default" value="{{ old('harga_default', $product->harga_default ?? '') }}" min="0" step="0.01">
+                    @error('harga_default')
+                        <div class="invalid-feedback">{{ $message }}</div>
+                    @enderror
+                </div>
             </div>
 
             <div class="mb-3">

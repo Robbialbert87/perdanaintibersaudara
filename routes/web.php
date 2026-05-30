@@ -2,6 +2,8 @@
 
 use App\Http\Controllers\ActivityController;
 use App\Http\Controllers\ProductController;
+use App\Http\Controllers\CustomerController;
+use App\Http\Controllers\QuotationController;
 use App\Models\Activity;
 use App\Models\Product;
 use Illuminate\Support\Facades\Route;
@@ -35,8 +37,11 @@ Route::get('/admin', function () {
 
 Route::middleware(['auth', 'verified'])->group(function () {
     Route::view('dashboard', 'admin.dashboard')->name('dashboard');
+    Route::resource('customers', CustomerController::class);
     Route::resource('products', ProductController::class)->except(['show']);
     Route::resource('activities', ActivityController::class)->except(['show']);
+    Route::get('quotations/{quotation}/export-pdf', [QuotationController::class, 'exportPdf'])->name('quotations.export_pdf');
+    Route::resource('quotations', QuotationController::class);
 });
 
 // require __DIR__.'/settings.php';
