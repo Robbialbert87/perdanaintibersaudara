@@ -6,18 +6,7 @@
 
 @section('content')
 
-    <!-- Page Title -->
-    <div class="page-title light-background" style="background-color: #f7faff; padding: 40px 0; margin-bottom: 40px;">
-        <div class="container d-lg-flex justify-content-between align-items-center">
-            <h1 class="mb-2 mb-lg-0" style="font-family: 'Quicksand', sans-serif; font-weight: bold; color: #13447f;">Tentang Kami</h1>
-            <nav class="breadcrumbs">
-                <ol class="mb-0" style="display: flex; list-style: none; padding: 0; font-size: 0.95rem;">
-                    <li style="padding-right: 10px;"><a href="{{ url('/') }}" style="color: #065cc2; text-decoration: none;">Home</a></li>
-                    <li class="current" style="color: #7f9ab7; position: relative;">/ About Us</li>
-                </ol>
-            </nav>
-        </div>
-    </div><!-- End Page Title -->
+
 
     <!-- Main About Content Section -->
     <section class="about-detail section" style="padding-bottom: 80px;">

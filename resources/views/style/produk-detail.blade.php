@@ -5,19 +5,6 @@
 @section('body-class', 'product-detail-page')
 
 @section('content')
-    <!-- Page Title -->
-    <div class="page-title light-background" style="padding: 60px 0;">
-        <div class="container d-lg-flex justify-content-between align-items-center">
-            <h1 class="mb-2 mb-lg-0" style="font-family: 'Quicksand', sans-serif; font-weight: bold; color: #13447f;">Detail Produk</h1>
-            <nav class="breadcrumbs">
-                <ol>
-                    <li><a href="{{ route('home') }}">Beranda</a></li>
-                    <li><a href="{{ route('home') }}#produk">Produk</a></li>
-                    <li class="current">{{ $product->name }}</li>
-                </ol>
-            </nav>
-        </div>
-    </div><!-- End Page Title -->
 
     <section class="product-detail section" style="padding: 60px 0;">
         <div class="container">

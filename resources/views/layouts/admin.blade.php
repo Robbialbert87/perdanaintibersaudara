@@ -209,6 +209,9 @@ kbd{background:#454f5b;border-radius:4px;padding:2px 6px;font-size:11px;color:#c
     <a class="sidebar-link {{ request()->routeIs('products.*') ? 'active' : '' }}" href="{{ route('products.index') }}">
       <i class="bi bi-box-seam"></i><span>Master Produk</span><span class="arr">&rarr;</span>
     </a>
+    <a class="sidebar-link {{ request()->routeIs('services.*') ? 'active' : '' }}" href="{{ route('services.index') }}">
+      <i class="bi bi-briefcase"></i><span>Master Layanan</span><span class="arr">&rarr;</span>
+    </a>
     <a class="sidebar-link {{ request()->routeIs('quotations.*') ? 'active' : '' }}" href="{{ route('quotations.index') }}">
       <i class="bi bi-file-earmark-text"></i><span>Penawaran</span><span class="arr">&rarr;</span>
     </a>

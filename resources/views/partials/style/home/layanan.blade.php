@@ -3,160 +3,120 @@
 
     <!-- Section Title -->
     <div class="container section-title" data-aos="fade-up">
-        <h1 style="font-family: 'Quicksand', sans-serif; font-weight: bold; color: #13447f;">Layanan Kami</h2>
-            <p style="color: #7f9ab7;">Layanan unggulan teknik medis dan pengadaan alat kesehatan</p>
+        <h1 style="font-family: 'Quicksand', sans-serif; font-weight: bold; color: #13447f;">Layanan Kami</h1>
+        <p style="color: #7f9ab7;">Layanan unggulan teknik medis dan pengadaan alat kesehatan</p>
     </div><!-- End Section Title -->
 
-    <div class="container" data-aos="fade-up" data-aos-delay="100">
+    <div class="container">
+        <div class="swiper layanan-swiper" data-aos="fade-up" data-aos-delay="100">
+            <div class="swiper-wrapper">
+                @forelse($services as $service)
+                    <div class="swiper-slide">
+                        <div class="service-card bg-white rounded-4 overflow-hidden shadow-sm d-flex flex-column h-100"
+                            style="border: 1px solid rgba(0,0,0,0.05);">
 
-        <div class="row g-4">
+                            <!-- Image -->
+                            <div style="aspect-ratio: 4/3; overflow: hidden; background-color: #f0f4f9;">
+                                @if($service->image)
+                                    <img src="{{ Storage::url($service->image) }}"
+                                        alt="{{ $service->title }}"
+                                        class="w-100 h-100 object-fit-cover"
+                                        style="transition: transform 0.3s;"
+                                        loading="lazy" decoding="async">
+                                @else
+                                    <img src="{{ asset('style/assets/img/portfolio/portfolio-1.webp') }}"
+                                        alt="{{ $service->title }}"
+                                        class="w-100 h-100 object-fit-cover"
+                                        style="transition: transform 0.3s;"
+                                        loading="lazy" decoding="async">
+                                @endif
+                            </div>
 
-            <!-- Service Item 1 -->
-            <div class="col-lg-4 col-md-6" data-aos="fade-up" data-aos-delay="100">
-                <div class="service-item bg-white p-4 rounded-4 h-100 shadow-sm"
-                    style="border: 1px solid rgba(0,0,0,0.05); transition: 0.3s; position: relative;">
-                    <div class="icon mb-3 d-inline-flex align-items-center justify-content-center bg-light rounded-circle"
-                        style="width: 60px; height: 60px; font-size: 1.8rem; color: #065cc2; background-color: rgba(6, 92, 194, 0.08) !important;">
-                        <i class="bi bi-activity"></i>
-                    </div>
-                    <h3
-                        style="font-family: 'Quicksand', sans-serif; font-weight: bold; color: #13447f; font-size: 1.25rem; margin-bottom: 12px;">
-                        Digital Radiography & CR</h3>
-                    <p style="font-size: 0.92rem; line-height: 1.6; color: #5c7694; margin-bottom: 20px;">
-                        Pemasangan baru, pengaturan sistem radiography digital (DR/CR), optimalisasi gambar, serta setup
-                        printer rontgen yang presisi dan andal.
-                    </p>
-                    <div class="card-links" style="position: absolute; bottom: 20px; left: 24px;">
-                        {{-- <span class="link-item text-primary small style-link"
-                            style="font-weight: 600; cursor: pointer;">
-                            Selengkapnya <i class="bi bi-arrow-right ms-1"></i>
-                        </span> --}}
-                    </div>
-                </div>
-            </div><!-- End Service Item -->
+                            <!-- Content -->
+                            <div class="card-body p-4 d-flex flex-column flex-grow-1">
+                                <h4 style="font-family: 'Quicksand', sans-serif; font-weight: bold; color: #13447f; font-size: 1.2rem; margin-bottom: 12px;">
+                                    {{ $service->title }}
+                                </h4>
 
-            <!-- Service Item 2 -->
-            <div class="col-lg-4 col-md-6" data-aos="fade-up" data-aos-delay="200">
-                <div class="service-item bg-white p-4 rounded-4 h-100 shadow-sm"
-                    style="border: 1px solid rgba(0,0,0,0.05); transition: 0.3s; position: relative; padding-bottom: 60px !important;">
-                    <div class="icon mb-3 d-inline-flex align-items-center justify-content-center bg-light rounded-circle"
-                        style="width: 60px; height: 60px; font-size: 1.8rem; color: #065cc2; background-color: rgba(6, 92, 194, 0.08) !important;">
-                        <i class="bi bi-wrench-adjustable"></i>
-                    </div>
-                    <h3
-                        style="font-family: 'Quicksand', sans-serif; font-weight: bold; color: #13447f; font-size: 1.25rem; margin-bottom: 12px;">
-                        Maintenance & Kalibrasi</h3>
-                    <p style="font-size: 0.92rem; line-height: 1.6; color: #5c7694; margin-bottom: 20px;">
-                        Pemeliharaan rutin terencana (preventive maintenance) guna meminimalisir kegagalan alat, menjaga
-                        akurasi diagnostik, dan memperpanjang masa pakai investasi medis Anda.
-                    </p>
-                    <div class="card-links" style="position: absolute; bottom: 20px; left: 24px;">
-                        {{-- <span class="link-item text-primary small style-link"
-                            style="font-weight: 600; cursor: pointer;">
-                            Selengkapnya <i class="bi bi-arrow-right ms-1"></i>
-                        </span> --}}
-                    </div>
-                </div>
-            </div><!-- End Service Item -->
+                                <p style="font-size: 0.9rem; line-height: 1.6; color: #7f9ab7; margin-bottom: 16px;
+                                    display: -webkit-box; -webkit-line-clamp: 3; -webkit-box-orient: vertical; overflow: hidden;">
+                                    {{ $service->description }}
+                                </p>
 
-            <!-- Service Item 3 -->
-            <div class="col-lg-4 col-md-6" data-aos="fade-up" data-aos-delay="300">
-                <div class="service-item bg-white p-4 rounded-4 h-100 shadow-sm"
-                    style="border: 1px solid rgba(0,0,0,0.05); transition: 0.3s; position: relative; padding-bottom: 60px !important;">
-                    <div class="icon mb-3 d-inline-flex align-items-center justify-content-center bg-light rounded-circle"
-                        style="width: 60px; height: 60px; font-size: 1.8rem; color: #065cc2; background-color: rgba(6, 92, 194, 0.08) !important;">
-                        <i class="bi bi-tools"></i>
-                    </div>
-                    <h3
-                        style="font-family: 'Quicksand', sans-serif; font-weight: bold; color: #13447f; font-size: 1.25rem; margin-bottom: 12px;">
-                        Perbaikan Alat Medis</h3>
-                    <p style="font-size: 0.92rem; line-height: 1.6; color: #5c7694; margin-bottom: 20px;">
-                        Respon cepat pemecahan masalah (troubleshooting) dan perbaikan kerusakan alat elektromedis
-                        secara cepat dan efisien oleh tim teknisi bersertifikat.
-                    </p>
-                    <div class="card-links" style="position: absolute; bottom: 20px; left: 24px;">
-                        {{-- <span class="link-item text-primary small style-link"
-                            style="font-weight: 600; cursor: pointer;">
-                            Selengkapnya <i class="bi bi-arrow-right ms-1"></i>
-                        </span> --}}
-                    </div>
-                </div>
-            </div><!-- End Service Item -->
+                                @if(!empty($service->features))
+                                <ul class="list-unstyled mb-4" style="display: flex; flex-wrap: wrap; gap: 8px 12px;">
+                                    @foreach(array_slice($service->features, 0, 2) as $feature)
+                                    <li style="font-size: 0.83rem; color: #314862; display: flex; align-items: center;">
+                                        <i class="bi bi-check2 me-1" style="color: #065cc2; font-weight: bold;"></i>
+                                        <span>{{ $feature }}</span>
+                                    </li>
+                                    @endforeach
+                                </ul>
+                                @endif
 
-            <!-- Service Item 4 -->
-            <div class="col-lg-4 col-md-6" data-aos="fade-up" data-aos-delay="100">
-                <div class="service-item bg-white p-4 rounded-4 h-100 shadow-sm"
-                    style="border: 1px solid rgba(0,0,0,0.05); transition: 0.3s; position: relative; padding-bottom: 60px !important;">
-                    <div class="icon mb-3 d-inline-flex align-items-center justify-content-center bg-light rounded-circle"
-                        style="width: 60px; height: 60px; font-size: 1.8rem; color: #065cc2; background-color: rgba(6, 92, 194, 0.08) !important;">
-                        <i class="bi bi-lightning-charge"></i>
+                                <div class="mt-auto">
+                                    <a href="{{ route('layanan.detail', $service->id) }}"
+                                        class="btn btn-primary w-100 d-flex justify-content-between align-items-center"
+                                        style="background-color: #2973cc; border: none; padding: 10px 18px; border-radius: 8px; font-weight: 600; font-size: 0.9rem;">
+                                        <span>Learn More</span>
+                                        <i class="bi bi-arrow-right"></i>
+                                    </a>
+                                </div>
+                            </div>
+                        </div>
+                    </div><!-- End Slide -->
+                @empty
+                    <div class="swiper-slide">
+                        <div class="col-12 text-center py-5">
+                            <p class="text-muted">Layanan akan segera ditampilkan.</p>
+                        </div>
                     </div>
-                    <h3
-                        style="font-family: 'Quicksand', sans-serif; font-weight: bold; color: #13447f; font-size: 1.25rem; margin-bottom: 12px;">
-                        Kelistrikan Medis</h3>
-                    <p style="font-size: 0.92rem; line-height: 1.6; color: #5c7694; margin-bottom: 20px;">
-                        Pemasangan instalasi penunjang kelistrikan khusus ruang rontgen, penyeimbang tegangan, serta
-                        perancangan sistem grounding yang aman bagi perangkat medis bernilai tinggi.
-                    </p>
-                    <div class="card-links" style="position: absolute; bottom: 20px; left: 24px;">
-                        {{-- <span class="link-item text-primary small style-link"
-                            style="font-weight: 600; cursor: pointer;">
-                            Selengkapnya <i class="bi bi-arrow-right ms-1"></i>
-                        </span> --}}
-                    </div>
-                </div>
-            </div><!-- End Service Item -->
-
-            <!-- Service Item 5 -->
-            <div class="col-lg-4 col-md-6" data-aos="fade-up" data-aos-delay="200">
-                <div class="service-item bg-white p-4 rounded-4 h-100 shadow-sm"
-                    style="border: 1px solid rgba(0,0,0,0.05); transition: 0.3s; position: relative; padding-bottom: 60px !important;">
-                    <div class="icon mb-3 d-inline-flex align-items-center justify-content-center bg-light rounded-circle"
-                        style="width: 60px; height: 60px; font-size: 1.8rem; color: #065cc2; background-color: rgba(6, 92, 194, 0.08) !important;">
-                        <i class="bi bi-building-gear"></i>
-                    </div>
-                    <h3
-                        style="font-family: 'Quicksand', sans-serif; font-weight: bold; color: #13447f; font-size: 1.25rem; margin-bottom: 12px;">
-                        Konstruksi Ruang Radiasi</h3>
-                    <p style="font-size: 0.92rem; line-height: 1.6; color: #5c7694; margin-bottom: 20px;">
-                        Perancangan & pengerjaan sipil ruang radiasi rontgen dilapisi lembaran timbal (Pb Shielding)
-                        bersertifikasi demi keamanan paparan radiasi sesuai regulasi ketat BAPETEN.
-                    </p>
-                    <div class="card-links" style="position: absolute; bottom: 20px; left: 24px;">
-                        {{-- <span class="link-item text-primary small style-link"
-                            style="font-weight: 600; cursor: pointer;">
-                            Selengkapnya <i class="bi bi-arrow-right ms-1"></i>
-                        </span> --}}
-                    </div>
-                </div>
-            </div><!-- End Service Item -->
-
-            <!-- Service Item 6 -->
-            <div class="col-lg-4 col-md-6" data-aos="fade-up" data-aos-delay="300">
-                <div class="service-item bg-white p-4 rounded-4 h-100 shadow-sm"
-                    style="border: 1px solid rgba(0,0,0,0.05); transition: 0.3s; position: relative; padding-bottom: 60px !important;">
-                    <div class="icon mb-3 d-inline-flex align-items-center justify-content-center bg-light rounded-circle"
-                        style="width: 60px; height: 60px; font-size: 1.8rem; color: #065cc2; background-color: rgba(6, 92, 194, 0.08) !important;">
-                        <i class="bi bi-cpu"></i>
-                    </div>
-                    <h3
-                        style="font-family: 'Quicksand', sans-serif; font-weight: bold; color: #13447f; font-size: 1.25rem; margin-bottom: 12px;">
-                        Sparepart & Aksesoris</h3>
-                    <p style="font-size: 0.92rem; line-height: 1.6; color: #5c7694; margin-bottom: 20px;">
-                        Pengadaan suku cadang X-Ray, sensor flat panel DR, kaset CR, lead apron pelindung, lampu
-                        kolimator, serta aksesoris pelengkap instalasi medis orisinal.
-                    </p>
-                    <div class="card-links" style="position: absolute; bottom: 20px; left: 24px;">
-                        {{-- <span class="link-item text-primary small style-link"
-                            style="font-weight: 600; cursor: pointer;">
-                            Selengkapnya <i class="bi bi-arrow-right ms-1"></i>
-                        </span> --}}
-                    </div>
-                </div>
-            </div><!-- End Service Item -->
-
+                @endforelse
+            </div>
+            <div class="swiper-pagination layanan-pagination mt-4 position-relative"></div>
         </div>
-
     </div>
+
+    @push('styles')
+        <style>
+            #layanan .service-card:hover img {
+                transform: scale(1.05);
+            }
+
+            #layanan .service-card {
+                transition: box-shadow 0.3s;
+            }
+
+            #layanan .service-card:hover {
+                box-shadow: 0 8px 25px rgba(6, 92, 194, 0.15) !important;
+            }
+        </style>
+    @endpush
+
+    @push('scripts')
+        <script>
+            document.addEventListener('DOMContentLoaded', function () {
+                new Swiper('.layanan-swiper', {
+                    loop: true,
+                    speed: 800,
+                    autoplay: {
+                        delay: 3500,
+                        disableOnInteraction: false,
+                        pauseOnMouseEnter: true
+                    },
+                    pagination: {
+                        el: '.layanan-pagination',
+                        type: 'bullets',
+                        clickable: true
+                    },
+                    breakpoints: {
+                        320: { slidesPerView: 1, spaceBetween: 20 },
+                        768: { slidesPerView: 2, spaceBetween: 20 },
+                        1200: { slidesPerView: 3, spaceBetween: 30 }
+                    }
+                });
+            });
+        </script>
+    @endpush
 
 </section><!-- /Services Section -->

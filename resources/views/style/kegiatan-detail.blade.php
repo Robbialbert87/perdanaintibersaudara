@@ -5,19 +5,6 @@
 @section('body-class', 'activity-detail-page')
 
 @section('content')
-    <!-- Page Title -->
-    <div class="page-title light-background" style="padding: 60px 0;">
-        <div class="container d-lg-flex justify-content-between align-items-center">
-            <h1 class="mb-2 mb-lg-0" style="font-family: 'Quicksand', sans-serif; font-weight: bold; color: #13447f;">Detail Kegiatan</h1>
-            <nav class="breadcrumbs">
-                <ol>
-                    <li><a href="{{ route('home') }}">Beranda</a></li>
-                    <li><a href="{{ route('home') }}#kegiatan">Kegiatan</a></li>
-                    <li class="current">{{ \Illuminate\Support\Str::limit($activity->title, 30) }}</li>
-                </ol>
-            </nav>
-        </div>
-    </div><!-- End Page Title -->
 
     <section class="activity-detail section" style="padding: 60px 0;">
         <div class="container">
