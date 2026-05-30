@@ -81,8 +81,38 @@
                         }
 
                         @media (max-width: 767.98px) {
+                            #hero .row {
+                                flex-direction: column-reverse;
+                            }
+
                             .hero-title {
-                                font-size: 2rem;
+                                font-size: 1.5rem;
+                            }
+
+                            .hero-content .lead {
+                                font-size: 0.9rem !important;
+                            }
+
+                            .hero-image h5 {
+                                font-size: 1.1rem !important;
+                            }
+
+                            .hero-services-swiper {
+                                min-height: 220px !important;
+                                border-width: 4px !important;
+                            }
+
+                            .hero-stats .stat-item span:first-child {
+                                font-size: 1.5rem !important;
+                            }
+
+                            .hero-stats .stat-item .stat-label {
+                                font-size: 0.7rem !important;
+                            }
+
+                            .hero-actions .btn {
+                                font-size: 0.85rem;
+                                padding: 8px 20px !important;
                             }
                         }
                     </style>
