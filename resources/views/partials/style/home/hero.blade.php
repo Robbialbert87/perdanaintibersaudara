@@ -76,6 +76,10 @@
                             background: #065cc2;
                         }
 
+                        .hero-services-swiper .swiper-slide {
+                            height: 100%;
+                        }
+
                         @media (max-width: 767.98px) {
                             .hero-title {
                                 font-size: 2rem;
@@ -121,36 +125,34 @@
                 </div>
             </div>
 
-            <div class="col-lg-6 hero-image mt-5 mt-lg-0" data-aos="fade-left" data-aos-delay="200">
-                <div class="image-container position-relative">
-                    <div class="swiper hero-services-swiper rounded-4 overflow-hidden"
-                        style="border: 6px solid white; box-shadow: 0 20px 40px rgba(0,0,0,0.15);">
+            <div class="col-lg-6 hero-image mt-5 mt-lg-0 d-flex flex-column" data-aos="fade-left" data-aos-delay="200">
+                <h5 id="heroServiceTitle"
+                    style="font-family: 'Quicksand', sans-serif; font-weight: bold; color: #13447f; font-size: 1.4rem; min-height: 1.5em;">
+                    {{ $services->first()->title ?? 'Layanan' }}
+                </h5>
+                <div class="image-container position-relative w-100 flex-grow-1">
+                    <div class="swiper hero-services-swiper rounded-4 overflow-hidden h-100"
+                        style="border: 6px solid white; box-shadow: 0 20px 40px rgba(0,0,0,0.15); min-height: 350px;">
                         <div class="swiper-wrapper">
                             @forelse($services as $service)
-                                <div class="swiper-slide position-relative">
+                                <div class="swiper-slide" data-title="{{ $service->title }}">
                                     @if($service->image)
                                         <img src="{{ Storage::url($service->image) }}"
                                             alt="{{ $service->title }}"
-                                            class="w-100 object-fit-cover"
-                                            style="aspect-ratio: 4/3; display: block;">
+                                            class="w-100 h-100 object-fit-cover"
+                                            style="display: block;">
                                     @else
                                         <img src="{{ asset('style/assets/img/health/Gemini_Generated_Image_mnrhe1mnrhe1mnrh.png') }}"
                                             alt="{{ $service->title }}"
-                                            class="w-100 object-fit-cover"
-                                            style="aspect-ratio: 4/3; display: block;">
+                                            class="w-100 h-100 object-fit-cover"
+                                            style="display: block;">
                                     @endif
-                                    <div class="position-absolute bottom-0 start-0 w-100 p-3"
-                                        style="background: linear-gradient(transparent, rgba(0,0,0,0.7));">
-                                        <h6 class="text-white mb-0 fw-semibold" style="font-family: 'Quicksand', sans-serif; text-shadow: 0 1px 3px rgba(0,0,0,0.3);">
-                                            {{ $service->title }}
-                                        </h6>
-                                    </div>
                                 </div>
                             @empty
                                 <div class="swiper-slide">
                                     <img src="{{ asset('style/assets/img/health/Gemini_Generated_Image_mnrhe1mnrhe1mnrh.png') }}"
-                                        alt="Layanan" class="w-100 object-fit-cover"
-                                        style="aspect-ratio: 4/3; display: block;">
+                                        alt="Layanan" class="w-100 h-100 object-fit-cover"
+                                        style="display: block;">
                                 </div>
                             @endforelse
                         </div>
@@ -165,11 +167,12 @@
             @push('scripts')
                 <script>
                     document.addEventListener('DOMContentLoaded', function () {
-                        new Swiper('.hero-services-swiper', {
+                        var titleEl = document.getElementById('heroServiceTitle');
+                        var swiper = new Swiper('.hero-services-swiper', {
                             loop: true,
                             speed: 800,
                             autoplay: {
-                                delay: 1000,
+                                delay: 1500,
                                 disableOnInteraction: false,
                                 pauseOnMouseEnter: true
                             },
@@ -181,6 +184,14 @@
                             effect: 'fade',
                             fadeEffect: {
                                 crossFade: true
+                            },
+                            on: {
+                                slideChange: function () {
+                                    var slide = this.slides[this.activeIndex];
+                                    if (slide && titleEl) {
+                                        titleEl.textContent = slide.dataset.title;
+                                    }
+                                }
                             }
                         });
                     });
