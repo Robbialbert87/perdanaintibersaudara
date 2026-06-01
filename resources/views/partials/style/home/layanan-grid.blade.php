@@ -35,8 +35,12 @@
 
                     <!-- Content -->
                     <div class="p-4 d-flex flex-column flex-grow-1">
-                        <h3 style="font-family: 'Quicksand', sans-serif; font-weight: bold; color: #13447f; font-size: 1.3rem; margin-bottom: 16px;">
-                            {{ $service->title }}
+                        <h3 style="font-family: 'Quicksand', sans-serif; font-weight: bold; font-size: 1.3rem; margin-bottom: 16px;">
+                            <a href="{{ route('layanan.detail', $service->id) }}"
+                                style="color: #13447f; text-decoration: none; transition: 0.3s;"
+                                class="hover-primary">
+                                {{ $service->title }}
+                            </a>
                         </h3>
 
                         <!-- CTA Button -->

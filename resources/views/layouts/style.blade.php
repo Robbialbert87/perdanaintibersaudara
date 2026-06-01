@@ -93,6 +93,10 @@
                 font-size: 24px;
             }
         }
+
+        .hover-primary:hover {
+            color: #065cc2 !important;
+        }
     </style>
 
     <!-- Vendor JS Files -->
