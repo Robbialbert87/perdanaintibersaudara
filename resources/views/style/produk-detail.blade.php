@@ -54,12 +54,23 @@
                             {{ $product->name }}
                         </h2>
 
+                        @if($product->description)
                         <div class="description-box mb-4">
                             <h4 style="font-size: 1.1rem; font-weight: 600; color: #314862; margin-bottom: 10px;">Deskripsi:</h4>
                             <p style="color: #5c7694; line-height: 1.8; text-align: justify; white-space: pre-line;">
-                                {{ $product->description ?? 'Tidak ada deskripsi tersedia untuk produk ini.' }}
+                                {{ $product->description }}
                             </p>
                         </div>
+                        @endif
+
+                        @if($product->spesifikasi)
+                        <div class="spesifikasi-box mb-4">
+                            <h4 style="font-size: 1.1rem; font-weight: 600; color: #314862; margin-bottom: 10px;">Spesifikasi Detail:</h4>
+                            <div style="color: #5c7694; line-height: 1.8; white-space: pre-line;">
+                                {{ $product->spesifikasi }}
+                            </div>
+                        </div>
+                        @endif
 
                         <!-- Action Button -->
                         <div class="action-buttons mt-5 d-flex gap-3 flex-wrap">
