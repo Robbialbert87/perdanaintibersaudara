@@ -45,6 +45,56 @@
     <!-- Scroll Top -->
     <a href="#" id="scroll-top" class="scroll-top d-flex align-items-center justify-content-center"><i class="bi bi-arrow-up-short"></i></a>
 
+    <!-- Floating WhatsApp Button -->
+    <a href="https://wa.me/6285263056505?text=Halo%20(PIB)%20Perdana%20Inti%20Bersaudara%2C%0A%0ASaya%20ingin%20menanyakan%20informasi%20lebih%20lanjut." 
+       target="_blank" 
+       class="whatsapp-float d-flex align-items-center justify-content-center" 
+       title="Hubungi via WhatsApp"
+       aria-label="Hubungi via WhatsApp">
+        <i class="bi bi-whatsapp"></i>
+    </a>
+
+    <style>
+        .whatsapp-float {
+            position: fixed;
+            bottom: 20px;
+            left: 20px;
+            width: 56px;
+            height: 56px;
+            background-color: #25D366;
+            color: #fff;
+            border-radius: 50%;
+            font-size: 28px;
+            box-shadow: 0 4px 15px rgba(37, 211, 102, 0.4);
+            z-index: 99999;
+            text-decoration: none;
+            transition: all 0.3s ease;
+        }
+        .whatsapp-float:hover {
+            background-color: #1da851;
+            color: #fff;
+            transform: scale(1.1);
+            box-shadow: 0 6px 20px rgba(37, 211, 102, 0.5);
+        }
+        @keyframes whatsapp-pulse {
+            0% { box-shadow: 0 0 0 0 rgba(37, 211, 102, 0.6); }
+            70% { box-shadow: 0 0 0 15px rgba(37, 211, 102, 0); }
+            100% { box-shadow: 0 0 0 0 rgba(37, 211, 102, 0); }
+        }
+        .whatsapp-float {
+            animation: whatsapp-pulse 2s infinite;
+        }
+        @media (max-width: 576px) {
+            .whatsapp-float {
+                bottom: 15px;
+                left: 15px;
+                width: 48px;
+                height: 48px;
+                font-size: 24px;
+            }
+        }
+    </style>
+
     <!-- Vendor JS Files -->
     <script src="{{ asset('style/assets/vendor/bootstrap/js/bootstrap.bundle.min.js') }}"></script>
     <script src="{{ asset('style/assets/vendor/php-email-form/validate.js') }}"></script>

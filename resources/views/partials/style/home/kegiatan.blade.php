@@ -41,10 +41,9 @@
                                 </h5>
                                 <div style="height: 16px;"></div>
                                 <a href="{{ route('kegiatan.detail', $activity->id) }}"
-                                    class="btn d-flex justify-content-between align-items-center"
-                                    style="background-color: #2973cc; color: #fff; border: none; padding: 11px 20px; border-radius: 8px; font-weight: 600; font-size: 0.9rem; transition: background-color 0.3s;">
-                                    <span>Selengkapnya</span>
-                                    <i class="bi bi-arrow-right"></i>
+                                    class="read-more-link"
+                                    style="color: #065cc2; font-weight: 600; font-size: 0.9rem; text-decoration: none; display: inline-flex; align-items: center; gap: 6px; transition: color 0.2s;">
+                                    Selengkapnya &rarr;
                                 </a>
                             </div>
                         </div>
@@ -72,8 +71,9 @@
             #kegiatan .card:hover {
                 box-shadow: 0 8px 25px rgba(6, 92, 194, 0.15) !important;
             }
-            #kegiatan .btn:hover {
-                background-color: #13447f !important;
+            .read-more-link:hover {
+                color: #13447f !important;
+                text-decoration: underline !important;
             }
         </style>
     @endpush

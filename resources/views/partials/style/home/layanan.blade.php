@@ -40,10 +40,9 @@
 
                                 <div class="mt-auto">
                                     <a href="{{ route('layanan.detail', $service->id) }}"
-                                        class="btn btn-primary w-100 d-flex justify-content-between align-items-center"
-                                        style="background-color: #2973cc; border: none; padding: 10px 18px; border-radius: 8px; font-weight: 600; font-size: 0.9rem;">
-                                        <span>Selengkapnya</span>
-                                        <i class="bi bi-arrow-right"></i>
+                                        class="read-more-link"
+                                        style="color: #065cc2; font-weight: 600; font-size: 0.9rem; text-decoration: none; display: inline-flex; align-items: center; gap: 6px; transition: color 0.2s;">
+                                        Selengkapnya &rarr;
                                     </a>
                                 </div>
                             </div>
@@ -73,6 +72,11 @@
 
             #layanan .service-card:hover {
                 box-shadow: 0 8px 25px rgba(6, 92, 194, 0.15) !important;
+            }
+
+            .read-more-link:hover {
+                color: #13447f !important;
+                text-decoration: underline !important;
             }
         </style>
     @endpush

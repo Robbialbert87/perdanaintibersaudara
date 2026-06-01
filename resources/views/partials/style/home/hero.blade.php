@@ -81,10 +81,6 @@
                         }
 
                         @media (max-width: 767.98px) {
-                            #hero .row {
-                                flex-direction: column-reverse;
-                            }
-
                             .hero-title {
                                 font-size: 1.5rem;
                             }
