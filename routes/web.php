@@ -66,8 +66,10 @@ Route::middleware(['auth', 'verified'])->group(function () {
     Route::view('dashboard', 'admin.dashboard')->name('dashboard');
     Route::resource('customers', CustomerController::class);
     Route::resource('products', ProductController::class)->except(['show']);
+    Route::delete('products/{product}/media', [ProductController::class, 'deleteMedia'])->name('products.deleteMedia');
     Route::resource('services', ServiceController::class)->except(['show']);
     Route::resource('activities', ActivityController::class)->except(['show']);
+    Route::delete('activities/{activity}/media', [ActivityController::class, 'deleteMedia'])->name('activities.deleteMedia');
     Route::get('quotations/{quotation}/export-pdf', [QuotationController::class, 'exportPdf'])->name('quotations.export_pdf');
     Route::resource('quotations', QuotationController::class);
 });

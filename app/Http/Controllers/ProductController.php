@@ -32,6 +32,8 @@ class ProductController extends Controller
             'harga_default' => 'nullable|numeric|min:0',
             'images'  => 'nullable|array|max:5',
             'images.*'=> 'image|max:5120',
+            'videos'  => 'nullable|array|max:3',
+            'videos.*'=> 'mimes:mp4,avi,mov,mkv,webm,flv,wmv|max:102400',
         ]);
 
         $imagePaths = [];
@@ -41,6 +43,16 @@ class ProductController extends Controller
             }
         }
         $validated['images'] = $imagePaths;
+        $validated['active_images'] = $imagePaths;
+
+        $videoPaths = [];
+        if ($request->hasFile('videos')) {
+            foreach ($request->file('videos') as $file) {
+                $videoPaths[] = $file->store('products/videos', 'public');
+            }
+        }
+        $validated['videos'] = $videoPaths;
+        $validated['active_videos'] = $videoPaths;
 
         Product::create($validated);
 
@@ -63,23 +75,16 @@ class ProductController extends Controller
             'spesifikasi' => 'nullable|string',
             'satuan' => 'nullable|string|max:50',
             'harga_default' => 'nullable|numeric|min:0',
-            'kept_images' => 'nullable|array',
-            'kept_images.*' => 'string',
+            'active_images' => 'nullable|array',
+            'active_images.*' => 'string',
+            'active_videos' => 'nullable|array',
+            'active_videos.*' => 'string',
             'images' => 'nullable|array|max:5',
             'images.*' => 'image|max:5120',
+            'videos' => 'nullable|array|max:3',
+            'videos.*' => 'mimes:mp4,avi,mov,mkv,webm,flv,wmv|max:102400',
         ]);
 
-        $currentImages = $product->images ?? [];
-        $keptImages = $request->input('kept_images', []);
-
-        // Delete images that are not kept
-        foreach ($currentImages as $img) {
-            if (!in_array($img, $keptImages)) {
-                Storage::disk('public')->delete($img);
-            }
-        }
-
-        // Add new images
         $newImagePaths = [];
         if ($request->hasFile('images')) {
             foreach ($request->file('images') as $file) {
@@ -87,14 +92,51 @@ class ProductController extends Controller
             }
         }
 
-        // Combine kept images and new images (limit to 5 total)
-        $finalImages = array_slice(array_merge($keptImages, $newImagePaths), 0, 5);
+        $activeImages = $request->input('active_images', []);
+        $finalImages = array_slice(array_merge($product->images ?? [], $newImagePaths), 0, 5);
         $validated['images'] = $finalImages;
-        unset($validated['kept_images']);
+        $validated['active_images'] = array_merge($activeImages, $newImagePaths);
+
+        $newVideoPaths = [];
+        if ($request->hasFile('videos')) {
+            foreach ($request->file('videos') as $file) {
+                $newVideoPaths[] = $file->store('products/videos', 'public');
+            }
+        }
+
+        $activeVideos = $request->input('active_videos', []);
+        $finalVideos = array_slice(array_merge($product->videos ?? [], $newVideoPaths), 0, 3);
+        $validated['videos'] = $finalVideos;
+        $validated['active_videos'] = array_merge($activeVideos, $newVideoPaths);
 
         $product->update($validated);
 
         return redirect()->route('products.index')->with('success', 'Produk berhasil diperbarui.');
+    }
+
+    public function deleteMedia(Request $request, Product $product)
+    {
+        $request->validate(['file' => 'required|string']);
+
+        $file = $request->input('file');
+
+        $images = $product->images ?? [];
+        if (($key = array_search($file, $images)) !== false) {
+            Storage::disk('public')->delete($file);
+            unset($images[$key]);
+            $product->images = array_values($images);
+        }
+
+        $videos = $product->videos ?? [];
+        if (($key = array_search($file, $videos)) !== false) {
+            Storage::disk('public')->delete($file);
+            unset($videos[$key]);
+            $product->videos = array_values($videos);
+        }
+
+        $product->save();
+
+        return redirect()->back()->with('success', 'Media berhasil dihapus.');
     }
 
     public function destroy(Product $product)
@@ -102,6 +144,11 @@ class ProductController extends Controller
         if ($product->images) {
             foreach ($product->images as $img) {
                 Storage::disk('public')->delete($img);
+            }
+        }
+        if ($product->videos) {
+            foreach ($product->videos as $vid) {
+                Storage::disk('public')->delete($vid);
             }
         }
         $product->delete();

@@ -29,6 +29,8 @@ class ActivityController extends Controller
             'date'    => 'required|date',
             'images'  => 'nullable|array|max:5',
             'images.*'=> 'image|max:5120',
+            'videos'  => 'nullable|array|max:3',
+            'videos.*'=> 'mimes:mp4,avi,mov,mkv,webm,flv,wmv|max:102400',
         ]);
 
         $imagePaths = [];
@@ -38,6 +40,16 @@ class ActivityController extends Controller
             }
         }
         $validated['images'] = $imagePaths;
+        $validated['active_images'] = $imagePaths;
+
+        $videoPaths = [];
+        if ($request->hasFile('videos')) {
+            foreach ($request->file('videos') as $file) {
+                $videoPaths[] = $file->store('activities/videos', 'public');
+            }
+        }
+        $validated['videos'] = $videoPaths;
+        $validated['active_videos'] = $videoPaths;
 
         Activity::create($validated);
 
@@ -57,23 +69,16 @@ class ActivityController extends Controller
             'title'   => 'required|string|max:255',
             'content' => 'required|string',
             'date'    => 'required|date',
-            'kept_images' => 'nullable|array',
-            'kept_images.*' => 'string',
+            'active_images' => 'nullable|array',
+            'active_images.*' => 'string',
+            'active_videos' => 'nullable|array',
+            'active_videos.*' => 'string',
             'images'  => 'nullable|array|max:5',
             'images.*'=> 'image|max:5120',
+            'videos'  => 'nullable|array|max:3',
+            'videos.*'=> 'mimes:mp4,avi,mov,mkv,webm,flv,wmv|max:102400',
         ]);
 
-        $currentImages = $activity->images ?? [];
-        $keptImages = $request->input('kept_images', []);
-
-        // Delete images that are not kept
-        foreach ($currentImages as $img) {
-            if (!in_array($img, $keptImages)) {
-                Storage::disk('public')->delete($img);
-            }
-        }
-
-        // Add new images
         $newImagePaths = [];
         if ($request->hasFile('images')) {
             foreach ($request->file('images') as $file) {
@@ -81,14 +86,51 @@ class ActivityController extends Controller
             }
         }
 
-        // Combine kept images and new images (limit to 5 total)
-        $finalImages = array_slice(array_merge($keptImages, $newImagePaths), 0, 5);
+        $activeImages = $request->input('active_images', []);
+        $finalImages = array_slice(array_merge($activity->images ?? [], $newImagePaths), 0, 5);
         $validated['images'] = $finalImages;
-        unset($validated['kept_images']);
+        $validated['active_images'] = array_merge($activeImages, $newImagePaths);
+
+        $newVideoPaths = [];
+        if ($request->hasFile('videos')) {
+            foreach ($request->file('videos') as $file) {
+                $newVideoPaths[] = $file->store('activities/videos', 'public');
+            }
+        }
+
+        $activeVideos = $request->input('active_videos', []);
+        $finalVideos = array_slice(array_merge($activity->videos ?? [], $newVideoPaths), 0, 3);
+        $validated['videos'] = $finalVideos;
+        $validated['active_videos'] = array_merge($activeVideos, $newVideoPaths);
 
         $activity->update($validated);
 
         return redirect()->route('activities.index')->with('success', 'Kegiatan berhasil diperbarui.');
+    }
+
+    public function deleteMedia(Request $request, Activity $activity)
+    {
+        $request->validate(['file' => 'required|string']);
+
+        $file = $request->input('file');
+
+        $images = $activity->images ?? [];
+        if (($key = array_search($file, $images)) !== false) {
+            Storage::disk('public')->delete($file);
+            unset($images[$key]);
+            $activity->images = array_values($images);
+        }
+
+        $videos = $activity->videos ?? [];
+        if (($key = array_search($file, $videos)) !== false) {
+            Storage::disk('public')->delete($file);
+            unset($videos[$key]);
+            $activity->videos = array_values($videos);
+        }
+
+        $activity->save();
+
+        return redirect()->back()->with('success', 'Media berhasil dihapus.');
     }
 
     public function destroy(Activity $activity)
@@ -96,6 +138,11 @@ class ActivityController extends Controller
         if ($activity->images) {
             foreach ($activity->images as $img) {
                 Storage::disk('public')->delete($img);
+            }
+        }
+        if ($activity->videos) {
+            foreach ($activity->videos as $vid) {
+                Storage::disk('public')->delete($vid);
             }
         }
         $activity->delete();

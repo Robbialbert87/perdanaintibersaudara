@@ -14,6 +14,9 @@ class Product extends Model
         'category',
         'description',
         'images',
+        'videos',
+        'active_images',
+        'active_videos',
         'spesifikasi',
         'satuan',
         'harga_default'
@@ -21,5 +24,8 @@ class Product extends Model
 
     protected $casts = [
         'images' => 'array',
+        'videos' => 'array',
+        'active_images' => 'array',
+        'active_videos' => 'array',
     ];
 }

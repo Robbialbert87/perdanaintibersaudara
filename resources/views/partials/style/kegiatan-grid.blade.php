@@ -10,14 +10,24 @@
                 <div class="col-12 col-md-6 col-lg-4" data-aos="fade-up" data-aos-delay="{{ $loop->index % 3 * 100 }}">
                     <div class="card border-0 shadow-sm rounded-4 overflow-hidden h-100"
                         style="border: 1px solid rgba(0,0,0,0.05) !important;">
-                        @if (!empty($activity->images) && count($activity->images) > 0)
-                            <div style="aspect-ratio: 16/9; overflow: hidden; background-color: #f0f4f9;">
+                        @php
+                            $activeImages = $activity->active_images ?? [];
+                            $activeVideos = $activity->active_videos ?? [];
+                            $firstImage = $activeImages[0] ?? ($activity->images[0] ?? null);
+                        @endphp
+                        @if ($firstImage)
+                            <div style="aspect-ratio: 16/9; overflow: hidden; background-color: #f0f4f9;" class="position-relative">
                                 <a href="{{ route('kegiatan.detail', $activity->id) }}">
-                                    <img src="{{ Storage::url($activity->images[0]) }}"
+                                    <img src="{{ Storage::url($firstImage) }}"
                                         alt="{{ $activity->title }}"
                                         class="card-img-top w-100 h-100 object-fit-cover"
                                         style="transition: transform 0.3s;"
                                         loading="lazy" decoding="async">
+                                    @if(!empty($activeVideos))
+                                        <span class="position-absolute top-0 end-0 m-2 badge bg-danger d-flex align-items-center gap-1" style="font-size: 0.75rem;">
+                                            <i class="bi bi-play-fill"></i> Video
+                                        </span>
+                                    @endif
                                 </a>
                             </div>
                         @endif

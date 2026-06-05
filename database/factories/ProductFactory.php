@@ -68,7 +68,10 @@ class ProductFactory extends Factory
             }
 
             if (!empty($images)) {
-                $product->update(['images' => $images]);
+                $product->update([
+                    'images' => $images,
+                    'active_images' => $images,
+                ]);
             }
         });
     }

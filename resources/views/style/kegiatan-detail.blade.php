@@ -10,18 +10,38 @@
         <div class="container">
             <div class="row gy-5 align-items-start">
                 
-                <!-- Sisi Kiri: Galeri Foto -->
+                <!-- Sisi Kiri: Galeri Foto & Video -->
                 <div class="col-lg-6" data-aos="fade-right">
-                    @if(!empty($activity->images) && count($activity->images) > 0)
-                        @if(count($activity->images) > 1)
+                    @php
+                        $media = [];
+                        foreach ($activity->active_images ?? [] as $img) {
+                            if (in_array($img, $activity->images ?? [])) {
+                                $media[] = ['type' => 'image', 'path' => $img];
+                            }
+                        }
+                        foreach ($activity->active_videos ?? [] as $vid) {
+                            if (in_array($vid, $activity->videos ?? [])) {
+                                $media[] = ['type' => 'video', 'path' => $vid];
+                            }
+                        }
+                    @endphp
+
+                    @if(count($media) > 0)
+                        @if(count($media) > 1)
                             <!-- Swiper Slider -->
-                            <div class="swiper product-swiper rounded-4 shadow-sm" style="border: 1px solid rgba(0,0,0,0.05); overflow: hidden;">
+                            <div class="swiper kegiatan-swiper-detail rounded-4 shadow-sm" style="border: 1px solid rgba(0,0,0,0.05); overflow: hidden;">
                                 <div class="swiper-wrapper">
-                                    @foreach($activity->images as $img)
+                                    @foreach($media as $item)
                                     <div class="swiper-slide">
+                                        @if($item['type'] === 'image')
                                         <div style="aspect-ratio: 4/3; overflow: hidden; background-color: #f8f9fa;" class="d-flex align-items-center justify-content-center">
-                                            <img src="{{ Storage::url($img) }}" alt="{{ $activity->title }}" class="img-fluid w-100 h-100 object-fit-cover">
+                                            <img src="{{ Storage::url($item['path']) }}" alt="{{ $activity->title }}" class="img-fluid w-100 h-100 object-fit-cover">
                                         </div>
+                                        @else
+                                        <div style="aspect-ratio: 4/3; overflow: hidden; background-color: #000;" class="d-flex align-items-center justify-content-center position-relative video-slide">
+                                            <video class="activity-video w-100 h-100" style="object-fit: contain; cursor: pointer;" src="{{ Storage::url($item['path']) }}" playsinline preload="metadata" muted controls></video>
+                                        </div>
+                                        @endif
                                     </div>
                                     @endforeach
                                 </div>
@@ -30,13 +50,18 @@
                                 <div class="swiper-button-next" style="color: #065cc2;"></div>
                             </div>
                         @else
-                            <!-- Single Image -->
+                            @if($media[0]['type'] === 'image')
                             <div class="rounded-4 shadow-sm" style="border: 1px solid rgba(0,0,0,0.05); overflow: hidden; aspect-ratio: 4/3; background-color: #f8f9fa;">
-                                <img src="{{ Storage::url($activity->images[0]) }}" alt="{{ $activity->title }}" class="img-fluid w-100 h-100 object-fit-cover">
+                                <img src="{{ Storage::url($media[0]['path']) }}" alt="{{ $activity->title }}" class="img-fluid w-100 h-100 object-fit-cover">
                             </div>
+                            @else
+                            <div class="rounded-4 shadow-sm" style="border: 1px solid rgba(0,0,0,0.05); overflow: hidden; aspect-ratio: 4/3; background-color: #000;">
+                                <video controls playsinline preload="metadata" style="width: 100%; height: 100%; display: block; object-fit: contain;" src="{{ Storage::url($media[0]['path']) }}"></video>
+                            </div>
+                            @endif
                         @endif
                     @else
-                        <!-- No Image Fallback -->
+                        <!-- No Media Fallback -->
                         <div class="rounded-4 shadow-sm" style="border: 1px solid rgba(0,0,0,0.05); overflow: hidden; aspect-ratio: 4/3; background-color: #f8f9fa;">
                             <img src="{{ asset('style/assets/img/blog/blog-1.webp') }}" alt="{{ $activity->title }}" class="img-fluid w-100 h-100 object-fit-cover">
                         </div>
@@ -93,10 +118,10 @@
     @endpush
 
     @push('scripts')
-    @if(!empty($activity->images) && count($activity->images) > 1)
+    @if(count($media) > 1)
     <script>
         document.addEventListener('DOMContentLoaded', function() {
-            new Swiper('.product-swiper', {
+            var swiper = new Swiper('.kegiatan-swiper-detail', {
                 loop: true,
                 speed: 600,
                 autoplay: {
@@ -111,7 +136,32 @@
                 navigation: {
                     nextEl: '.swiper-button-next',
                     prevEl: '.swiper-button-prev',
+                },
+                on: {
+                    slideChange: function() {
+                        document.querySelectorAll('.activity-video').forEach(function(v) {
+                            v.pause();
+                        });
+                        var activeSlide = this.slides[this.activeIndex];
+                        var video = activeSlide.querySelector('.activity-video');
+                        if (video) {
+                            video.muted = true;
+                            video.play();
+                        }
+                    }
                 }
+            });
+
+            document.querySelectorAll('.activity-video').forEach(function(video) {
+                video.addEventListener('play', function() {
+                    swiper.autoplay.stop();
+                });
+                video.addEventListener('pause', function() {
+                    swiper.autoplay.start();
+                });
+                video.addEventListener('ended', function() {
+                    swiper.autoplay.start();
+                });
             });
         });
     </script>

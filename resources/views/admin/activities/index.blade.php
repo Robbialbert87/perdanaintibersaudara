@@ -15,19 +15,32 @@
             <table class="table table-bordered table-hover align-middle">
                 <thead class="table-light">
                     <tr>
-                        <th width="50">No</th>
+                        <th width="50" class="d-none d-sm-table-cell">No</th>
                         <th>Judul</th>
                         <th>Tanggal</th>
+                        <th width="120" class="d-none d-sm-table-cell">Media</th>
                         <th width="150">Aksi</th>
                     </tr>
                 </thead>
                 <tbody>
                     @forelse($activities as $index => $activity)
                     <tr>
-                        <td>{{ $index + 1 }}</td>
-                        <td>{{ $activity->title }}</td>
-                        <td>{{ \Carbon\Carbon::parse($activity->date)->format('d M Y') }}</td>
-                        <td>
+                        <td class="d-none d-sm-table-cell">{{ $index + 1 }}</td>
+                        <td class="text-nowrap">{{ $activity->title }}</td>
+                        <td class="text-nowrap">{{ \Carbon\Carbon::parse($activity->date)->format('d M Y') }}</td>
+                        <td class="d-none d-sm-table-cell">
+                            @php $imgCount = count($activity->active_images ?? []); @endphp
+                            @php $vidCount = count($activity->active_videos ?? []); @endphp
+                            @if($imgCount > 0 || $vidCount > 0)
+                                <span class="badge bg-info text-white">{{ $imgCount }} Foto</span>
+                                @if($vidCount > 0)
+                                    <span class="badge bg-danger text-white">{{ $vidCount }} Video</span>
+                                @endif
+                            @else
+                                <span class="text-muted">-</span>
+                            @endif
+                        </td>
+                        <td class="text-nowrap">
                             <a href="{{ route('activities.edit', $activity->id) }}" class="btn btn-sm btn-info text-white" title="Edit">
                                 <i class="bi bi-pencil-square"></i>
                             </a>
@@ -42,7 +55,7 @@
                     </tr>
                     @empty
                     <tr>
-                        <td colspan="4" class="text-center text-muted py-4">Belum ada data kegiatan.</td>
+                        <td colspan="5" class="text-center text-muted py-4">Belum ada data kegiatan.</td>
                     </tr>
                     @endforelse
                 </tbody>

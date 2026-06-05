@@ -15,18 +15,18 @@
             <table class="table table-bordered table-hover align-middle">
                 <thead class="table-light">
                     <tr>
-                        <th width="50">No</th>
-                        <th width="120">Gambar</th>
+                        <th width="50" class="d-none d-sm-table-cell">No</th>
+                        <th width="120" class="d-none d-sm-table-cell">Gambar</th>
                         <th>Layanan</th>
-                        <th>Deskripsi</th>
+                        <th class="d-none d-sm-table-cell">Deskripsi</th>
                         <th width="150">Aksi</th>
                     </tr>
                 </thead>
                 <tbody>
                     @forelse($services as $index => $service)
                     <tr>
-                        <td>{{ $index + 1 }}</td>
-                        <td>
+                        <td class="d-none d-sm-table-cell">{{ $index + 1 }}</td>
+                        <td class="d-none d-sm-table-cell">
                             @if($service->image)
                                 <img src="{{ Storage::url($service->image) }}" alt="{{ $service->title }}" class="img-thumbnail" style="max-height: 80px; width: auto;">
                             @else
@@ -41,8 +41,8 @@
                                 </div>
                             @endif
                         </td>
-                        <td>{{ Str::limit($service->description, 80) }}</td>
-                        <td>
+                        <td class="d-none d-sm-table-cell">{{ Str::limit($service->description, 80) }}</td>
+                        <td class="text-nowrap">
                             <a href="{{ route('services.edit', $service->id) }}" class="btn btn-sm btn-info text-white" title="Edit">
                                 <i class="bi bi-pencil-square"></i>
                             </a>

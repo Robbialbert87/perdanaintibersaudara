@@ -5,6 +5,7 @@
 <meta name="viewport" content="width=device-width, initial-scale=1">
 <meta name="csrf-token" content="{{ csrf_token() }}">
 <title>@yield('title', 'Dashboard') - (PIB) Perdana Inti Bersaudara</title>
+@stack('styles')
 <link href="{{ asset('logo1.png') }}" rel="icon">
 <link href="{{ asset('logo1.png') }}" rel="apple-touch-icon">
 <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet">
@@ -274,5 +275,6 @@ kbd{background:#454f5b;border-radius:4px;padding:2px 6px;font-size:11px;color:#c
   if(o)o.addEventListener('click',hide);
 })();
 </script>
+@stack('scripts')
 </body>
 </html>

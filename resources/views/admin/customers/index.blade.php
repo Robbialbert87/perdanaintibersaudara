@@ -22,23 +22,23 @@
             <table class="table table-hover table-bordered align-middle">
                 <thead class="table-light">
                     <tr>
-                        <th width="5%">No</th>
+                        <th width="5%" class="d-none d-sm-table-cell">No</th>
                         <th>Nama Instansi</th>
-                        <th>Contact Person</th>
+                        <th class="d-none d-sm-table-cell">Contact Person</th>
                         <th>Telepon</th>
-                        <th>Email</th>
+                        <th class="d-none d-sm-table-cell">Email</th>
                         <th width="15%" class="text-center">Aksi</th>
                     </tr>
                 </thead>
                 <tbody>
                     @forelse ($customers as $index => $customer)
                     <tr>
-                        <td>{{ $customers->firstItem() + $index }}</td>
+                        <td class="d-none d-sm-table-cell">{{ $customers->firstItem() + $index }}</td>
                         <td>{{ $customer->nama_instansi }}</td>
-                        <td>{{ $customer->contact_person }}</td>
+                        <td class="d-none d-sm-table-cell">{{ $customer->contact_person }}</td>
                         <td>{{ $customer->telepon }}</td>
-                        <td>{{ $customer->email }}</td>
-                        <td class="text-center">
+                        <td class="d-none d-sm-table-cell">{{ $customer->email }}</td>
+                        <td class="text-center text-nowrap">
                             <a href="{{ route('customers.edit', $customer->id) }}" class="btn btn-warning btn-sm" title="Edit">
                                 <i class="bi bi-pencil-square"></i>
                             </a>

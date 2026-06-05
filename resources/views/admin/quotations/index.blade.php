@@ -22,12 +22,12 @@
             <table class="table table-hover table-bordered align-middle">
                 <thead class="table-light">
                     <tr>
-                        <th width="5%">No</th>
+                        <th width="5%" class="d-none d-sm-table-cell">No</th>
                         <th>Nomor Surat</th>
-                        <th>Tanggal</th>
+                        <th class="d-none d-sm-table-cell">Tanggal</th>
                         <th>Customer</th>
-                        <th>Perihal</th>
-                        <th>Total</th>
+                        <th class="d-none d-sm-table-cell">Perihal</th>
+                        <th class="d-none d-sm-table-cell">Total</th>
                         <th>Status</th>
                         <th width="18%" class="text-center">Aksi</th>
                     </tr>
@@ -35,11 +35,11 @@
                 <tbody>
                     @forelse ($quotations as $index => $quotation)
                     <tr>
-                        <td>{{ $quotations->firstItem() + $index }}</td>
-                        <td>{{ $quotation->nomor_surat }}</td>
-                        <td>{{ date('d/m/Y', strtotime($quotation->tanggal)) }}</td>
-                        <td>{{ $quotation->customer->nama_instansi }}</td>
-                        <td>
+                        <td class="d-none d-sm-table-cell">{{ $quotations->firstItem() + $index }}</td>
+                        <td class="text-nowrap">{{ $quotation->nomor_surat }}</td>
+                        <td class="d-none d-sm-table-cell">{{ date('d/m/Y', strtotime($quotation->tanggal)) }}</td>
+                        <td class="text-nowrap">{{ $quotation->customer->nama_instansi }}</td>
+                        <td class="d-none d-sm-table-cell">
                             @php $perihalArray = $quotation->perihal ?? [$quotation->perihal]; @endphp
                             @if(count($perihalArray) > 1)
                                 <ul class="mb-0 ps-3 list-unstyled">
@@ -51,8 +51,8 @@
                                 {{ \Illuminate\Support\Str::limit($perihalArray[0], 50) }}
                             @endif
                         </td>
-                        <td>Rp {{ number_format($quotation->total, 0, ',', '.') }}</td>
-                        <td>
+                        <td class="d-none d-sm-table-cell">Rp {{ number_format($quotation->total, 0, ',', '.') }}</td>
+                        <td class="text-nowrap">
                             @if($quotation->status == 'draft')
                                 <span class="badge bg-secondary">Draft</span>
                             @elseif($quotation->status == 'dikirim')
@@ -63,7 +63,7 @@
                                 <span class="badge bg-danger">Batal</span>
                             @endif
                         </td>
-                        <td class="text-center">
+                        <td class="text-center text-nowrap">
                             <a href="{{ route('quotations.show', $quotation->id) }}" class="btn btn-info btn-sm text-white" title="Detail">
                                 <i class="bi bi-eye"></i>
                             </a>

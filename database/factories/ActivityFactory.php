@@ -79,7 +79,10 @@ class ActivityFactory extends Factory
             }
 
             if (!empty($images)) {
-                $activity->update(['images' => $images]);
+                $activity->update([
+                    'images' => $images,
+                    'active_images' => $images,
+                ]);
             }
         });
     }
