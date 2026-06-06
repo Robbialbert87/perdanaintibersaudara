@@ -46,7 +46,7 @@
     <a href="#" id="scroll-top" class="scroll-top d-flex align-items-center justify-content-center"><i class="bi bi-arrow-up-short"></i></a>
 
     <!-- Floating WhatsApp Button -->
-    <a href="https://wa.me/6285263056505?text=Halo%20(PIB)%20Perdana%20Inti%20Bersaudara%2C%0A%0ASaya%20ingin%20menanyakan%20informasi%20lebih%20lanjut." 
+    <a href="https://wa.me/6281274044912?text=Halo%20(PIB)%20Perdana%20Inti%20Bersaudara%2C%0A%0ASaya%20ingin%20menanyakan%20informasi%20lebih%20lanjut." 
        target="_blank" 
        class="whatsapp-float d-flex align-items-center justify-content-center" 
        title="Hubungi via WhatsApp"

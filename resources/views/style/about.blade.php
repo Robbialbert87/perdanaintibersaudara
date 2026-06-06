@@ -152,8 +152,8 @@
                                 </div>
                                 <div>
                                     <h6 class="text-white mb-1" style="font-weight: bold;">Telepon / WA</h6>
-                                    <a href="https://wa.me/6285263056505" target="_blank" class="text-white text-opacity-80 small text-decoration-none" style="font-weight: 500;">
-                                        0852 6305 6505
+                                    <a href="https://wa.me/6281274044912" target="_blank" class="text-white text-opacity-80 small text-decoration-none" style="font-weight: 500;">
+                                        +62 812-7404-4912
                                     </a>
                                 </div>
                             </div>

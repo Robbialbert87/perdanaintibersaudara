@@ -48,9 +48,9 @@
                         <div class="row g-3">
                             <div class="col-4" data-aos="zoom-in" data-aos-delay="400">
                                 <div class="skill-item p-3 bg-light rounded-4 h-100 text-center"
-                                    style="border-top: 4px solid #065cc2; transition: 0.3s; min-height: 120px; display: flex; flex-direction: column; align-items: center; justify-content: center;">
-                                    <div class="skill-icon mb-2" style="font-size: 1.8rem; color: #065cc2;">
-                                        <i class="bi bi-shield-check"></i>
+                                    style="border-top: 4px solid #065cc2; transition: 0.3s; display: flex; flex-direction: column; align-items: center;">
+                                    <div class="skill-icon d-flex align-items-center justify-content-center mb-2" style="width: 48px; height: 48px; font-size: 1.6rem; color: #065cc2; background: rgba(6, 92, 194, 0.1); border-radius: 12px;">
+                                        <i class="bi bi-patch-check-fill"></i>
                                     </div>
                                     <h4
                                         style="font-size: 0.9rem; font-weight: bold; color: #13447f; margin-bottom: 4px;">
@@ -61,9 +61,9 @@
                             </div>
                             <div class="col-4" data-aos="zoom-in" data-aos-delay="450">
                                 <div class="skill-item p-3 bg-light rounded-4 h-100 text-center"
-                                    style="border-top: 4px solid #2973cc; transition: 0.3s; min-height: 120px; display: flex; flex-direction: column; align-items: center; justify-content: center;">
-                                    <div class="skill-icon mb-2" style="font-size: 1.8rem; color: #2973cc;">
-                                        <i class="bi bi-cpu"></i>
+                                    style="border-top: 4px solid #2973cc; transition: 0.3s; display: flex; flex-direction: column; align-items: center;">
+                                    <div class="skill-icon d-flex align-items-center justify-content-center mb-2" style="width: 48px; height: 48px; font-size: 1.6rem; color: #2973cc; background: rgba(41, 115, 204, 0.1); border-radius: 12px;">
+                                        <i class="bi bi-person-fill-gear"></i>
                                     </div>
                                     <h4
                                         style="font-size: 0.9rem; font-weight: bold; color: #13447f; margin-bottom: 4px;">
@@ -74,9 +74,9 @@
                             </div>
                             <div class="col-4" data-aos="zoom-in" data-aos-delay="500">
                                 <div class="skill-item p-3 bg-light rounded-4 h-100 text-center"
-                                    style="border-top: 4px solid #065cc2; transition: 0.3s; min-height: 120px; display: flex; flex-direction: column; align-items: center; justify-content: center;">
-                                    <div class="skill-icon mb-2" style="font-size: 1.8rem; color: #065cc2;">
-                                        <i class="bi bi-gear-wide-connected"></i>
+                                    style="border-top: 4px solid #065cc2; transition: 0.3s; display: flex; flex-direction: column; align-items: center;">
+                                    <div class="skill-icon d-flex align-items-center justify-content-center mb-2" style="width: 48px; height: 48px; font-size: 1.6rem; color: #065cc2; background: rgba(6, 92, 194, 0.1); border-radius: 12px;">
+                                        <i class="bi bi-lightning-charge-fill"></i>
                                     </div>
                                     <h4
                                         style="font-size: 0.9rem; font-weight: bold; color: #13447f; margin-bottom: 4px;">

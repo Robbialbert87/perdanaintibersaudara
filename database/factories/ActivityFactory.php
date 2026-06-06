@@ -15,12 +15,12 @@ class ActivityFactory extends Factory
     protected static $activities = [
         [
             'title' => 'Instalasi CT Scan 128 Slice di RSUD Raden Mattaher Jambi',
-            'content' => 'Tim CV. Perdana Inti Bersaudara berhasil menyelesaikan instalasi dan komisioning pesawat CT Scan 128 slice di RSUD Raden Mattaher Provinsi Jambi. Proyek ini meliputi persiapan ruangan (shielding radiasi), instalasi perangkat, uji fungsi, dan pelatihan operator. Dengan hadirnya CT Scan ini, masyarakat Jambi kini dapat mengakses layanan pemeriksaan citra diagnostik berkualitas tinggi tanpa harus dirujuk ke luar kota.',
+            'content' => 'Tim (PIB) Perdana Inti Bersaudara berhasil menyelesaikan instalasi dan komisioning pesawat CT Scan 128 slice di RSUD Raden Mattaher Provinsi Jambi. Proyek ini meliputi persiapan ruangan (shielding radiasi), instalasi perangkat, uji fungsi, dan pelatihan operator. Dengan hadirnya CT Scan ini, masyarakat Jambi kini dapat mengakses layanan pemeriksaan citra diagnostik berkualitas tinggi tanpa harus dirujuk ke luar kota.',
             'date' => '2025-11-15',
         ],
         [
             'title' => 'Kontrak Maintenance Tahunan MRI RS Abdul Manap Kota Jambi',
-            'content' => 'CV. Perdana Inti Bersaudara dipercaya kembali untuk menangani maintenance tahunan MRI 1.5 Tesla di RS Abdul Manap Kota Jambi. Kontrak ini mencakup pemeriksaan berkala, kalibrasi rutin, penggantian suku cadang, dan respon service 1x24 jam. Kami berkomitmen menjaga performa MRI agar tetap optimal dalam melayani pasien.',
+            'content' => '(PIB) Perdana Inti Bersaudara dipercaya kembali untuk menangani maintenance tahunan MRI 1.5 Tesla di RS Abdul Manap Kota Jambi. Kontrak ini mencakup pemeriksaan berkala, kalibrasi rutin, penggantian suku cadang, dan respon service 1x24 jam. Kami berkomitmen menjaga performa MRI agar tetap optimal dalam melayani pasien.',
             'date' => '2026-01-10',
         ],
         [

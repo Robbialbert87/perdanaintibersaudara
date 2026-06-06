@@ -36,24 +36,10 @@
                         <a class="nav-link fw-semibold px-0 px-lg-2 {{ Request::is('kegiatan') ? 'active' : '' }}"
                             href="{{ route('kegiatan.page') }}">Kegiatan</a>
                     </li>
-                    <li class="nav-item dropdown">
-                        <a class="nav-link dropdown-toggle fw-semibold px-0 px-lg-2 text-dark" href="#"
-                            id="navbarDropdown" role="button" data-bs-toggle="dropdown" aria-expanded="false">
-                            Project
-                        </a>
-                        <ul class="dropdown-menu shadow-sm border-0 rounded-3 mt-0 mt-lg-2"
-                            aria-labelledby="navbarDropdown">
-                            <li><a class="dropdown-item rounded-2" href="#">Instalasi Alat</a></li>
-                            <li><a class="dropdown-item rounded-2" href="#">Perbaikan & Maintenance</a></li>
-                            <li><a class="dropdown-item rounded-2" href="#">Pengadaan Rumah Sakit</a></li>
-                            <li><a class="dropdown-item rounded-2" href="#">Klinik & Laboratorium</a></li>
-                            <li><a class="dropdown-item rounded-2" href="#">Konstruksi Gedung Kesehatan</a></li>
-                        </ul>
-                    </li>
                     <li class="nav-item d-lg-none">
                         <a href="{{ route('contact.page') }}"
                             class="btn btn-primary w-100 rounded-pill py-2 fw-semibold mt-2"
-                            style="background-color: #00a5e5; border: none; color: white;">Contact</a>
+                            style="background-color: #00a5e5; border: none; color: white;">Kontak PIB</a>
                     </li>
                 </ul>
             </div>
@@ -61,7 +47,7 @@
 
         <a href="{{ route('contact.page') }}"
             class="btn btn-primary rounded-pill px-4 py-2 fw-semibold d-none d-lg-flex"
-            style="background-color: #00a5e5; border: none; color: white; white-space: nowrap;">Contact</a>
+            style="background-color: #00a5e5; border: none; color: white; white-space: nowrap;">Kontak PIB</a>
 
     </div>
 </header>

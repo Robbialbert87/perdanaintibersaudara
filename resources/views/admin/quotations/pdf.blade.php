@@ -209,7 +209,7 @@
     </div>
     
     <div class="isi-surat">
-        Dengan ini kami Perdana Inti Bersaudara (CV) yang berkedudukan di Jambi ingin menawarkan produk berupa {{ strtolower($perihalText) }} kepada {{ $quotation->customer->nama_instansi }}, adapun harga dan spesifikasi yang ditawarkan adalah sebagai berikut:
+        Dengan ini kami (PIB) Perdana Inti Bersaudara yang berkedudukan di Jambi ingin menawarkan produk berupa {{ strtolower($perihalText) }} kepada {{ $quotation->customer->nama_instansi }}, adapun harga dan spesifikasi yang ditawarkan adalah sebagai berikut:
     </div>
 
     <table class="table-items">
@@ -263,7 +263,7 @@
             <p style="text-decoration: underline;">Pembayaran dapat dilakukan melalui:</p>
             <p>Bank BCA</p>
             <p>No. Rekening 619 801 2733</p>
-            <p>CV. Perdana Inti Bersaudara</p>
+            <p>(PIB) Perdana Inti Bersaudara</p>
         </div>
     </div>
 

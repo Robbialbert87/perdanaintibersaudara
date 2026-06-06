@@ -43,9 +43,9 @@
                             <h4 style="font-size: 1.1rem; font-weight: bold; color: #13447f; margin-bottom: 5px;">
                                 Telepon / WhatsApp</h4>
                             <p style="margin: 0; font-size: 0.92rem; color: #5c7694;">
-                                <a href="https://wa.me/6285263056505" target="_blank"
+                                <a href="https://wa.me/6281274044912" target="_blank"
                                     style="color: #5c7694; text-decoration: none; font-weight: 500;">
-                                    +62 852-6305-6505
+                                    +62 812-7404-4912
                                 </a>
                             </p>
                         </div>

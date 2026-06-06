@@ -195,7 +195,7 @@ kbd{background:#454f5b;border-radius:4px;padding:2px 6px;font-size:11px;color:#c
     <div class="brand-icon">P</div>
     <div>
       <div class="brand-name">PIB Admin</div>
-      <div class="brand-sub">Perdana Inti Bersaudara</div>
+      <div class="brand-sub">(PIB) Perdana Inti Bersaudara</div>
     </div>
   </div>
 
