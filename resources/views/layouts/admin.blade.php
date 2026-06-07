@@ -53,7 +53,7 @@ html,body{height:100%;background:#141a21;font-family:'Public Sans',sans-serif;-w
 .sidebar-overlay.show{opacity:1;visibility:visible}
 
 /* toggle mobile */
-.sidebar-toggle{position:fixed;top:12px;right:12px;z-index:1060;width:36px;height:36px;border-radius:8px;background:#1c252e;border:1px solid #454f5b;color:#c4cdd5;display:none;align-items:center;justify-content:center;font-size:18px;cursor:pointer}
+.sidebar-toggle{position:fixed;bottom:24px;right:20px;z-index:1060;width:44px;height:44px;border-radius:50%;background:var(--primary);border:none;color:#fff;display:none;align-items:center;justify-content:center;font-size:20px;cursor:pointer;box-shadow:0 6px 16px rgba(0,0,0,.4)}
 
 /* ===== MAIN ===== */
 .layout{position:relative;z-index:1;margin-left:var(--sidebar-w);min-height:100vh}
