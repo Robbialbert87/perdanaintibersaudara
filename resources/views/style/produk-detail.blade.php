@@ -8,10 +8,10 @@
 
     <section class="product-detail section" style="padding: 60px 0;">
         <div class="container">
-            <div class="row gy-5 align-items-start">
+            <div class="row gy-4">
                 
-                <!-- Sisi Kiri: Galeri Foto & Video -->
-                <div class="col-lg-6" data-aos="fade-right">
+                <!-- Gambar Card Full Width -->
+                <div class="col-12" data-aos="fade-up">
                     @php
                         $media = [];
                         foreach ($product->active_images ?? [] as $img) {
@@ -68,9 +68,9 @@
                     @endif
                 </div>
 
-                <!-- Sisi Kanan: Detail Produk -->
-                <div class="col-lg-6" data-aos="fade-left" data-aos-delay="100">
-                    <div class="product-info p-lg-4">
+                <!-- Detail Produk di Bawah Gambar -->
+                <div class="col-12" data-aos="fade-up" data-aos-delay="100">
+                    <div class="product-info">
                         <span class="badge bg-light text-primary mb-2" style="font-size: 0.9rem; padding: 8px 15px; border-radius: 50px;">
                             {{ $product->category }}
                         </span>
