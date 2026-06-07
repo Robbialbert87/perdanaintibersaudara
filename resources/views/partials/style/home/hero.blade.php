@@ -104,39 +104,12 @@
                             background: #065cc2;
                         }
 
+                        .hero-services-swiper {
+                            aspect-ratio: 4 / 3;
+                        }
+
                         .hero-services-swiper .swiper-slide {
                             height: 100%;
-                            position: relative;
-                            overflow: hidden;
-                        }
-
-                        .slide-blur-bg {
-                            position: absolute;
-                            inset: -20px;
-                            background-size: cover;
-                            background-position: center;
-                            filter: blur(25px);
-                            transform: scale(1.1);
-                            z-index: 0;
-                        }
-
-                        .slide-content {
-                            position: relative;
-                            z-index: 1;
-                            display: flex;
-                            align-items: center;
-                            justify-content: center;
-                            height: 100%;
-                            width: 100%;
-                        }
-
-                        .slide-main-image {
-                            max-width: 100%;
-                            max-height: 100%;
-                            width: auto;
-                            height: auto;
-                            object-fit: contain;
-                            display: block;
                         }
 
                         @media (max-width: 767.98px) {
@@ -153,7 +126,7 @@
                             }
 
                             .hero-services-swiper {
-                                min-height: 220px !important;
+                                aspect-ratio: 4 / 3;
                                 border-width: 4px !important;
                             }
 
@@ -225,36 +198,33 @@
                     </h5>
                 </a>
                 <div class="image-container position-relative w-100 flex-grow-1">
-                    <div class="swiper hero-services-swiper rounded-4 overflow-hidden h-100"
-                        style="border: 6px solid white; box-shadow: 0 20px 40px rgba(0,0,0,0.15); min-height: 350px;">
+                    <div class="swiper hero-services-swiper rounded-4 overflow-hidden"
+                        style="border: 6px solid white; box-shadow: 0 20px 40px rgba(0,0,0,0.15);">
                         <div class="swiper-wrapper">
                             @forelse($heroSlides as $slide)
                                 <div class="swiper-slide"
                                     data-type="{{ $slide->type }}"
                                     data-title="{{ $slide->title }}"
                                     data-url="{{ $slide->url }}">
-                                    @php
-                                        $imgSrc = $slide->image
-                                            ? Storage::url($slide->image)
-                                            : asset('style/assets/img/health/Gemini_Generated_Image_mnrhe1mnrhe1mnrh.png');
-                                    @endphp
-                                    <div class="slide-blur-bg" style="background-image: url('{{ $imgSrc }}');"></div>
-                                    <a href="{{ $slide->url }}" class="slide-content">
-                                        <img src="{{ $imgSrc }}"
-                                            alt="{{ $slide->title }}"
-                                            class="slide-main-image">
+                                    <a href="{{ $slide->url }}">
+                                        @if($slide->image)
+                                            <img src="{{ Storage::url($slide->image) }}"
+                                                alt="{{ $slide->title }}"
+                                                class="w-100 h-100 object-fit-cover"
+                                                style="display: block;">
+                                        @else
+                                            <img src="{{ asset('style/assets/img/health/Gemini_Generated_Image_mnrhe1mnrhe1mnrh.png') }}"
+                                                alt="{{ $slide->title }}"
+                                                class="w-100 h-100 object-fit-cover"
+                                                style="display: block;">
+                                        @endif
                                     </a>
                                 </div>
                             @empty
                                 <div class="swiper-slide">
-                                    @php
-                                        $fallbackImg = asset('style/assets/img/health/Gemini_Generated_Image_mnrhe1mnrhe1mnrh.png');
-                                    @endphp
-                                    <div class="slide-blur-bg" style="background-image: url('{{ $fallbackImg }}');"></div>
-                                    <div class="slide-content">
-                                        <img src="{{ $fallbackImg }}"
-                                            alt="Layanan" class="slide-main-image">
-                                    </div>
+                                    <img src="{{ asset('style/assets/img/health/Gemini_Generated_Image_mnrhe1mnrhe1mnrh.png') }}"
+                                        alt="Layanan" class="w-100 h-100 object-fit-cover"
+                                        style="display: block;">
                                 </div>
                             @endforelse
                         </div>
