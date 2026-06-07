@@ -34,11 +34,11 @@
                                     @foreach($media as $item)
                                     <div class="swiper-slide">
                                         @if($item['type'] === 'image')
-                                        <div style="aspect-ratio: 4/3; overflow: hidden; background-color: #f8f9fa;" class="d-flex align-items-center justify-content-center">
+                                        <div style="aspect-ratio: 16/9; overflow: hidden; background-color: #f8f9fa;" class="d-flex align-items-center justify-content-center">
                                             <img src="{{ Storage::url($item['path']) }}" alt="{{ $product->name }}" class="img-fluid w-100 h-100 object-fit-cover">
                                         </div>
                                         @else
-                                        <div style="aspect-ratio: 4/3; overflow: hidden; background-color: #000;" class="d-flex align-items-center justify-content-center position-relative video-slide">
+                                        <div style="aspect-ratio: 16/9; overflow: hidden; background-color: #000;" class="d-flex align-items-center justify-content-center position-relative video-slide">
                                             <video class="product-video w-100 h-100" style="object-fit: contain; cursor: pointer;" src="{{ Storage::url($item['path']) }}" playsinline preload="metadata" muted controls></video>
                                         </div>
                                         @endif
@@ -51,18 +51,18 @@
                             </div>
                         @else
                             @if($media[0]['type'] === 'image')
-                            <div class="rounded-4 shadow-sm" style="border: 1px solid rgba(0,0,0,0.05); overflow: hidden; aspect-ratio: 4/3; background-color: #f8f9fa;">
+                            <div class="rounded-4 shadow-sm" style="border: 1px solid rgba(0,0,0,0.05); overflow: hidden; aspect-ratio: 16/9; background-color: #f8f9fa;">
                                 <img src="{{ Storage::url($media[0]['path']) }}" alt="{{ $product->name }}" class="img-fluid w-100 h-100 object-fit-cover">
                             </div>
                             @else
-                            <div class="rounded-4 shadow-sm" style="border: 1px solid rgba(0,0,0,0.05); overflow: hidden; aspect-ratio: 4/3; background-color: #000;">
+                            <div class="rounded-4 shadow-sm" style="border: 1px solid rgba(0,0,0,0.05); overflow: hidden; aspect-ratio: 16/9; background-color: #000;">
                                 <video controls playsinline preload="metadata" style="width: 100%; height: 100%; display: block; object-fit: contain;" src="{{ Storage::url($media[0]['path']) }}"></video>
                             </div>
                             @endif
                         @endif
                     @else
                         <!-- No Media Fallback -->
-                        <div class="rounded-4 shadow-sm" style="border: 1px solid rgba(0,0,0,0.05); overflow: hidden; aspect-ratio: 4/3; background-color: #f8f9fa;">
+                        <div class="rounded-4 shadow-sm" style="border: 1px solid rgba(0,0,0,0.05); overflow: hidden; aspect-ratio: 16/9; background-color: #f8f9fa;">
                             <img src="{{ asset('style/assets/img/portfolio/portfolio-1.webp') }}" alt="{{ $product->name }}" class="img-fluid w-100 h-100 object-fit-cover">
                         </div>
                     @endif
