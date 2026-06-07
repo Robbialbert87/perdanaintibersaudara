@@ -5,6 +5,7 @@ namespace App\Http\Controllers;
 use App\Models\Activity;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Storage;
+use Illuminate\Support\Str;
 
 class ActivityController extends Controller
 {
@@ -28,7 +29,7 @@ class ActivityController extends Controller
             'content' => 'required|string',
             'date'    => 'required|date',
             'images'  => 'nullable|array|max:5',
-            'images.*'=> 'image|max:5120',
+            'images.*'=> 'image|mimes:jpg,jpeg,png,webp|max:5120',
             'videos'  => 'nullable|array|max:3',
             'videos.*'=> 'mimes:mp4,avi,mov,mkv,webm,flv,wmv|max:102400',
         ]);
@@ -74,7 +75,7 @@ class ActivityController extends Controller
             'active_videos' => 'nullable|array',
             'active_videos.*' => 'string',
             'images'  => 'nullable|array|max:5',
-            'images.*'=> 'image|max:5120',
+            'images.*'=> 'image|mimes:jpg,jpeg,png,webp|max:5120',
             'videos'  => 'nullable|array|max:3',
             'videos.*'=> 'mimes:mp4,avi,mov,mkv,webm,flv,wmv|max:102400',
         ]);
@@ -113,6 +114,10 @@ class ActivityController extends Controller
         $request->validate(['file' => 'required|string']);
 
         $file = $request->input('file');
+
+        if (!Str::startsWith($file, ['activities/', 'activities/videos/'])) {
+            return redirect()->back()->with('error', 'Path file tidak valid.');
+        }
 
         $images = $activity->images ?? [];
         if (($key = array_search($file, $images)) !== false) {

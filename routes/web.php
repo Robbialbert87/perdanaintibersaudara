@@ -62,7 +62,7 @@ Route::get('/admin', function () {
     return redirect()->route('login');
 });
 
-Route::middleware(['auth', 'verified'])->group(function () {
+Route::middleware(['auth', 'verified', 'throttle:60,1'])->group(function () {
     Route::view('dashboard', 'admin.dashboard')->name('dashboard');
     Route::resource('customers', CustomerController::class);
     Route::resource('products', ProductController::class)->except(['show']);

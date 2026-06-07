@@ -14,7 +14,7 @@ class CustomerController extends Controller
         $query = \App\Models\Customer::query();
         
         if ($request->has('search')) {
-            $search = $request->get('search');
+            $search = str_replace(['%', '_'], ['\\%', '\\_'], $request->get('search'));
             $query->where('nama_instansi', 'like', "%{$search}%")
                   ->orWhere('contact_person', 'like', "%{$search}%")
                   ->orWhere('telepon', 'like', "%{$search}%")

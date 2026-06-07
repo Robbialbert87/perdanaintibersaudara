@@ -14,7 +14,7 @@ class QuotationController extends Controller
         $query = \App\Models\Quotation::with('customer');
 
         if ($request->has('search')) {
-            $search = $request->get('search');
+            $search = str_replace(['%', '_'], ['\\%', '\\_'], $request->get('search'));
             $query->where('nomor_surat', 'like', "%{$search}%")
                   ->orWhere('perihal', 'like', "%{$search}%")
                   ->orWhereHas('customer', function($q) use ($search) {

@@ -5,6 +5,7 @@ namespace App\Http\Controllers;
 use App\Models\Service;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Storage;
+use Illuminate\Support\Str;
 
 class ServiceController extends Controller
 {
@@ -24,11 +25,11 @@ class ServiceController extends Controller
         $validated = $request->validate([
             'title' => 'required|string|max:255',
             'description' => 'required|string',
-            'image' => 'nullable|image|max:5120',
+            'image' => 'nullable|image|mimes:jpg,jpeg,png,webp|max:5120',
             'features' => 'nullable|array',
             'features.*' => 'string|max:255',
             'images'  => 'nullable|array|max:5',
-            'images.*'=> 'image|max:5120',
+            'images.*'=> 'image|mimes:jpg,jpeg,png,webp|max:5120',
             'videos'  => 'nullable|array|max:3',
             'videos.*'=> 'mimes:mp4,avi,mov,mkv,webm,flv,wmv|max:102400',
         ]);
@@ -82,7 +83,7 @@ class ServiceController extends Controller
         $validated = $request->validate([
             'title' => 'required|string|max:255',
             'description' => 'required|string',
-            'image' => 'nullable|image|max:5120',
+            'image' => 'nullable|image|mimes:jpg,jpeg,png,webp|max:5120',
             'features' => 'nullable|array',
             'features.*' => 'string|max:255',
             'active_images' => 'nullable|array',
@@ -153,6 +154,10 @@ class ServiceController extends Controller
         $request->validate(['file' => 'required|string']);
 
         $file = $request->input('file');
+
+        if (!Str::startsWith($file, ['services/', 'services/videos/'])) {
+            return redirect()->back()->with('error', 'Path file tidak valid.');
+        }
 
         // Handle legacy image field
         if ($service->image === $file) {

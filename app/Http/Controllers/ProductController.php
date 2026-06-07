@@ -5,6 +5,7 @@ namespace App\Http\Controllers;
 use App\Models\Product;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Storage;
+use Illuminate\Support\Str;
 
 class ProductController extends Controller
 {
@@ -31,7 +32,7 @@ class ProductController extends Controller
             'satuan' => 'nullable|string|max:50',
             'harga_default' => 'nullable|numeric|min:0',
             'images'  => 'nullable|array|max:5',
-            'images.*'=> 'image|max:5120',
+            'images.*'=> 'image|mimes:jpg,jpeg,png,webp|max:5120',
             'videos'  => 'nullable|array|max:3',
             'videos.*'=> 'mimes:mp4,avi,mov,mkv,webm,flv,wmv|max:102400',
         ]);
@@ -119,6 +120,10 @@ class ProductController extends Controller
         $request->validate(['file' => 'required|string']);
 
         $file = $request->input('file');
+
+        if (!Str::startsWith($file, ['products/', 'products/videos/'])) {
+            return redirect()->back()->with('error', 'Path file tidak valid.');
+        }
 
         $images = $product->images ?? [];
         if (($key = array_search($file, $images)) !== false) {
