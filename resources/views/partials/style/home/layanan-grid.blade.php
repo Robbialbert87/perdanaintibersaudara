@@ -20,8 +20,9 @@
 
                     <!-- Image -->
                     <div class="card-image-wrapper" style="aspect-ratio: 4/3; overflow: hidden; background-color: #f0f4f9;">
-                        @if($service->image)
-                            <img src="{{ Storage::url($service->image) }}"
+                        @php $layananImg = $service->images[0] ?? $service->image; @endphp
+                        @if($layananImg)
+                            <img src="{{ Storage::url($layananImg) }}"
                                  alt="{{ $service->title }}"
                                  class="w-100 h-100 object-fit-cover card-img"
                                  loading="lazy" decoding="async">

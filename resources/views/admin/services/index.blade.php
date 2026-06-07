@@ -27,19 +27,21 @@
                     <tr>
                         <td class="d-none d-sm-table-cell">{{ $index + 1 }}</td>
                         <td class="d-none d-sm-table-cell">
-                            @if($service->image)
-                                <img src="{{ Storage::url($service->image) }}" alt="{{ $service->title }}" class="img-thumbnail" style="max-height: 80px; width: auto;">
+                            @php $adminSvcImg = $service->images[0] ?? $service->image; @endphp
+                            @if($adminSvcImg)
+                                <img src="{{ Storage::url($adminSvcImg) }}" alt="{{ $service->title }}" class="img-thumbnail" style="max-height: 80px; width: auto;">
                             @else
                                 <span class="text-muted small">No Image</span>
                             @endif
                         </td>
                         <td>
                             <strong>{{ $service->title }}</strong>
-                            @if(!empty($service->features))
-                                <div class="small text-muted mt-1">
-                                    {{ count($service->features) }} fitur
-                                </div>
-                            @endif
+                            <div class="small text-muted mt-1">
+                                @if(!empty($service->images)) {{ count($service->images) }} gambar @endif
+                                @if(!empty($service->images) && !empty($service->features)) | @endif
+                                @if(!empty($service->features)) {{ count($service->features) }} fitur @endif
+                                @if(!empty($service->videos)) | {{ count($service->videos) }} video @endif
+                            </div>
                         </td>
                         <td class="d-none d-sm-table-cell">{{ Str::limit($service->description, 80) }}</td>
                         <td class="text-nowrap">

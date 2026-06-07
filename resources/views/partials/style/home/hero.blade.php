@@ -2,11 +2,12 @@
     $heroSlides = collect();
 
     foreach ($services as $service) {
+        $serviceImg = $service->images[0] ?? $service->image;
         $heroSlides->push((object) [
             'type'  => 'layanan',
             'id'    => $service->id,
             'title' => $service->title,
-            'image' => $service->image,
+            'image' => $serviceImg,
             'url'   => route('layanan.detail', $service->id),
         ]);
     }

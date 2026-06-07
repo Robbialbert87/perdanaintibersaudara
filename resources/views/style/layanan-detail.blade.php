@@ -12,9 +12,10 @@
 
                 <!-- Sisi Kiri: Gambar Layanan -->
                 <div class="col-lg-6" data-aos="fade-right">
-                    @if($service->image)
+                    @php $mainImg = $service->images[0] ?? $service->image; @endphp
+                    @if($mainImg)
                         <div class="rounded-4 shadow-sm overflow-hidden" style="border: 1px solid rgba(0,0,0,0.06); aspect-ratio: 4/3; background-color: #f0f4f9;">
-                            <img src="{{ Storage::url($service->image) }}"
+                            <img src="{{ Storage::url($mainImg) }}"
                                  alt="{{ $service->title }}"
                                  class="img-fluid w-100 h-100 object-fit-cover">
                         </div>

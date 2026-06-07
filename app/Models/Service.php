@@ -14,9 +14,17 @@ class Service extends Model
         'description',
         'image',
         'features',
+        'images',
+        'videos',
+        'active_images',
+        'active_videos',
     ];
 
     protected $casts = [
         'features' => 'array',
+        'images' => 'array',
+        'videos' => 'array',
+        'active_images' => 'array',
+        'active_videos' => 'array',
     ];
 }
