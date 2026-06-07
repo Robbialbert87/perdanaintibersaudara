@@ -121,12 +121,12 @@
                             </h4>
 
                             <div class="d-flex align-items-start mb-4">
-                                <div class="me-3 bg-white bg-opacity-20 rounded-circle d-flex align-items-center justify-content-center" style="width: 42px; height: 42px; flex-shrink: 0;">
+                                <div class="me-3 rounded-circle d-flex align-items-center justify-content-center" style="width: 42px; height: 42px; flex-shrink: 0; background-color: rgba(255,255,255,0.2);">
                                     <i class="bi bi-geo-alt text-white" style="font-size: 1.25rem;"></i>
                                 </div>
                                 <div>
                                     <h6 class="text-white mb-1" style="font-weight: bold;">Alamat Kantor</h6>
-                                    <p class="mb-0 text-white text-opacity-80 small lh-base">
+                                    <p class="mb-0 small lh-base" style="color: rgba(255,255,255,0.8);">
                                         Jalan Kepodang I No. 205 RT.24<br>
                                         Kelurahan Handil Jaya, Kec. Jelutung<br>
                                         Kota Jambi, Provinsi Jambi
@@ -135,24 +135,24 @@
                             </div>
 
                             <div class="d-flex align-items-start mb-4">
-                                <div class="me-3 bg-white bg-opacity-20 rounded-circle d-flex align-items-center justify-content-center" style="width: 42px; height: 42px; flex-shrink: 0;">
+                                <div class="me-3 rounded-circle d-flex align-items-center justify-content-center" style="width: 42px; height: 42px; flex-shrink: 0; background-color: rgba(255,255,255,0.2);">
                                     <i class="bi bi-envelope text-white" style="font-size: 1.25rem;"></i>
                                 </div>
                                 <div>
                                     <h6 class="text-white mb-1" style="font-weight: bold;">Email Kantor</h6>
-                                    <a href="mailto:perdanaintibersaudara@gmail.com" class="text-white text-opacity-80 small text-decoration-none" style="font-weight: 500;">
+                                    <a href="mailto:perdanaintibersaudara@gmail.com" class="small text-decoration-none" style="color: rgba(255,255,255,0.8); font-weight: 500;">
                                         perdanaintibersaudara@gmail.com
                                     </a>
                                 </div>
                             </div>
 
                             <div class="d-flex align-items-start">
-                                <div class="me-3 bg-white bg-opacity-20 rounded-circle d-flex align-items-center justify-content-center" style="width: 42px; height: 42px; flex-shrink: 0;">
+                                <div class="me-3 rounded-circle d-flex align-items-center justify-content-center" style="width: 42px; height: 42px; flex-shrink: 0; background-color: rgba(255,255,255,0.2);">
                                     <i class="bi bi-telephone text-white" style="font-size: 1.25rem;"></i>
                                 </div>
                                 <div>
                                     <h6 class="text-white mb-1" style="font-weight: bold;">Telepon / WA</h6>
-                                    <a href="https://wa.me/6281274044912" target="_blank" class="text-white text-opacity-80 small text-decoration-none" style="font-weight: 500;">
+                                    <a href="https://wa.me/6281274044912" target="_blank" class="small text-decoration-none" style="color: rgba(255,255,255,0.8); font-weight: 500;">
                                         +62 812-7404-4912
                                     </a>
                                 </div>

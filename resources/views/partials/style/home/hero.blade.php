@@ -1,3 +1,31 @@
+@php
+    $heroSlides = collect();
+
+    foreach ($services as $service) {
+        $heroSlides->push((object) [
+            'type'  => 'layanan',
+            'id'    => $service->id,
+            'title' => $service->title,
+            'image' => $service->image,
+            'url'   => route('layanan.detail', $service->id),
+        ]);
+    }
+
+    foreach ($products as $product) {
+        $productImage = $product->active_images[0] ?? $product->images[0] ?? null;
+        $heroSlides->push((object) [
+            'type'  => 'produk',
+            'id'    => $product->id,
+            'title' => $product->name,
+            'image' => $productImage,
+            'url'   => route('produk.detail', $product->id),
+        ]);
+    }
+
+    $heroSlides = $heroSlides->shuffle();
+    $firstSlide = $heroSlides->first();
+@endphp
+
 <!-- Hero Section -->
 <section id="hero" class="hero section">
 
@@ -153,30 +181,36 @@
 
             <div class="col-lg-6 hero-image mt-5 mt-lg-0 d-flex flex-column" data-aos="fade-left" data-aos-delay="200">
                 <a id="heroServiceLink"
-                    href="{{ $services->first() ? route('layanan.detail', $services->first()->id) : '#' }}"
+                    href="{{ $firstSlide ? $firstSlide->url : '#' }}"
                     style="text-decoration: none;">
-                    <h5 id="heroServiceTitle"
+                    <h5 id="heroServiceTitle" class="text-center"
                         style="font-family: 'Quicksand', sans-serif; font-weight: bold; color: #13447f; font-size: 1.4rem; min-height: 1.5em;">
-                        {{ $services->first()->title ?? 'Layanan' }}
+                        @if($firstSlide)
+                            <div id="heroHeading">{{ $firstSlide->type === 'produk' ? '(Produk)' : '(Layanan)' }}</div>
+                            <small id="heroSubtitle" style="font-size: 0.85rem; color: #065cc2;">{{ $firstSlide->title }}</small>
+                        @else
+                            Layanan
+                        @endif
                     </h5>
                 </a>
                 <div class="image-container position-relative w-100 flex-grow-1">
                     <div class="swiper hero-services-swiper rounded-4 overflow-hidden h-100"
                         style="border: 6px solid white; box-shadow: 0 20px 40px rgba(0,0,0,0.15); min-height: 350px;">
                         <div class="swiper-wrapper">
-                            @forelse($services as $service)
+                            @forelse($heroSlides as $slide)
                                 <div class="swiper-slide"
-                                    data-title="{{ $service->title }}"
-                                    data-url="{{ route('layanan.detail', $service->id) }}">
-                                    <a href="{{ route('layanan.detail', $service->id) }}">
-                                        @if($service->image)
-                                            <img src="{{ Storage::url($service->image) }}"
-                                                alt="{{ $service->title }}"
+                                    data-type="{{ $slide->type }}"
+                                    data-title="{{ $slide->title }}"
+                                    data-url="{{ $slide->url }}">
+                                    <a href="{{ $slide->url }}">
+                                        @if($slide->image)
+                                            <img src="{{ Storage::url($slide->image) }}"
+                                                alt="{{ $slide->title }}"
                                                 class="w-100 h-100 object-fit-cover"
                                                 style="display: block;">
                                         @else
                                             <img src="{{ asset('style/assets/img/health/Gemini_Generated_Image_mnrhe1mnrhe1mnrh.png') }}"
-                                                alt="{{ $service->title }}"
+                                                alt="{{ $slide->title }}"
                                                 class="w-100 h-100 object-fit-cover"
                                                 style="display: block;">
                                         @endif
@@ -201,7 +235,8 @@
             @push('scripts')
                 <script>
                     document.addEventListener('DOMContentLoaded', function () {
-                        var titleEl = document.getElementById('heroServiceTitle');
+                        var headingEl = document.getElementById('heroHeading');
+                        var subtitleEl = document.getElementById('heroSubtitle');
                         var linkEl = document.getElementById('heroServiceLink');
                         var swiper = new Swiper('.hero-services-swiper', {
                             loop: true,
@@ -223,10 +258,13 @@
                             on: {
                                 slideChange: function () {
                                     var slide = this.slides[this.activeIndex];
-                                                if (slide) {
-                                                        titleEl.textContent = slide.dataset.title;
-                                                        linkEl.href = slide.dataset.url;
-                                                    }
+                                    if (slide) {
+                                        var type = slide.dataset.type;
+                                        var title = slide.dataset.title;
+                                        headingEl.textContent = type === 'produk' ? '(Produk)' : '(Layanan)';
+                                        subtitleEl.textContent = title;
+                                        linkEl.href = slide.dataset.url;
+                                    }
                                 }
                             }
                         });
