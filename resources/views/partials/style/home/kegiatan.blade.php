@@ -12,21 +12,28 @@
             <div class="swiper-wrapper">
                 @forelse($activities as $activity)
                     <div class="swiper-slide">
-                        <div class="card border-0 shadow-sm rounded-4 overflow-hidden h-100"
-                            style="border: 1px solid rgba(0,0,0,0.05) !important;">
-                        @php
-                            $activeImages = $activity->active_images ?? [];
-                            $activeVideos = $activity->active_videos ?? [];
-                            $firstImage = $activeImages[0] ?? ($activity->images[0] ?? null);
-                        @endphp
-                        @if ($firstImage)
-                            <div style="aspect-ratio: 16/9; overflow: hidden; background-color: #f0f4f9;" class="position-relative">
+                        <div class="portfolio-entry bg-white shadow-sm rounded-4 overflow-hidden"
+                            style="border: 1px solid rgba(0,0,0,0.05);">
+                            @php
+                                $activeImages = $activity->active_images ?? [];
+                                $activeVideos = $activity->active_videos ?? [];
+                                $firstImage = $activeImages[0] ?? ($activity->images[0] ?? null);
+                            @endphp
+                            <div class="entry-image position-relative" style="aspect-ratio: 4/3; overflow: hidden; background-color: #f0f4f9;">
                                 <a href="{{ route('kegiatan.detail', $activity->id) }}">
-                                    <img src="{{ Storage::url($firstImage) }}"
-                                        alt="{{ $activity->title }}"
-                                        class="card-img-top w-100 h-100 object-fit-contain"
-                                        style="transition: transform 0.3s;"
-                                        loading="lazy" decoding="async">
+                                    @if ($firstImage)
+                                        <img src="{{ Storage::url($firstImage) }}"
+                                            alt="{{ $activity->title }}"
+                                            class="img-fluid w-100 h-100 object-fit-contain"
+                                            style="transition: transform 0.3s;"
+                                            loading="lazy" decoding="async">
+                                    @else
+                                        <img src="{{ asset('style/assets/img/portfolio/portfolio-1.webp') }}"
+                                            alt="{{ $activity->title }}"
+                                            class="img-fluid w-100 h-100 object-fit-contain"
+                                            style="transition: transform 0.3s;"
+                                            loading="lazy" decoding="async">
+                                    @endif
                                     @if(!empty($activeVideos))
                                         <span class="position-absolute top-0 end-0 m-2 badge bg-danger d-flex align-items-center gap-1" style="font-size: 0.75rem;">
                                             <i class="bi bi-play-fill"></i> Video
@@ -34,25 +41,23 @@
                                     @endif
                                 </a>
                             </div>
-                        @endif
-                            <div class="card-body p-4">
-                                <div class="d-flex align-items-center gap-2 mb-2">
-                                    <i class="bi bi-calendar3" style="color: #065cc2;"></i>
-                                    <small style="color: #7f9ab7; font-weight: 500;">
+                            <div class="entry-title-wrapper p-3 d-flex flex-column">
+                                <div class="d-flex align-items-center gap-2 mb-1">
+                                    <i class="bi bi-calendar3" style="color: #065cc2; font-size: 0.8rem;"></i>
+                                    <small style="color: #7f9ab7; font-weight: 500; font-size: 0.8rem;">
                                         {{ \Carbon\Carbon::parse($activity->date)->translatedFormat('d F Y') }}
                                     </small>
                                 </div>
-                                <h5 class="card-title mb-0"
-                                    style="font-family: 'Quicksand', sans-serif; font-weight: bold; font-size: 1.1rem;">
+                                <h4 class="entry-title mb-1" style="font-size: 1.1rem; font-weight: bold;">
                                     <a href="{{ route('kegiatan.detail', $activity->id) }}"
-                                        style="color: #13447f; text-decoration: none;" class="hover-primary">
+                                        style="color: #13447f; text-decoration: none; transition: 0.3s;"
+                                        class="hover-primary">
                                         {{ $activity->title }}
                                     </a>
-                                </h5>
-                                <div style="height: 16px;"></div>
+                                </h4>
                                 <a href="{{ route('kegiatan.detail', $activity->id) }}"
                                     class="read-more-link"
-                                    style="color: #065cc2; font-weight: 600; font-size: 0.9rem; text-decoration: none; display: inline-flex; align-items: center; gap: 6px; transition: color 0.2s;">
+                                    style="color: #065cc2; font-weight: 600; font-size: 0.9rem; text-decoration: none; display: inline-flex; align-items: center; gap: 6px; transition: color 0.2s; margin-top: auto;">
                                     Selengkapnya &rarr;
                                 </a>
                             </div>
@@ -70,15 +75,15 @@
 
     @push('styles')
         <style>
-            #kegiatan .card:hover img {
+            #kegiatan .portfolio-entry:hover img {
                 transform: scale(1.05);
             }
 
-            #kegiatan .card {
+            #kegiatan .portfolio-entry {
                 transition: box-shadow 0.3s;
             }
 
-            #kegiatan .card:hover {
+            #kegiatan .portfolio-entry:hover {
                 box-shadow: 0 8px 25px rgba(6, 92, 194, 0.15) !important;
             }
             .read-more-link:hover {

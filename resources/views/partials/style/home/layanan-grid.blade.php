@@ -19,32 +19,35 @@
                      style="border: 1px solid rgba(0,0,0,0.06);">
 
                     <!-- Image -->
-                    <div class="card-image-wrapper" style="aspect-ratio: 4/3; overflow: hidden; background-color: #f0f4f9;">
-                        @php $layananImg = $service->images[0] ?? $service->image; @endphp
-                        @if($layananImg)
-                            <img src="{{ Storage::url($layananImg) }}"
-                                 alt="{{ $service->title }}"
-                                 class="w-100 h-100 object-fit-contain card-img"
-                                 loading="lazy" decoding="async">
-                        @else
-                            <img src="{{ asset('style/assets/img/portfolio/portfolio-1.webp') }}"
-                                 alt="{{ $service->title }}"
-                                 class="w-100 h-100 object-fit-contain card-img"
-                                 loading="lazy" decoding="async">
-                        @endif
+                    <div style="aspect-ratio: 4/3; overflow: hidden; background-color: #f0f4f9;">
+                        <a href="{{ route('layanan.detail', $service->id) }}">
+                            @php $layananImg = $service->images[0] ?? $service->image; @endphp
+                            @if($layananImg)
+                                <img src="{{ Storage::url($layananImg) }}"
+                                     alt="{{ $service->title }}"
+                                     class="img-fluid w-100 h-100 object-fit-contain"
+                                     style="transition: transform 0.3s;"
+                                     loading="lazy" decoding="async">
+                            @else
+                                <img src="{{ asset('style/assets/img/portfolio/portfolio-1.webp') }}"
+                                     alt="{{ $service->title }}"
+                                     class="img-fluid w-100 h-100 object-fit-contain"
+                                     style="transition: transform 0.3s;"
+                                     loading="lazy" decoding="async">
+                            @endif
+                        </a>
                     </div>
 
                     <!-- Content -->
-                    <div class="p-4 d-flex flex-column flex-grow-1">
-                        <h3 style="font-family: 'Quicksand', sans-serif; font-weight: bold; font-size: 1.3rem; margin-bottom: 16px;">
+                    <div class="p-3 d-flex flex-column flex-grow-1">
+                        <h4 style="font-size: 1.1rem; font-weight: bold; margin-bottom: 4px;">
                             <a href="{{ route('layanan.detail', $service->id) }}"
                                 style="color: #13447f; text-decoration: none; transition: 0.3s;"
                                 class="hover-primary">
                                 {{ $service->title }}
                             </a>
-                        </h3>
-
-                        <!-- CTA Button -->
+                        </h4>
+                        <p class="text-secondary mb-2 small" style="font-weight: 500;">Layanan</p>
                         <div class="mt-auto">
                             <a href="{{ route('layanan.detail', $service->id) }}"
                                class="read-more-link"
@@ -71,16 +74,11 @@
         }
 
         .service-card-full:hover {
-            box-shadow: 0 12px 35px rgba(6, 92, 194, 0.15) !important;
-            transform: translateY(-6px);
+            box-shadow: 0 8px 25px rgba(6, 92, 194, 0.15) !important;
         }
 
-        .service-card-full .card-img {
-            transition: transform 0.4s ease;
-        }
-
-        .service-card-full:hover .card-img {
-            transform: scale(1.06);
+        .service-card-full:hover img {
+            transform: scale(1.05);
         }
 
         .read-more-link:hover {

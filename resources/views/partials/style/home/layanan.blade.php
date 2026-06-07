@@ -12,44 +12,40 @@
             <div class="swiper-wrapper">
                 @forelse($services as $service)
                     <div class="swiper-slide">
-                        <div class="service-card bg-white rounded-4 overflow-hidden shadow-sm d-flex flex-column h-100"
+                        <div class="portfolio-entry bg-white shadow-sm rounded-4 overflow-hidden"
                             style="border: 1px solid rgba(0,0,0,0.05);">
-
-                            <!-- Image -->
-                            <div style="aspect-ratio: 4/3; overflow: hidden; background-color: #f0f4f9;">
-                                @php $layananImg = $service->images[0] ?? $service->image; @endphp
-                                @if($layananImg)
-                                    <img src="{{ Storage::url($layananImg) }}"
-                                        alt="{{ $service->title }}"
-                                        class="w-100 h-100 object-fit-contain"
-                                        style="transition: transform 0.3s;"
-                                        loading="lazy" decoding="async">
-                                @else
-                                    <img src="{{ asset('style/assets/img/portfolio/portfolio-1.webp') }}"
-                                        alt="{{ $service->title }}"
-                                        class="w-100 h-100 object-fit-contain"
-                                        style="transition: transform 0.3s;"
-                                        loading="lazy" decoding="async">
-                                @endif
+                            @php $layananImg = $service->images[0] ?? $service->image; @endphp
+                            <div class="entry-image position-relative" style="aspect-ratio: 4/3; overflow: hidden; background-color: #f0f4f9;">
+                                <a href="{{ route('layanan.detail', $service->id) }}">
+                                    @if($layananImg)
+                                        <img src="{{ Storage::url($layananImg) }}"
+                                            alt="{{ $service->title }}"
+                                            class="img-fluid w-100 h-100 object-fit-contain"
+                                            style="transition: transform 0.3s;"
+                                            loading="lazy" decoding="async">
+                                    @else
+                                        <img src="{{ asset('style/assets/img/portfolio/portfolio-1.webp') }}"
+                                            alt="{{ $service->title }}"
+                                            class="img-fluid w-100 h-100 object-fit-contain"
+                                            style="transition: transform 0.3s;"
+                                            loading="lazy" decoding="async">
+                                    @endif
+                                </a>
                             </div>
-
-                            <!-- Content -->
-                            <div class="card-body p-4 d-flex flex-column flex-grow-1">
-                                <h4 style="font-family: 'Quicksand', sans-serif; font-weight: bold; font-size: 1.2rem; margin-bottom: 16px;">
+                            <div class="entry-title-wrapper p-3 d-flex flex-column">
+                                <h4 class="entry-title mb-1" style="font-size: 1.1rem; font-weight: bold;">
                                     <a href="{{ route('layanan.detail', $service->id) }}"
                                         style="color: #13447f; text-decoration: none; transition: 0.3s;"
                                         class="hover-primary">
                                         {{ $service->title }}
                                     </a>
                                 </h4>
-
-                                <div class="mt-auto">
-                                    <a href="{{ route('layanan.detail', $service->id) }}"
-                                        class="read-more-link"
-                                        style="color: #065cc2; font-weight: 600; font-size: 0.9rem; text-decoration: none; display: inline-flex; align-items: center; gap: 6px; transition: color 0.2s;">
-                                        Selengkapnya &rarr;
-                                    </a>
-                                </div>
+                                <p class="entry-category text-secondary mb-2 small" style="font-weight: 500;">Layanan</p>
+                                <a href="{{ route('layanan.detail', $service->id) }}"
+                                    class="read-more-link"
+                                    style="color: #065cc2; font-weight: 600; font-size: 0.9rem; text-decoration: none; display: inline-flex; align-items: center; gap: 6px; transition: color 0.2s; margin-top: auto;">
+                                    Selengkapnya &rarr;
+                                </a>
                             </div>
                         </div>
                     </div><!-- End Slide -->
@@ -67,15 +63,15 @@
 
     @push('styles')
         <style>
-            #layanan .service-card:hover img {
+            #layanan .portfolio-entry:hover img {
                 transform: scale(1.05);
             }
 
-            #layanan .service-card {
+            #layanan .portfolio-entry {
                 transition: box-shadow 0.3s;
             }
 
-            #layanan .service-card:hover {
+            #layanan .portfolio-entry:hover {
                 box-shadow: 0 8px 25px rgba(6, 92, 194, 0.15) !important;
             }
 
