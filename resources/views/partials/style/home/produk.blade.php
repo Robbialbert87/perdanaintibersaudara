@@ -25,13 +25,13 @@
                                     @if ($firstImage)
                                         <img src="{{ Storage::url($firstImage) }}"
                                             alt="{{ $product->name }}"
-                                            class="img-fluid w-100 h-100 object-fit-cover"
+                                            class="img-fluid w-100 h-100 object-fit-contain"
                                             style="transition: transform 0.3s;"
                                             loading="lazy" decoding="async">
                                     @else
                                         <img src="{{ asset('style/assets/img/portfolio/portfolio-1.webp') }}"
                                             alt="{{ $product->name }}"
-                                            class="img-fluid w-100 h-100 object-fit-cover"
+                                            class="img-fluid w-100 h-100 object-fit-contain"
                                             style="transition: transform 0.3s;"
                                             loading="lazy" decoding="async">
                                     @endif
