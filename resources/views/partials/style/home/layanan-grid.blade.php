@@ -24,12 +24,12 @@
                         @if($layananImg)
                             <img src="{{ Storage::url($layananImg) }}"
                                  alt="{{ $service->title }}"
-                                 class="w-100 h-100 object-fit-cover card-img"
+                                 class="w-100 h-100 object-fit-contain card-img"
                                  loading="lazy" decoding="async">
                         @else
                             <img src="{{ asset('style/assets/img/portfolio/portfolio-1.webp') }}"
                                  alt="{{ $service->title }}"
-                                 class="w-100 h-100 object-fit-cover card-img"
+                                 class="w-100 h-100 object-fit-contain card-img"
                                  loading="lazy" decoding="async">
                         @endif
                     </div>

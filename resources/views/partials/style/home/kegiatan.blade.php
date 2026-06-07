@@ -24,7 +24,7 @@
                                 <a href="{{ route('kegiatan.detail', $activity->id) }}">
                                     <img src="{{ Storage::url($firstImage) }}"
                                         alt="{{ $activity->title }}"
-                                        class="card-img-top w-100 h-100 object-fit-cover"
+                                        class="card-img-top w-100 h-100 object-fit-contain"
                                         style="transition: transform 0.3s;"
                                         loading="lazy" decoding="async">
                                     @if(!empty($activeVideos))

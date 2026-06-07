@@ -8,28 +8,28 @@
 
     <section class="service-detail section" style="padding: 60px 0;">
         <div class="container">
-            <div class="row gy-5 align-items-start">
+            <div class="row gy-4">
 
-                <!-- Sisi Kiri: Gambar Layanan -->
-                <div class="col-lg-6" data-aos="fade-right">
+                <!-- Gambar Full Width -->
+                <div class="col-12" data-aos="fade-up">
                     @php $mainImg = $service->images[0] ?? $service->image; @endphp
                     @if($mainImg)
-                        <div class="rounded-4 shadow-sm overflow-hidden" style="border: 1px solid rgba(0,0,0,0.06); aspect-ratio: 4/3; background-color: #f0f4f9;">
+                        <div class="rounded-4 shadow-sm overflow-hidden" style="border: 1px solid rgba(0,0,0,0.06); background-color: #f0f4f9;">
                             <img src="{{ Storage::url($mainImg) }}"
                                  alt="{{ $service->title }}"
-                                 class="img-fluid w-100 h-100 object-fit-cover">
+                                 class="img-fluid" style="width: 100%; height: auto; max-height: 75vh; object-fit: contain;">
                         </div>
                     @else
                         <div class="rounded-4 shadow-sm overflow-hidden d-flex align-items-center justify-content-center"
-                             style="border: 1px solid rgba(0,0,0,0.06); aspect-ratio: 4/3; background-color: #f0f4f9;">
+                             style="border: 1px solid rgba(0,0,0,0.06); aspect-ratio: 16/9; background-color: #f0f4f9;">
                             <i class="bi bi-briefcase" style="font-size: 5rem; color: #c4d3e0;"></i>
                         </div>
                     @endif
                 </div>
 
-                <!-- Sisi Kanan: Detail Layanan -->
-                <div class="col-lg-6" data-aos="fade-left" data-aos-delay="100">
-                    <div class="p-lg-4">
+                <!-- Detail Layanan di Bawah Gambar -->
+                <div class="col-12" data-aos="fade-up" data-aos-delay="100">
+                    <div class="product-info">
 
                         <!-- Badge kategori -->
                         <span class="badge mb-3" style="background-color: rgba(6,92,194,0.08); color: #065cc2; font-size: 0.85rem; padding: 8px 16px; border-radius: 50px; font-weight: 600;">

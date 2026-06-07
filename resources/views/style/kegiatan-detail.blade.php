@@ -8,10 +8,10 @@
 
     <section class="activity-detail section" style="padding: 60px 0;">
         <div class="container">
-            <div class="row gy-5 align-items-start">
-                
-                <!-- Sisi Kiri: Galeri Foto & Video -->
-                <div class="col-lg-6" data-aos="fade-right">
+            <div class="row gy-4">
+
+                <!-- Gambar Full Width -->
+                <div class="col-12" data-aos="fade-up">
                     @php
                         $media = [];
                         foreach ($activity->active_images ?? [] as $img) {
@@ -34,11 +34,11 @@
                                     @foreach($media as $item)
                                     <div class="swiper-slide">
                                         @if($item['type'] === 'image')
-                                        <div style="aspect-ratio: 4/3; overflow: hidden; background-color: #f8f9fa;" class="d-flex align-items-center justify-content-center">
-                                            <img src="{{ Storage::url($item['path']) }}" alt="{{ $activity->title }}" class="img-fluid w-100 h-100 object-fit-cover">
+                                        <div class="text-center" style="background-color: #f8f9fa; border-radius: 12px;">
+                                            <img src="{{ Storage::url($item['path']) }}" alt="{{ $activity->title }}" class="img-fluid" style="width: 100%; height: auto; max-height: 75vh; object-fit: contain;">
                                         </div>
                                         @else
-                                        <div style="aspect-ratio: 4/3; overflow: hidden; background-color: #000;" class="d-flex align-items-center justify-content-center position-relative video-slide">
+                                        <div style="aspect-ratio: 16/9; overflow: hidden; background-color: #000;" class="d-flex align-items-center justify-content-center position-relative video-slide">
                                             <video class="activity-video w-100 h-100" style="object-fit: contain; cursor: pointer;" src="{{ Storage::url($item['path']) }}" playsinline preload="metadata" muted controls></video>
                                         </div>
                                         @endif
@@ -51,26 +51,26 @@
                             </div>
                         @else
                             @if($media[0]['type'] === 'image')
-                            <div class="rounded-4 shadow-sm" style="border: 1px solid rgba(0,0,0,0.05); overflow: hidden; aspect-ratio: 4/3; background-color: #f8f9fa;">
-                                <img src="{{ Storage::url($media[0]['path']) }}" alt="{{ $activity->title }}" class="img-fluid w-100 h-100 object-fit-cover">
+                            <div class="rounded-4 shadow-sm" style="border: 1px solid rgba(0,0,0,0.05); overflow: hidden; background-color: #f8f9fa;">
+                                <img src="{{ Storage::url($media[0]['path']) }}" alt="{{ $activity->title }}" class="img-fluid" style="width: 100%; height: auto; max-height: 75vh; object-fit: contain;">
                             </div>
                             @else
-                            <div class="rounded-4 shadow-sm" style="border: 1px solid rgba(0,0,0,0.05); overflow: hidden; aspect-ratio: 4/3; background-color: #000;">
+                            <div class="rounded-4 shadow-sm" style="border: 1px solid rgba(0,0,0,0.05); overflow: hidden; aspect-ratio: 16/9; background-color: #000;">
                                 <video controls playsinline preload="metadata" style="width: 100%; height: 100%; display: block; object-fit: contain;" src="{{ Storage::url($media[0]['path']) }}"></video>
                             </div>
                             @endif
                         @endif
                     @else
                         <!-- No Media Fallback -->
-                        <div class="rounded-4 shadow-sm" style="border: 1px solid rgba(0,0,0,0.05); overflow: hidden; aspect-ratio: 4/3; background-color: #f8f9fa;">
-                            <img src="{{ asset('style/assets/img/blog/blog-1.webp') }}" alt="{{ $activity->title }}" class="img-fluid w-100 h-100 object-fit-cover">
+                        <div class="rounded-4 shadow-sm" style="border: 1px solid rgba(0,0,0,0.05); overflow: hidden; background-color: #f8f9fa;">
+                            <img src="{{ asset('style/assets/img/blog/blog-1.webp') }}" alt="{{ $activity->title }}" class="img-fluid" style="width: 100%; height: auto; max-height: 75vh; object-fit: contain;">
                         </div>
                     @endif
                 </div>
 
-                <!-- Sisi Kanan: Detail Kegiatan -->
-                <div class="col-lg-6" data-aos="fade-left" data-aos-delay="100">
-                    <div class="product-info p-lg-4">
+                <!-- Detail Kegiatan di Bawah Gambar -->
+                <div class="col-12" data-aos="fade-up" data-aos-delay="100">
+                    <div class="product-info">
                         <span class="badge bg-light text-primary mb-2" style="font-size: 0.9rem; padding: 8px 15px; border-radius: 50px;">
                             <i class="bi bi-calendar-event me-1"></i> {{ \Carbon\Carbon::parse($activity->date)->locale('id')->translatedFormat('d F Y') }}
                         </span>
