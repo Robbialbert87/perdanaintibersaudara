@@ -1,4 +1,4 @@
-<footer id="footer" class="footer dark-background">
+<footer id="footer" class="footer dark-background" style="flex-shrink: 0;">
 
     <div class="container">
         <div class="copyright text-center">

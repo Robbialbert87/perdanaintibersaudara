@@ -30,11 +30,11 @@
     @stack('styles')
 </head>
 
-<body class="@yield('body-class', 'index-page')">
+<body class="@yield('body-class', 'index-page')" style="display: flex; flex-direction: column; min-height: 100vh;">
 
     @include('partials.style.header')
 
-    <main class="main">
+    <main class="main" style="flex: 1 0 auto;">
         @yield('content')
     </main>
 
