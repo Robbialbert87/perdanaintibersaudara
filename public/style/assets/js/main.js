@@ -10,83 +10,12 @@
   "use strict";
 
   /**
-   * Apply .scrolled class to the body as the page is scrolled down
+   * scrolled class is handled in header.blade.php
    */
-  function toggleScrolled() {
-    const selectBody = document.querySelector('body');
-    const selectHeader = document.querySelector('#header');
-    if (!selectHeader.classList.contains('scroll-up-sticky') && !selectHeader.classList.contains('sticky-top') && !selectHeader.classList.contains('fixed-top')) return;
-    window.scrollY > 100 ? selectBody.classList.add('scrolled') : selectBody.classList.remove('scrolled');
-  }
-
-  document.addEventListener('scroll', toggleScrolled);
-  window.addEventListener('load', toggleScrolled);
 
   /**
-   * Mobile nav toggle
+   * Mobile nav toggle is handled in header.blade.php
    */
-  const mobileNavToggleBtn = document.querySelector('.mobile-nav-toggle');
-
-  function mobileNavToogle() {
-    document.querySelector('body').classList.toggle('mobile-nav-active');
-    mobileNavToggleBtn.classList.toggle('bi-list');
-    mobileNavToggleBtn.classList.toggle('bi-x');
-  }
-
-  function mobileNavClose() {
-    if (document.querySelector('body').classList.contains('mobile-nav-active')) {
-      document.querySelector('body').classList.remove('mobile-nav-active');
-      mobileNavToggleBtn.classList.add('bi-list');
-      mobileNavToggleBtn.classList.remove('bi-x');
-    }
-  }
-
-  if (mobileNavToggleBtn) {
-    mobileNavToggleBtn.addEventListener('click', mobileNavToogle);
-  }
-
-  /**
-   * Close mobile nav when clicking outside the navmenu (on the backdrop)
-   */
-  document.addEventListener('click', function(e) {
-    const navmenuEl = document.querySelector('.navmenu');
-    const toggleBtn = document.querySelector('.mobile-nav-toggle');
-    if (!navmenuEl || !toggleBtn) return;
-    if (
-      document.querySelector('body').classList.contains('mobile-nav-active') &&
-      !navmenuEl.contains(e.target) &&
-      !toggleBtn.contains(e.target)
-    ) {
-      mobileNavClose();
-    }
-  });
-
-  /**
-   * Hide mobile nav on same-page/hash links (but not on dropdown toggles)
-   */
-  document.querySelectorAll('#navmenu a').forEach(navmenuLink => {
-    navmenuLink.addEventListener('click', function(e) {
-      // Don't close if this is a dropdown toggle
-      if (this.querySelector('.toggle-dropdown') || this.classList.contains('toggle-dropdown')) return;
-      // Don't close if the parent <li> has a sub-dropdown (it's a dropdown parent link)
-      if (this.parentNode.classList.contains('dropdown') && this.parentNode.querySelector('ul')) return;
-      if (document.querySelector('.mobile-nav-active')) {
-        mobileNavClose();
-      }
-    });
-  });
-
-  /**
-   * Toggle mobile nav dropdowns
-   */
-  document.querySelectorAll('.navmenu .toggle-dropdown').forEach(navmenu => {
-    navmenu.addEventListener('click', function(e) {
-      e.preventDefault();
-      e.stopImmediatePropagation();
-      this.parentNode.classList.toggle('active');
-      this.parentNode.nextElementSibling.classList.toggle('dropdown-active');
-    });
-  });
 
   /**
    * Scroll top button
@@ -247,25 +176,7 @@
   });
 
   /**
-   * Navmenu Scrollspy
+   * Navmenu active state is handled by Laravel backend
    */
-  let navmenulinks = document.querySelectorAll('.navmenu a');
-
-  function navmenuScrollspy() {
-    navmenulinks.forEach(navmenulink => {
-      if (!navmenulink.hash) return;
-      let section = document.querySelector(navmenulink.hash);
-      if (!section) return;
-      let position = window.scrollY + 200;
-      if (position >= section.offsetTop && position <= (section.offsetTop + section.offsetHeight)) {
-        document.querySelectorAll('.navmenu a.active').forEach(link => link.classList.remove('active'));
-        navmenulink.classList.add('active');
-      } else {
-        navmenulink.classList.remove('active');
-      }
-    })
-  }
-  window.addEventListener('load', navmenuScrollspy);
-  document.addEventListener('scroll', navmenuScrollspy);
 
 })();

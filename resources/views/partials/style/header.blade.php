@@ -1,208 +1,366 @@
-<header id="header" class="header fixed-top bg-white"
-    style="box-shadow: 0px 2px 15px rgba(0, 0, 0, 0.1); height: 70px;">
-    <div class="container-fluid container-xl d-flex align-items-center justify-content-between h-100">
-
-        <a href="{{ url('/') }}" class="logo d-flex align-items-center text-decoration-none h-100">
-            <img src="{{ asset('style/assets/img/PIBnew.png') }}" alt="PIB Logo"
-                style="max-height: 40px; margin-right: 10px;">
-
+<header id="header" class="header d-flex align-items-center fixed-top">
+    <div class="container-fluid container-xl d-flex align-items-center justify-content-between header-container">
+        <a href="{{ url('/') }}" class="logo d-flex align-items-center text-decoration-none">
+            <img src="{{ asset('style/assets/img/PIBnew.png') }}" alt="PIB Logo">
         </a>
 
-        <nav class="navbar navbar-expand-lg navbar-light p-0 h-100">
-            <button class="navbar-toggler border-0 pe-0" type="button" data-bs-toggle="collapse"
-                data-bs-target="#navbarNav" aria-controls="navbarNav" aria-expanded="false"
-                aria-label="Toggle navigation" style="outline: none; box-shadow: none;">
-                <span class="navbar-toggler-icon"></span>
-            </button>
-            <div class="collapse navbar-collapse" id="navbarNav">
-                <ul class="navbar-nav align-items-lg-center gap-lg-3">
-                    <li class="nav-item">
-                        <a class="nav-link fw-semibold px-0 px-lg-2 {{ Request::is('/') ? 'active' : '' }}"
-                            href="{{ Request::is('/') ? '#hero' : url('/#hero') }}">Home</a>
-                    </li>
-                    <li class="nav-item">
-                        <a class="nav-link fw-semibold px-0 px-lg-2 {{ Request::is('about') ? 'active' : '' }}"
-                            href="{{ route('about') }}">About</a>
-                    </li>
-                    <li class="nav-item">
-                        <a class="nav-link fw-semibold px-0 px-lg-2 {{ Request::is('layanan') ? 'active' : '' }}"
-                            href="{{ route('layanan.page') }}">Layanan</a>
-                    </li>
-                    <li class="nav-item">
-                        <a class="nav-link fw-semibold px-0 px-lg-2 {{ Request::is('produk') ? 'active' : '' }}"
-                            href="{{ route('produk.page') }}">Produk</a>
-                    </li>
-                    <li class="nav-item">
-                        <a class="nav-link fw-semibold px-0 px-lg-2 {{ Request::is('kegiatan') ? 'active' : '' }}"
-                            href="{{ route('kegiatan.page') }}">Kegiatan</a>
-                    </li>
-                    <li class="nav-item d-lg-none">
-                        <a href="{{ route('contact.page') }}"
-                            class="btn btn-primary w-100 rounded-pill py-2 fw-semibold mt-2"
-                            style="background-color: #00a5e5; border: none; color: white;">Kontak PIB</a>
-                    </li>
-                </ul>
-            </div>
+        <nav class="navmenu">
+            <ul>
+                <li>
+                    <a href="{{ Request::is('/') ? '#hero' : url('/#hero') }}" class="{{ Request::is('/') ? 'active' : '' }}">
+                        Home
+                    </a>
+                </li>
+                <li>
+                    <a href="{{ route('about') }}" class="{{ Request::is('about') ? 'active' : '' }}">
+                        About
+                    </a>
+                </li>
+                <li>
+                    <a href="{{ route('layanan.page') }}" class="{{ Request::is('layanan') ? 'active' : '' }}">
+                        Layanan
+                    </a>
+                </li>
+                <li>
+                    <a href="{{ route('produk.page') }}" class="{{ Request::is('produk') ? 'active' : '' }}">
+                        Produk
+                    </a>
+                </li>
+                <li>
+                    <a href="{{ route('kegiatan.page') }}" class="{{ Request::is('kegiatan') ? 'active' : '' }}">
+                        Kegiatan
+                    </a>
+                </li>
+                <li class="d-xl-none">
+                    <a href="{{ route('contact.page') }}" class="btn-getstarted">Kontak PIB</a>
+                </li>
+            </ul>
+            <i class="mobile-nav-toggle d-xl-none bi bi-list"></i>
         </nav>
 
-        <a href="{{ route('contact.page') }}"
-            class="btn btn-primary rounded-pill px-4 py-2 fw-semibold d-none d-lg-flex"
-            style="background-color: #00a5e5; border: none; color: white; white-space: nowrap;">Kontak PIB</a>
-
+        <a href="{{ route('contact.page') }}" class="btn-getstarted d-none d-xl-flex">Kontak PIB</a>
     </div>
 </header>
 
 <style>
+.header {
+    --background-color: rgba(255, 255, 255, 0);
+    color: #314862;
+    background-color: var(--background-color);
+    padding: 18px 0;
+    transition: all 0.5s;
+    z-index: 997;
+}
+
+.header .header-container {
+    background: #ffffff;
+    border-radius: 50px;
+    padding: 10px 25px 10px 30px;
+    box-shadow: 0px 2px 15px rgba(0, 0, 0, 0.08);
+}
+
+.scrolled .header {
+    padding: 10px 0;
+}
+
+.scrolled .header .header-container {
+    box-shadow: 0px 4px 20px rgba(0, 0, 0, 0.1);
+}
+
+.header .logo {
+    line-height: 1;
+}
+
+.header .logo img {
+    max-height: 40px;
+    margin-right: 8px;
+}
+
+.header .btn-getstarted {
+    color: #ffffff;
+    background: #00a5e5;
+    font-size: 15px;
+    padding: 10px 28px;
+    border-radius: 50px;
+    transition: 0.3s;
+    text-decoration: none;
+    font-weight: 600;
+    white-space: nowrap;
+    font-family: "Open Sans", sans-serif;
+    border: none;
+}
+
+.header .btn-getstarted:hover {
+    background: #0095cc;
+    color: #ffffff;
+}
+
+@media (max-width: 1199.98px) {
     .header {
-        height: 70px;
+        padding-top: 12px;
     }
 
-    .index-page {
-        padding-top: 0;
+    .header .header-container {
+        margin-left: 10px;
+        margin-right: 10px;
+        padding: 8px 12px 8px 18px;
     }
 
-    body:not(.index-page) {
-        padding-top: 70px;
+    .header .logo {
+        order: 1;
     }
 
-    .navbar-nav .nav-link {
-        font-family: "Open Sans", sans-serif;
-        font-size: 15px;
-        transition: 0.3s;
-        color: #13447f !important;
-        position: relative;
-        white-space: nowrap;
-    }
-
-    .navbar-nav .nav-link:hover,
-    .navbar-nav .nav-link.active {
-        color: #00a5e5 !important;
-    }
-
-    .nav-link.active::after {
-        display: none !important;
-    }
-
-    .navbar-nav .nav-link.active::after {
-        content: '';
-        position: fixed;
-        bottom: 0;
-        left: 0;
-        right: 0;
-        height: 2px;
-        background: #00a5e5;
-        border-radius: 2px;
-    }
-
-    .navbar-nav .dropdown-menu {
-        border-radius: 8px;
-        margin-top: 10px;
-        border: 1px solid #f1f1f1;
-    }
-
-    .navbar-nav .dropdown-item {
-        padding: 8px 16px;
+    .header .btn-getstarted {
+        order: 2;
+        margin: 0 10px 0 0;
+        padding: 8px 18px;
         font-size: 14px;
-        color: #13447f;
-        transition: 0.2s;
     }
 
-    .navbar-nav .dropdown-item:hover {
-        background-color: #f0f7ff;
+    .header .navmenu {
+        order: 3;
+    }
+}
+
+@media (min-width: 1200px) {
+    .navmenu {
+        padding: 0;
+    }
+
+    .navmenu ul {
+        margin: 0;
+        padding: 0;
+        display: flex;
+        list-style: none;
+        align-items: center;
+    }
+
+    .navmenu li {
+        position: relative;
+    }
+
+    .navmenu a {
+        color: #13447f;
+        padding: 12px 18px;
+        font-size: 16px;
+        font-family: "Open Sans", sans-serif;
+        font-weight: 500;
+        display: flex;
+        align-items: center;
+        justify-content: space-between;
+        white-space: nowrap;
+        transition: 0.3s;
+        text-decoration: none;
+    }
+
+    .navmenu a:hover,
+    .navmenu .active {
         color: #00a5e5;
     }
+}
 
-    @media (max-width: 991.98px) {
-        .navbar-collapse {
-            position: fixed;
-            top: 70px;
-            left: 0;
-            right: 0;
-            background: #ffffff;
-            padding: 1rem 1.5rem;
-            box-shadow: 0px 10px 20px rgba(0, 0, 0, 0.1);
-            border-top: 1px solid #f1f1f1;
-            z-index: 9999;
-        }
+.mobile-nav-toggle {
+    color: #13447f;
+    font-size: 30px;
+    line-height: 0;
+    margin-right: 0;
+    cursor: pointer;
+    transition: color 0.3s;
+    display: none;
+}
 
-        .navbar-nav {
-            width: 100%;
-        }
-
-        .navbar-nav .nav-item {
-            width: 100%;
-        }
-
-        .navbar-nav .nav-link {
-            padding: 14px 0;
-            font-size: 16px;
-            border-bottom: 1px solid #f1f5f9;
-        }
-
-        .navbar-nav .nav-link.active::after {
-            display: none;
-        }
-
-        .navbar-nav .nav-link.active {
-            color: #00a5e5 !important;
-        }
-
-        .navbar-nav .dropdown-menu {
-            background: #f8fafc;
-            margin: 0;
-            padding: 4px 0;
-            border: none;
-            box-shadow: none !important;
-        }
-
-        .navbar-nav .dropdown-item {
-            padding: 10px 16px;
-            font-size: 14px;
-        }
-
-        .navbar-nav .dropdown-item:first-child {
-            margin-top: 4px;
-        }
-
-        .navbar-nav .dropdown-item:last-child {
-            margin-bottom: 4px;
-        }
-
-        .navbar-toggler {
-            padding: 4px 0;
-        }
+@media (max-width: 1199.98px) {
+    .mobile-nav-toggle {
+        display: block;
     }
 
-    @media (min-width: 992px) {
-        .navbar-nav .nav-link {
-            color: #13447f !important;
-            padding-top: 0 !important;
-            padding-bottom: 0 !important;
-            line-height: 70px;
-        }
-
-        .navbar-nav .nav-link.active::after {
-            bottom: 16px;
-        }
-
-        .navbar-nav .dropdown-menu {
-            margin-top: 0;
-        }
-
-        .navbar .dropdown:hover .dropdown-menu {
-            display: block;
-        }
+    .navmenu {
+        padding: 0;
+        z-index: 9997;
     }
+
+    .navmenu ul {
+        display: none;
+        list-style: none;
+        position: fixed;
+        top: 95px;
+        left: 15px;
+        right: 15px;
+        width: auto;
+        padding: 15px 0;
+        margin: 0;
+        border-radius: 12px;
+        background-color: #ffffff;
+        overflow-y: auto;
+        transition: 0.3s;
+        z-index: 9998;
+        box-shadow: 0px 10px 40px rgba(0, 0, 0, 0.15);
+    }
+
+    .navmenu a {
+        color: #13447f;
+        padding: 14px 24px;
+        font-family: "Open Sans", sans-serif;
+        font-size: 17px;
+        font-weight: 500;
+        display: flex;
+        align-items: center;
+        justify-content: space-between;
+        white-space: nowrap;
+        transition: 0.3s;
+        text-decoration: none;
+    }
+
+    .navmenu a:hover,
+    .navmenu .active {
+        color: #00a5e5;
+        background-color: #f0f9ff;
+    }
+
+    .navmenu .btn-getstarted {
+        color: #ffffff !important;
+        background: #00a5e5;
+        font-size: 16px;
+        padding: 12px 24px;
+        border-radius: 50px;
+        text-align: center;
+        margin: 10px 24px;
+        font-weight: 600;
+    }
+
+    .navmenu .btn-getstarted:hover {
+        background: #0095cc;
+        color: #ffffff !important;
+    }
+
+    .mobile-nav-active {
+        overflow: hidden;
+    }
+
+    .mobile-nav-active .mobile-nav-toggle {
+        color: #13447f;
+    }
+
+    .mobile-nav-active .navmenu {
+        position: fixed;
+        overflow: hidden;
+        inset: 0;
+        background: rgba(0, 0, 0, 0.5);
+        transition: 0.3s;
+        z-index: 9996;
+    }
+
+    .mobile-nav-active .navmenu>ul {
+        display: block;
+    }
+}
+
+.index-page {
+    padding-top: 0;
+}
+
+.index-page .hero {
+    padding-top: 120px !important;
+}
+
+.index-page .hero-content {
+    margin-top: 30px;
+}
+
+@media (max-width: 1199.98px) {
+    .index-page .hero {
+        padding-top: 80px !important;
+    }
+
+    .index-page .hero-content {
+        margin-top: 10px;
+    }
+}
+
+body:not(.index-page) {
+    padding-top: 96px;
+}
+
+@media (max-width: 1199.98px) {
+    body:not(.index-page) {
+        padding-top: 75px;
+    }
+
+    body:not(.index-page) .section {
+        padding-top: 20px;
+    }
+}
 </style>
 
 <script>
+document.addEventListener('DOMContentLoaded', function() {
+    var mobileNavToggle = document.querySelector('.mobile-nav-toggle');
+    var body = document.body;
+
+    if (mobileNavToggle) {
+        mobileNavToggle.addEventListener('click', function(e) {
+            e.stopPropagation();
+            body.classList.toggle('mobile-nav-active');
+            var icon = this.querySelector('i') || this;
+            if (icon.classList.contains('bi-list')) {
+                icon.classList.remove('bi-list');
+                icon.classList.add('bi-x');
+            } else {
+                icon.classList.remove('bi-x');
+                icon.classList.add('bi-list');
+            }
+        });
+    }
+
     document.addEventListener('click', function(event) {
-        var navbar = document.getElementById('navbarNav');
-        var toggler = document.querySelector('.navbar-toggler');
-        if (navbar.classList.contains('show') && !navbar.contains(event.target) && !toggler.contains(event
-                .target)) {
-            var bsCollapse = bootstrap.Collapse.getInstance(navbar);
-            if (bsCollapse) bsCollapse.hide();
+        var navmenu = document.querySelector('.navmenu');
+        var menuUl = document.querySelector('.navmenu > ul');
+        var toggle = document.querySelector('.mobile-nav-toggle');
+        if (body.classList.contains('mobile-nav-active') &&
+            navmenu && !menuUl.contains(event.target) &&
+            toggle && !toggle.contains(event.target)) {
+            body.classList.remove('mobile-nav-active');
+            var icon = toggle.querySelector('i') || toggle;
+            if (icon.classList.contains('bi-x')) {
+                icon.classList.remove('bi-x');
+                icon.classList.add('bi-list');
+            }
         }
     });
+
+    var navLinks = document.querySelectorAll('.navmenu a:not(.btn-getstarted)');
+    navLinks.forEach(function(link) {
+        link.addEventListener('click', function() {
+            body.classList.remove('mobile-nav-active');
+            var toggle = document.querySelector('.mobile-nav-toggle');
+            if (toggle) {
+                var icon = toggle.querySelector('i') || toggle;
+                if (icon.classList.contains('bi-x')) {
+                    icon.classList.remove('bi-x');
+                    icon.classList.add('bi-list');
+                }
+            }
+        });
+    });
+
+    var header = document.getElementById('header');
+    if (header) {
+        var headerHeight = header.offsetHeight;
+        var heroSection = document.querySelector('#hero');
+        if (heroSection) {
+            heroSection.style.paddingTop = '0';
+        }
+    }
+});
+
+window.addEventListener('scroll', function() {
+    var header = document.getElementById('header');
+    if (header) {
+        if (window.scrollY > 50) {
+            document.body.classList.add('scrolled');
+        } else {
+            document.body.classList.remove('scrolled');
+        }
+    }
+});
 </script>
