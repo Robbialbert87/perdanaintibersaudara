@@ -332,10 +332,13 @@ document.addEventListener('DOMContentLoaded', function() {
     var body = document.body;
 
     if (mobileNavToggle) {
-        mobileNavToggle.addEventListener('click', function(e) {
+        // Clone & replace to remove old main.js event listeners
+        var newToggle = mobileNavToggle.cloneNode(true);
+        mobileNavToggle.parentNode.replaceChild(newToggle, mobileNavToggle);
+        newToggle.addEventListener('click', function(e) {
             e.stopPropagation();
             body.classList.toggle('mobile-nav-active');
-            var icon = this.querySelector('i') || this;
+            var icon = this;
             if (icon.classList.contains('bi-list')) {
                 icon.classList.remove('bi-list');
                 icon.classList.add('bi-x');
