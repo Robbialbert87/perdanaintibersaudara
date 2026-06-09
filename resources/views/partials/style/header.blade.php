@@ -45,32 +45,25 @@
 <style>
 /* === OVERRIDE main.css lama === */
 .header .navmenu {
-    position: static !important;
-    right: auto !important;
-    width: auto !important;
-    bottom: auto !important;
-    overflow: visible !important;
-    z-index: auto !important;
-    background: none !important;
-}
-
-.header .navmenu ul {
-    display: flex !important;
+    position: static;
+    right: auto;
+    width: auto;
+    bottom: auto;
+    overflow: visible;
+    z-index: auto;
+    background: none;
 }
 
 .header .mobile-nav-toggle {
     display: none !important;
-    position: static !important;
-    top: auto !important;
-    right: auto !important;
-    font-size: 30px !important;
-    z-index: auto !important;
+    position: static;
+    top: auto;
+    right: auto;
+    font-size: 30px;
+    z-index: auto;
 }
 
 @media (max-width: 1199.98px) {
-    .header .navmenu ul {
-        display: none !important;
-    }
     .header .mobile-nav-toggle {
         display: block !important;
     }
@@ -350,17 +343,15 @@ document.addEventListener('DOMContentLoaded', function() {
     }
 
     document.addEventListener('click', function(event) {
-        var navmenu = document.querySelector('.navmenu');
         var menuUl = document.querySelector('.navmenu > ul');
         var toggle = document.querySelector('.mobile-nav-toggle');
-        if (body.classList.contains('mobile-nav-active') &&
-            navmenu && !menuUl.contains(event.target) &&
-            toggle && !toggle.contains(event.target)) {
+        if (menuUl && !menuUl.contains(event.target) &&
+            toggle && !toggle.contains(event.target) &&
+            (body.classList.contains('mobile-nav-active') || toggle.classList.contains('bi-x'))) {
             body.classList.remove('mobile-nav-active');
-            var icon = toggle.querySelector('i') || toggle;
-            if (icon.classList.contains('bi-x')) {
-                icon.classList.remove('bi-x');
-                icon.classList.add('bi-list');
+            if (toggle.classList.contains('bi-x')) {
+                toggle.classList.remove('bi-x');
+                toggle.classList.add('bi-list');
             }
         }
     });
@@ -370,12 +361,9 @@ document.addEventListener('DOMContentLoaded', function() {
         link.addEventListener('click', function() {
             body.classList.remove('mobile-nav-active');
             var toggle = document.querySelector('.mobile-nav-toggle');
-            if (toggle) {
-                var icon = toggle.querySelector('i') || toggle;
-                if (icon.classList.contains('bi-x')) {
-                    icon.classList.remove('bi-x');
-                    icon.classList.add('bi-list');
-                }
+            if (toggle && toggle.classList.contains('bi-x')) {
+                toggle.classList.remove('bi-x');
+                toggle.classList.add('bi-list');
             }
         });
     });
