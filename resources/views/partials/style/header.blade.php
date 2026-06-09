@@ -43,6 +43,40 @@
 </header>
 
 <style>
+/* === OVERRIDE main.css lama === */
+.header .navmenu {
+    position: static !important;
+    right: auto !important;
+    width: auto !important;
+    bottom: auto !important;
+    overflow: visible !important;
+    z-index: auto !important;
+    background: none !important;
+}
+
+.header .navmenu ul {
+    display: flex !important;
+}
+
+.header .mobile-nav-toggle {
+    display: none !important;
+    position: static !important;
+    top: auto !important;
+    right: auto !important;
+    font-size: 30px !important;
+    z-index: auto !important;
+}
+
+@media (max-width: 1199.98px) {
+    .header .navmenu ul {
+        display: none !important;
+    }
+    .header .mobile-nav-toggle {
+        display: block !important;
+    }
+}
+/* === END OVERRIDE === */
+
 .header {
     --background-color: rgba(255, 255, 255, 0);
     color: #314862;
