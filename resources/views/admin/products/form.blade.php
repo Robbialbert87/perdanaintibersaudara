@@ -13,7 +13,6 @@
             @if(isset($product))
                 @method('PUT')
             @endif
-
             <div class="row g-3">
                 <div class="col-md-6">
                     <div class="mb-3">
