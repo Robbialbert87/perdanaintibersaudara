@@ -1,0 +1,321 @@
+@extends('layouts.admin')
+
+@section('title', 'Edit Invoice')
+
+@push('styles')
+<style>
+@media (max-width: 576px) {
+    .perihal-row .form-select { font-size: 13px; }
+    .item-row input, .item-row textarea { font-size: 13px; }
+    #itemsTable th { font-size: 11px; white-space: nowrap; }
+}
+</style>
+@endpush
+
+@section('content')
+<div class="card shadow-sm border-0 mb-4">
+    <div class="card-header bg-white py-3">
+        <h5 class="mb-0 text-primary"><i class="bi bi-pencil-square me-2"></i>Edit Invoice: {{ $invoice->nomor_invoice }}</h5>
+    </div>
+    <div class="card-body">
+        <form action="{{ route('invoices.update', $invoice->id) }}" method="POST" id="invoiceForm">
+            @csrf
+            @method('PUT')
+
+            <div class="row g-3 mb-4">
+                <div class="col-md-3">
+                    <label class="form-label">Tanggal <span class="text-danger">*</span></label>
+                    <input type="date" name="tanggal" class="form-control @error('tanggal') is-invalid @enderror" value="{{ old('tanggal', $invoice->tanggal) }}" required>
+                    @error('tanggal')<div class="invalid-feedback">{{ $message }}</div>@enderror
+                </div>
+                <div class="col-md-3">
+                    <label class="form-label">Pilih Customer <span class="text-danger">*</span></label>
+                    <select name="customer_id" class="form-select @error('customer_id') is-invalid @enderror" required>
+                        <option value="">-- Pilih Customer --</option>
+                        @foreach($customers as $c)
+                            <option value="{{ $c->id }}" {{ (old('customer_id') ?? $invoice->customer_id) == $c->id ? 'selected' : '' }}>
+                                {{ $c->nama_instansi }}
+                            </option>
+                        @endforeach
+                    </select>
+                    @error('customer_id')<div class="invalid-feedback">{{ $message }}</div>@enderror
+                </div>
+                <div class="col-md-4">
+                    <label class="form-label">Perihal (Layanan) <span class="text-danger">*</span></label>
+                    <div id="perihalContainer">
+                        @php $perihalArray = $invoice->perihal ?? []; @endphp
+                        @foreach($perihalArray as $index => $perihal)
+                        <div class="input-group mb-2 perihal-row">
+                            <span class="input-group-text perihal-number">{{ $index + 1 }}.</span>
+                            <select name="perihal[]" class="form-select" required>
+                                <option value="">-- Pilih Layanan --</option>
+                                @foreach($services as $s)
+                                    <option value="{{ $s->title }}" {{ old('perihal.'.$index, $perihal) == $s->title ? 'selected' : '' }}>{{ $s->title }}</option>
+                                @endforeach
+                            </select>
+                            <button type="button" class="btn btn-danger remove-perihal" {{ count($perihalArray) == 1 ? 'disabled' : '' }}><i class="bi bi-x"></i></button>
+                        </div>
+                        @endforeach
+                    </div>
+                    <button type="button" class="btn btn-sm btn-outline-success mt-1" id="addPerihal"><i class="bi bi-plus"></i> Tambah Perihal</button>
+                    @error('perihal')<div class="text-danger small mt-1">{{ $message }}</div>@enderror
+                </div>
+
+            </div>
+
+            <hr>
+            <h6 class="mb-3">Item Invoice</h6>
+
+            <div class="table-responsive mb-3">
+                <table class="table table-bordered align-middle" id="itemsTable" style="min-width:600px;">
+                    <thead class="table-light">
+                        <tr>
+                            <th width="15%">Layanan</th>
+                            <th width="20%">Deskripsi <span class="text-danger">*</span></th>
+                            <th width="13%">Tgl Kegiatan</th>
+                            <th width="8%">Vol</th>
+                            <th width="15%">Harga Satuan</th>
+                            <th width="16%">Jumlah Harga</th>
+                            <th width="3%" class="text-center">#</th>
+                        </tr>
+                    </thead>
+                    <tbody id="itemsBody">
+                        @foreach($invoice->items as $index => $item)
+                        <tr class="item-row">
+                            <td>
+                                <small class="text-primary fw-semibold perihal-badge d-block"></small>
+                            </td>
+                            <td>
+                                <textarea name="items[{{ $index }}][deskripsi]" class="form-control deskripsi-input" rows="2" required>{{ $item->deskripsi }}</textarea>
+                            </td>
+                            <td>
+                                <input type="date" name="items[{{ $index }}][tanggal_kegiatan]" class="form-control tanggal-input" value="{{ $item->tanggal_kegiatan }}">
+                            </td>
+                            <td>
+                                <input type="text" name="items[{{ $index }}][volume]" class="form-control volume-input" value="{{ $item->volume }}" required placeholder="Vol">
+                            </td>
+                            <td>
+                                <input type="text" name="items[{{ $index }}][harga_satuan]" class="form-control harga-input currency-format" value="{{ floatval($item->harga_satuan) }}" required placeholder="0">
+                            </td>
+                            <td>
+                                <input type="text" name="items[{{ $index }}][subtotal]" class="form-control subtotal-input" value="{{ number_format($item->subtotal, 0, ',', '.') }}" readonly placeholder="Otomatis">
+                            </td>
+                            <td class="text-center">
+                                <button type="button" class="btn btn-danger btn-sm remove-row"><i class="bi bi-trash"></i></button>
+                            </td>
+                        </tr>
+                        @endforeach
+                    </tbody>
+                    <tfoot class="table-light">
+                        <tr>
+                            <td colspan="5" class="text-end fw-bold align-middle"><strong>TOTAL</strong></td>
+                            <td colspan="2">
+                                <div class="input-group">
+                                    <span class="input-group-text">Rp</span>
+                                    <input type="text" id="totalKeseluruhan" class="form-control fw-bold" value="{{ number_format($invoice->total, 0, ',', '.') }}" readonly>
+                                </div>
+                            </td>
+                        </tr>
+                    </tfoot>
+                </table>
+            </div>
+
+            <button type="button" id="addRow" class="btn btn-success btn-sm mb-4"><i class="bi bi-plus-lg"></i> Tambah Baris Item</button>
+
+            <div class="mb-4">
+                <label class="form-label">Catatan Tambahan (Opsional)</label>
+                <textarea name="catatan" class="form-control" rows="3">{{ old('catatan', $invoice->catatan) }}</textarea>
+            </div>
+
+            <div class="d-flex justify-content-between">
+                <a href="{{ route('invoices.index') }}" class="btn btn-secondary"><i class="bi bi-arrow-left"></i> Kembali</a>
+                <button type="submit" class="btn btn-primary"><i class="bi bi-save"></i> Perbarui Invoice</button>
+            </div>
+        </form>
+    </div>
+</div>
+
+
+<script>
+document.addEventListener('DOMContentLoaded', function() {
+    let itemIndex = {{ count($invoice->items) }};
+    const tbody = document.getElementById('itemsBody');
+    const perihalContainer = document.getElementById('perihalContainer');
+
+    const formatIDR = (num) => new Intl.NumberFormat('id-ID').format(num);
+
+    const parseIDR = (str) => {
+        if (!str) return 0;
+        return parseFloat(str.replace(/\./g, '').replace(',', '.')) || 0;
+    };
+
+    const formatCurrencyInput = (input) => {
+        let val = input.value.replace(/[^,\d]/g, '');
+        let parts = val.split(',');
+        let integerPart = parts[0].replace(/\B(?=(\d{3})+(?!\d))/g, ".");
+        if (parts.length > 2) {
+            parts = [parts[0], parts[1]];
+        }
+        input.value = parts.length > 1 ? integerPart + ',' + parts[1] : integerPart;
+    };
+
+    const calculateRowSubtotal = (row) => {
+        const volume = parseFloat(row.querySelector('.volume-input').value) || 0;
+        const harga = parseIDR(row.querySelector('.harga-input').value);
+        const subtotal = volume * harga;
+        row.querySelector('.subtotal-input').value = subtotal > 0 ? formatIDR(subtotal) : '';
+    };
+
+    const calculateTotal = () => {
+        let total = 0;
+        document.querySelectorAll('.item-row').forEach(row => {
+            total += parseIDR(row.querySelector('.subtotal-input').value);
+        });
+        document.getElementById('totalKeseluruhan').value = total > 0 ? formatIDR(total) : '0';
+    };
+
+    tbody.addEventListener('input', function(e) {
+        if (e.target.classList.contains('currency-format')) {
+            formatCurrencyInput(e.target);
+        }
+        if (e.target.classList.contains('volume-input') || e.target.classList.contains('harga-input') || e.target.classList.contains('currency-format')) {
+            const row = e.target.closest('.item-row');
+            if (row) calculateRowSubtotal(row);
+            calculateTotal();
+        }
+    });
+
+    const buildRowHTML = (index, namaItem = '') => {
+        const badgeHTML = namaItem ? `<small class="text-primary fw-semibold perihal-badge d-block mb-1"><i class="bi bi-tag-fill me-1"></i>${namaItem}</small>` : `<small class="text-primary fw-semibold perihal-badge d-block"></small>`;
+        return `
+        <tr class="item-row">
+            <td>
+                ${badgeHTML}
+            </td>
+            <td>
+                <textarea name="items[${index}][deskripsi]" class="form-control deskripsi-input" rows="2" required placeholder="Deskripsi pekerjaan/barang..."></textarea>
+            </td>
+            <td>
+                <input type="date" name="items[${index}][tanggal_kegiatan]" class="form-control tanggal-input">
+            </td>
+            <td>
+                <input type="text" name="items[${index}][volume]" class="form-control volume-input" value="" required placeholder="Vol">
+            </td>
+            <td>
+                <input type="text" name="items[${index}][harga_satuan]" class="form-control harga-input currency-format" value="" required placeholder="0">
+            </td>
+            <td>
+                <input type="text" name="items[${index}][subtotal]" class="form-control subtotal-input" value="" readonly placeholder="Otomatis">
+            </td>
+            <td class="text-center">
+                <button type="button" class="btn btn-danger btn-sm remove-row"><i class="bi bi-trash"></i></button>
+            </td>
+        </tr>`;
+    };
+
+    const reindexRows = () => {
+        tbody.querySelectorAll('.item-row').forEach((row, i) => {
+            row.querySelectorAll('[name]').forEach(el => {
+                el.name = el.name.replace(/items\[\d+\]/, `items[${i}]`);
+            });
+        });
+        itemIndex = tbody.querySelectorAll('.item-row').length;
+    };
+
+    const updateRemoveButtons = () => {
+        const rows = tbody.querySelectorAll('.item-row');
+        rows.forEach(row => {
+            const btn = row.querySelector('.remove-row');
+            if (btn) btn.disabled = (rows.length === 1);
+        });
+    };
+
+    perihalContainer.addEventListener('change', function(e) {
+        if (e.target.matches('select[name="perihal[]"]')) {
+            const idx = Array.from(perihalContainer.querySelectorAll('.perihal-row')).indexOf(e.target.closest('.perihal-row'));
+            const rows = tbody.querySelectorAll('.item-row');
+            if (rows[idx]) {
+                const badge = rows[idx].querySelector('.perihal-badge');
+                if (badge) badge.innerHTML = e.target.value ? `<i class="bi bi-tag-fill me-1"></i>${e.target.value}` : '';
+            } else {
+                tbody.insertAdjacentHTML('beforeend', buildRowHTML(itemIndex++, e.target.value));
+                reindexRows();
+                updateRemoveButtons();
+            }
+        }
+    });
+
+    document.getElementById('addPerihal').addEventListener('click', function() {
+        const rowCount = perihalContainer.querySelectorAll('.perihal-row').length;
+        const optionsHTML = `<option value="">-- Pilih Layanan --</option>` +
+            Array.from(perihalContainer.querySelectorAll('select[name="perihal[]"]')[0].options).slice(1).map(o =>
+                `<option value="${o.value}">${o.textContent}</option>`
+            ).join('');
+        const newPerihal = `
+            <div class="input-group mb-2 perihal-row">
+                <span class="input-group-text perihal-number">${rowCount + 1}.</span>
+                <select name="perihal[]" class="form-select" required>${optionsHTML}</select>
+                <button type="button" class="btn btn-danger remove-perihal"><i class="bi bi-x"></i></button>
+            </div>`;
+        perihalContainer.insertAdjacentHTML('beforeend', newPerihal);
+        updatePerihalNumbers();
+        tbody.insertAdjacentHTML('beforeend', buildRowHTML(itemIndex++));
+        reindexRows();
+        updateRemoveButtons();
+    });
+
+    perihalContainer.addEventListener('click', function(e) {
+        if (e.target.closest('.remove-perihal')) {
+            const btn = e.target.closest('.remove-perihal');
+            if (!btn.disabled) {
+                const perihalRow = btn.closest('.perihal-row');
+                const perihalIndex = Array.from(perihalContainer.querySelectorAll('.perihal-row')).indexOf(perihalRow);
+                perihalRow.remove();
+                updatePerihalNumbers();
+                const itemRows = tbody.querySelectorAll('.item-row');
+                if (itemRows[perihalIndex]) itemRows[perihalIndex].remove();
+                reindexRows();
+                updateRemoveButtons();
+                calculateTotal();
+            }
+        }
+    });
+
+    const updatePerihalNumbers = () => {
+        perihalContainer.querySelectorAll('.perihal-row').forEach((row, i) => {
+            row.querySelector('.perihal-number').textContent = (i + 1) + '.';
+            const btn = row.querySelector('.remove-perihal');
+            if (btn) btn.disabled = (perihalContainer.querySelectorAll('.perihal-row').length === 1);
+        });
+    };
+
+    document.getElementById('addRow').addEventListener('click', function() {
+        tbody.insertAdjacentHTML('beforeend', buildRowHTML(itemIndex++));
+        reindexRows();
+        updateRemoveButtons();
+    });
+
+    tbody.addEventListener('click', function(e) {
+        if (e.target.closest('.remove-row')) {
+            const btn = e.target.closest('.remove-row');
+            if (!btn.disabled) {
+                btn.closest('.item-row').remove();
+                reindexRows();
+                updateRemoveButtons();
+                calculateTotal();
+            }
+        }
+    });
+
+    updateRemoveButtons();
+    updatePerihalNumbers();
+    document.querySelectorAll('.currency-format').forEach(input => {
+        if(input.value) formatCurrencyInput(input);
+    });
+    document.querySelectorAll('.item-row').forEach(row => {
+        calculateRowSubtotal(row);
+    });
+    calculateTotal();
+});
+</script>
+@endsection

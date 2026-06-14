@@ -44,6 +44,10 @@ html,body{height:100%;background:#141a21;font-family:'Public Sans',sans-serif;-w
 .sidebar-link:hover .arr{color:#c4cdd5;transform:translateX(3px)}
 .sidebar-link.active .arr{color:var(--primary-text)}
 
+.sidebar-dropdown{margin-bottom:2px}
+.sidebar-submenu{padding-left:16px}
+.sidebar-submenu .sidebar-link{font-size:12px;padding:7px 12px;margin-bottom:0}
+.sidebar-submenu .sidebar-link i{font-size:13px}
 .sidebar-footer{border-top:1px dashed rgba(255,255,255,.08);padding:12px}
 .sidebar-footer .sidebar-link{font-size:12px;padding:8px 12px}
 .sidebar-footer form{margin:0}
@@ -200,22 +204,46 @@ kbd{background:#454f5b;border-radius:4px;padding:2px 6px;font-size:11px;color:#c
   </div>
 
   <div class="sidebar-nav">
-    <div class="sidebar-label">Menu</div>
+    <div class="sidebar-label">Umum</div>
     <a class="sidebar-link {{ request()->routeIs('dashboard') ? 'active' : '' }}" href="{{ route('dashboard') }}">
       <i class="bi bi-speedometer2"></i><span>Dashboard</span><span class="arr">&rarr;</span>
     </a>
+
+    <div class="sidebar-label">Master</div>
     <a class="sidebar-link {{ request()->routeIs('customers.*') ? 'active' : '' }}" href="{{ route('customers.index') }}">
-      <i class="bi bi-people"></i><span>Master Customer</span><span class="arr">&rarr;</span>
+      <i class="bi bi-people"></i><span>Customer</span><span class="arr">&rarr;</span>
     </a>
     <a class="sidebar-link {{ request()->routeIs('products.*') ? 'active' : '' }}" href="{{ route('products.index') }}">
-      <i class="bi bi-box-seam"></i><span>Master Produk</span><span class="arr">&rarr;</span>
+      <i class="bi bi-box-seam"></i><span>Produk</span><span class="arr">&rarr;</span>
     </a>
     <a class="sidebar-link {{ request()->routeIs('services.*') ? 'active' : '' }}" href="{{ route('services.index') }}">
-      <i class="bi bi-briefcase"></i><span>Master Layanan</span><span class="arr">&rarr;</span>
+      <i class="bi bi-briefcase"></i><span>Layanan</span><span class="arr">&rarr;</span>
     </a>
+    @if(auth()->user()->isAdmin())
+    <a class="sidebar-link {{ request()->routeIs('users.*') ? 'active' : '' }}" href="{{ route('users.index') }}">
+      <i class="bi bi-person-badge"></i><span>User Management</span><span class="arr">&rarr;</span>
+    </a>
+    @endif
+
+    <div class="sidebar-label">Transaksi</div>
     <a class="sidebar-link {{ request()->routeIs('quotations.*') ? 'active' : '' }}" href="{{ route('quotations.index') }}">
       <i class="bi bi-file-earmark-text"></i><span>Penawaran</span><span class="arr">&rarr;</span>
     </a>
+    <div class="sidebar-dropdown">
+      <a class="sidebar-link {{ request()->routeIs('invoices.*') ? 'active' : '' }}" href="#" onclick="toggleInvoiceMenu(event)">
+        <i class="bi bi-receipt"></i><span>Invoice</span><span class="arr" id="invoiceArrow" style="transform:{{ request()->routeIs('invoices.*') ? 'rotate(90deg)' : '' }}">&#9654;</span>
+      </a>
+      <div class="sidebar-submenu" id="invoiceSubmenu" style="display:{{ request()->routeIs('invoices.*') ? 'block' : 'none' }}">
+        <a class="sidebar-link sublink {{ request()->routeIs('invoices.index') ? 'active' : '' }}" href="{{ route('invoices.index') }}">
+          <i class="bi bi-list-ul"></i><span>List Invoice</span>
+        </a>
+        <a class="sidebar-link sublink {{ request()->routeIs('invoices.create') ? 'active' : '' }}" href="{{ route('invoices.create') }}">
+          <i class="bi bi-plus-circle"></i><span>Tambah Invoice</span>
+        </a>
+      </div>
+    </div>
+
+    <div class="sidebar-label">Lainnya</div>
     <a class="sidebar-link {{ request()->routeIs('activities.*') ? 'active' : '' }}" href="{{ route('activities.index') }}">
       <i class="bi bi-card-image"></i><span>Kegiatan</span><span class="arr">&rarr;</span>
     </a>
@@ -266,6 +294,7 @@ kbd{background:#454f5b;border-radius:4px;padding:2px 6px;font-size:11px;color:#c
 </div>
 
 <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"></script>
+@stack('modals')
 <script>
 (function(){
   var s=document.getElementById('sidebar'),o=document.getElementById('sidebarOverlay'),t=document.getElementById('sidebarToggle');
@@ -274,6 +303,15 @@ kbd{background:#454f5b;border-radius:4px;padding:2px 6px;font-size:11px;color:#c
   if(t)t.addEventListener('click',show);
   if(o)o.addEventListener('click',hide);
 })();
+function toggleInvoiceMenu(e){
+  e.preventDefault();
+  var sub=document.getElementById('invoiceSubmenu'),arr=document.getElementById('invoiceArrow');
+  if(sub.style.display==='none'||!sub.style.display){
+    sub.style.display='block';if(arr)arr.style.transform='rotate(90deg)';
+  }else{
+    sub.style.display='none';if(arr)arr.style.transform='';
+  }
+}
 </script>
 @stack('scripts')
 </body>

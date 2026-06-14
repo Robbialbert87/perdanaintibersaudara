@@ -1,10 +1,12 @@
 <?php
 
 use App\Http\Controllers\ActivityController;
+use App\Http\Controllers\InvoiceController;
 use App\Http\Controllers\ProductController;
 use App\Http\Controllers\CustomerController;
 use App\Http\Controllers\QuotationController;
 use App\Http\Controllers\ServiceController;
+use App\Http\Controllers\UserController;
 use App\Models\Activity;
 use App\Models\Product;
 use App\Models\Service;
@@ -73,6 +75,10 @@ Route::middleware(['auth', 'verified', 'throttle:60,1'])->group(function () {
     Route::delete('activities/{activity}/media', [ActivityController::class, 'deleteMedia'])->name('activities.deleteMedia');
     Route::get('quotations/{quotation}/export-pdf', [QuotationController::class, 'exportPdf'])->name('quotations.export_pdf');
     Route::resource('quotations', QuotationController::class);
+    Route::get('invoices/{invoice}/export-pdf', [InvoiceController::class, 'exportPdf'])->name('invoices.export_pdf');
+    Route::post('invoices/{invoice}/mark-paid', [InvoiceController::class, 'markAsPaid'])->name('invoices.mark_paid');
+    Route::resource('invoices', InvoiceController::class);
+    Route::resource('users', UserController::class)->except(['show']);
 });
 
 // require __DIR__.'/settings.php';
