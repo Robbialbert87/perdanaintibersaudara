@@ -10,20 +10,66 @@
         <div class="container">
             <div class="row gy-4">
 
-                <!-- Gambar Full Width -->
+                <!-- Media Slider (Gambar & Video) -->
                 <div class="col-12" data-aos="fade-up">
-                    @php $mainImg = $service->images[0] ?? $service->image; @endphp
-                    @if($mainImg)
-                        <div class="rounded-4 shadow-sm overflow-hidden" style="border: 1px solid rgba(0,0,0,0.06); background-color: #f0f4f9;">
-                            <img src="{{ Storage::url($mainImg) }}"
-                                 alt="{{ $service->title }}"
-                                 class="img-fluid" style="width: 100%; height: auto; max-height: 75vh; object-fit: contain;">
-                        </div>
+                    @php
+                        $media = [];
+                        foreach ($service->active_images ?? [] as $img) {
+                            if (in_array($img, $service->images ?? [])) {
+                                $media[] = ['type' => 'image', 'path' => $img];
+                            }
+                        }
+                        foreach ($service->active_videos ?? [] as $vid) {
+                            if (in_array($vid, $service->videos ?? [])) {
+                                $media[] = ['type' => 'video', 'path' => $vid];
+                            }
+                        }
+                    @endphp
+
+                    @if(count($media) > 0)
+                        @if(count($media) > 1)
+                            <div class="swiper service-swiper rounded-4 shadow-sm" style="border: 1px solid rgba(0,0,0,0.05); overflow: hidden;">
+                                <div class="swiper-wrapper">
+                                    @foreach($media as $item)
+                                    <div class="swiper-slide">
+                                        @if($item['type'] === 'image')
+                                        <div class="text-center d-flex align-items-center justify-content-center" style="background-color: #f8f9fa; border-radius: 12px; aspect-ratio: 16/9; overflow: hidden;">
+                                            <img src="{{ Storage::url($item['path']) }}" alt="{{ $service->title }}" class="img-fluid" style="width: 100%; height: 100%; object-fit: contain;">
+                                        </div>
+                                        @else
+                                        <div style="aspect-ratio: 16/9; overflow: hidden; background-color: #000;" class="d-flex align-items-center justify-content-center position-relative video-slide">
+                                            <video class="service-video w-100 h-100" style="object-fit: contain; cursor: pointer;" src="{{ Storage::url($item['path']) }}" playsinline preload="metadata" muted controls></video>
+                                        </div>
+                                        @endif
+                                    </div>
+                                    @endforeach
+                                </div>
+                                <div class="swiper-pagination"></div>
+                                <div class="swiper-button-prev" style="color: #065cc2;"></div>
+                                <div class="swiper-button-next" style="color: #065cc2;"></div>
+                            </div>
+                        @else
+                            @if($media[0]['type'] === 'image')
+                            <div class="rounded-4 shadow-sm d-flex align-items-center justify-content-center" style="border: 1px solid rgba(0,0,0,0.05); overflow: hidden; background-color: #f8f9fa; aspect-ratio: 16/9;">
+                                <img src="{{ Storage::url($media[0]['path']) }}" alt="{{ $service->title }}" class="img-fluid" style="width: 100%; height: 100%; object-fit: contain;">
+                            </div>
+                            @else
+                            <div class="rounded-4 shadow-sm" style="border: 1px solid rgba(0,0,0,0.05); overflow: hidden; aspect-ratio: 16/9; background-color: #000;">
+                                <video controls playsinline preload="metadata" style="width: 100%; height: 100%; display: block; object-fit: contain;" src="{{ Storage::url($media[0]['path']) }}"></video>
+                            </div>
+                            @endif
+                        @endif
                     @else
-                        <div class="rounded-4 shadow-sm overflow-hidden d-flex align-items-center justify-content-center"
-                             style="border: 1px solid rgba(0,0,0,0.06); aspect-ratio: 16/9; background-color: #f0f4f9;">
+                        @php $legacyImg = $service->image; @endphp
+                        @if($legacyImg)
+                        <div class="rounded-4 shadow-sm d-flex align-items-center justify-content-center" style="border: 1px solid rgba(0,0,0,0.05); overflow: hidden; background-color: #f8f9fa; aspect-ratio: 16/9;">
+                            <img src="{{ Storage::url($legacyImg) }}" alt="{{ $service->title }}" class="img-fluid" style="width: 100%; height: 100%; object-fit: contain;">
+                        </div>
+                        @else
+                        <div class="rounded-4 shadow-sm d-flex align-items-center justify-content-center" style="border: 1px solid rgba(0,0,0,0.06); aspect-ratio: 16/9; background-color: #f0f4f9;">
                             <i class="bi bi-briefcase" style="font-size: 5rem; color: #c4d3e0;"></i>
                         </div>
+                        @endif
                     @endif
                 </div>
 
@@ -98,6 +144,57 @@
             transition: 0.3s;
         }
     </style>
+    @endpush
+
+    @push('scripts')
+    @if(count($media) > 1)
+    <script>
+        document.addEventListener('DOMContentLoaded', function() {
+            var swiper = new Swiper('.service-swiper', {
+                loop: true,
+                speed: 600,
+                autoplay: {
+                    delay: 5000,
+                    disableOnInteraction: false
+                },
+                pagination: {
+                    el: '.swiper-pagination',
+                    type: 'bullets',
+                    clickable: true
+                },
+                navigation: {
+                    nextEl: '.swiper-button-next',
+                    prevEl: '.swiper-button-prev',
+                },
+                on: {
+                    slideChange: function() {
+                        document.querySelectorAll('.service-video').forEach(function(v) {
+                            v.pause();
+                        });
+                        var activeSlide = this.slides[this.activeIndex];
+                        var video = activeSlide.querySelector('.service-video');
+                        if (video) {
+                            video.muted = true;
+                            video.play();
+                        }
+                    }
+                }
+            });
+
+            document.querySelectorAll('.service-video').forEach(function(video) {
+                video.addEventListener('play', function() {
+                    swiper.autoplay.stop();
+                });
+                video.addEventListener('pause', function() {
+                    swiper.autoplay.start();
+                });
+                video.addEventListener('ended', function() {
+                    swiper.autoplay.start();
+                });
+            });
+        });
+    </script>
+    @endif
     @endpush
 
 @endsection
