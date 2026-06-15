@@ -29,7 +29,7 @@ class ActivityController extends Controller
             'title' => 'required|string|max:255',
             'content' => 'required|string',
             'date' => 'required|date',
-            'images' => 'nullable|array|max:5',
+            'images' => 'nullable|array|max:15',
             'images.*' => 'image|mimes:jpg,jpeg,png,webp|max:5120',
             'videos' => 'nullable|array|max:3',
             'videos.*' => 'mimes:mp4,avi,mov,mkv,webm,flv,wmv|max:102400',
@@ -75,7 +75,7 @@ class ActivityController extends Controller
             'active_images.*' => 'string',
             'active_videos' => 'nullable|array',
             'active_videos.*' => 'string',
-            'images' => 'nullable|array|max:5',
+            'images' => 'nullable|array|max:15',
             'images.*' => 'image|mimes:jpg,jpeg,png,webp|max:5120',
             'videos' => 'nullable|array|max:3',
             'videos.*' => 'mimes:mp4,avi,mov,mkv,webm,flv,wmv|max:102400',
@@ -89,7 +89,7 @@ class ActivityController extends Controller
         }
 
         $activeImages = $request->input('active_images', []);
-        $finalImages = array_slice(array_merge($activity->images ?? [], $newImagePaths), 0, 5);
+        $finalImages = array_slice(array_merge($activity->images ?? [], $newImagePaths), 0, 15);
         $validated['images'] = $finalImages;
         $validated['active_images'] = array_merge($activeImages, $newImagePaths);
 

@@ -58,7 +58,7 @@
 
                 <div class="col-md-4">
                     <div class="mb-3">
-                        <label for="images" class="form-label">Unggah Gambar (Maksimal 5)</label>
+                        <label for="images" class="form-label">Unggah Gambar (Maksimal 15)</label>
                         <input class="form-control @error('images.*') is-invalid @enderror" type="file" id="images" name="images[]" multiple accept="image/*">
                         <div class="form-text">Format: JPG, PNG, WEBP. Maks 5MB per gambar.</div>
                         @error('images.*')

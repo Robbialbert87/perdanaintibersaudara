@@ -32,7 +32,7 @@ class ProductController extends Controller
             'spesifikasi' => 'nullable|string',
             'satuan' => 'nullable|string|max:50',
             'harga_default' => 'nullable|numeric|min:0',
-            'images' => 'nullable|array|max:5',
+            'images' => 'nullable|array|max:15',
             'images.*' => 'image|mimes:jpg,jpeg,png,webp|max:5120',
             'videos' => 'nullable|array|max:3',
             'videos.*' => 'mimes:mp4,avi,mov,mkv,webm,flv,wmv|max:102400',
@@ -81,7 +81,7 @@ class ProductController extends Controller
             'active_images.*' => 'string',
             'active_videos' => 'nullable|array',
             'active_videos.*' => 'string',
-            'images' => 'nullable|array|max:5',
+            'images' => 'nullable|array|max:15',
             'images.*' => 'image|max:5120',
             'videos' => 'nullable|array|max:3',
             'videos.*' => 'mimes:mp4,avi,mov,mkv,webm,flv,wmv|max:102400',
@@ -95,7 +95,7 @@ class ProductController extends Controller
         }
 
         $activeImages = $request->input('active_images', []);
-        $finalImages = array_slice(array_merge($product->images ?? [], $newImagePaths), 0, 5);
+        $finalImages = array_slice(array_merge($product->images ?? [], $newImagePaths), 0, 15);
         $validated['images'] = $finalImages;
         $validated['active_images'] = array_merge($activeImages, $newImagePaths);
 
