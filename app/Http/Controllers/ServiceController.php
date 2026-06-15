@@ -12,6 +12,7 @@ class ServiceController extends Controller
     public function index()
     {
         $services = Service::latest()->get();
+
         return view('admin.services.index', compact('services'));
     }
 
@@ -28,10 +29,10 @@ class ServiceController extends Controller
             'image' => 'nullable|image|mimes:jpg,jpeg,png,webp|max:5120',
             'features' => 'nullable|array',
             'features.*' => 'string|max:255',
-            'images'  => 'nullable|array|max:5',
-            'images.*'=> 'image|mimes:jpg,jpeg,png,webp|max:5120',
-            'videos'  => 'nullable|array|max:3',
-            'videos.*'=> 'mimes:mp4,avi,mov,mkv,webm,flv,wmv|max:102400',
+            'images' => 'nullable|array|max:5',
+            'images.*' => 'image|mimes:jpg,jpeg,png,webp|max:5120',
+            'videos' => 'nullable|array|max:3',
+            'videos.*' => 'mimes:mp4,avi,mov,mkv,webm,flv,wmv|max:102400',
         ]);
 
         $imagePaths = [];
@@ -53,16 +54,16 @@ class ServiceController extends Controller
         $validated['active_videos'] = $videoPaths;
 
         // Backward compat: set image from first uploaded image
-        if (!empty($imagePaths)) {
+        if (! empty($imagePaths)) {
             $validated['image'] = $imagePaths[0];
         } elseif ($request->hasFile('image')) {
             $validated['image'] = $request->file('image')->store('services', 'public');
         }
 
         // Clean up empty features
-        if (!empty($validated['features'])) {
-            $validated['features'] = array_values(array_filter($validated['features'], function($val) {
-                return !empty(trim($val));
+        if (! empty($validated['features'])) {
+            $validated['features'] = array_values(array_filter($validated['features'], function ($val) {
+                return ! empty(trim($val));
             }));
         } else {
             $validated['features'] = [];
@@ -109,9 +110,9 @@ class ServiceController extends Controller
         $validated['active_images'] = array_merge($activeImages, $newImagePaths);
 
         // Backward compat: update image from first active or uploaded
-        if (!empty($newImagePaths)) {
+        if (! empty($newImagePaths)) {
             $validated['image'] = $newImagePaths[0];
-        } elseif (!empty($activeImages)) {
+        } elseif (! empty($activeImages)) {
             $validated['image'] = $activeImages[0];
         }
 
@@ -136,9 +137,9 @@ class ServiceController extends Controller
         }
 
         // Clean up empty features
-        if (!empty($validated['features'])) {
-            $validated['features'] = array_values(array_filter($validated['features'], function($val) {
-                return !empty(trim($val));
+        if (! empty($validated['features'])) {
+            $validated['features'] = array_values(array_filter($validated['features'], function ($val) {
+                return ! empty(trim($val));
             }));
         } else {
             $validated['features'] = [];
@@ -155,7 +156,7 @@ class ServiceController extends Controller
 
         $file = $request->input('file');
 
-        if (!Str::startsWith($file, ['services/', 'services/videos/'])) {
+        if (! Str::startsWith($file, ['services/', 'services/videos/'])) {
             return redirect()->back()->with('error', 'Path file tidak valid.');
         }
 

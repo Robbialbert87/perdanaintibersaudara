@@ -17,7 +17,7 @@ class InvoiceItem extends Model
         'tanggal_kegiatan',
         'volume',
         'harga_satuan',
-        'subtotal'
+        'subtotal',
     ];
 
     public function invoice()

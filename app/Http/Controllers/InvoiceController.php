@@ -2,12 +2,13 @@
 
 namespace App\Http\Controllers;
 
+use App\Helpers\QRCodeHelper;
 use App\Models\Customer;
 use App\Models\Invoice;
 use App\Models\Service;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
-use Illuminate\Support\Facades\Storage;
+use Illuminate\Support\Str;
 
 class InvoiceController extends Controller
 {
@@ -18,13 +19,14 @@ class InvoiceController extends Controller
         if ($request->has('search')) {
             $search = str_replace(['%', '_'], ['\\%', '\\_'], $request->get('search'));
             $query->where('nomor_invoice', 'like', "%{$search}%")
-                  ->orWhere('perihal', 'like', "%{$search}%")
-                  ->orWhereHas('customer', function ($q) use ($search) {
-                      $q->where('nama_instansi', 'like', "%{$search}%");
-                  });
+                ->orWhere('perihal', 'like', "%{$search}%")
+                ->orWhereHas('customer', function ($q) use ($search) {
+                    $q->where('nama_instansi', 'like', "%{$search}%");
+                });
         }
 
         $invoices = $query->latest()->paginate(10);
+
         return view('admin.invoices.index', compact('invoices'));
     }
 
@@ -32,6 +34,7 @@ class InvoiceController extends Controller
     {
         $customers = Customer::orderBy('nama_instansi')->get();
         $services = Service::orderBy('title')->get();
+
         return view('admin.invoices.create', compact('customers', 'services'));
     }
 
@@ -61,7 +64,7 @@ class InvoiceController extends Controller
             $subtotal = (float) str_replace(['.', ','], ['', '.'], $item['subtotal']);
             $total += $subtotal;
 
-            $namaItem = !empty($item['nama_item']) ? $item['nama_item'] : ($perihalArray[$itemIndex] ?? null);
+            $namaItem = ! empty($item['nama_item']) ? $item['nama_item'] : ($perihalArray[$itemIndex] ?? null);
 
             $itemsData[] = [
                 'nama_item' => $namaItem,
@@ -116,6 +119,7 @@ class InvoiceController extends Controller
     public function show(string $id)
     {
         $invoice = Invoice::with(['customer', 'items.product'])->findOrFail($id);
+
         return view('admin.invoices.show', compact('invoice'));
     }
 
@@ -124,6 +128,7 @@ class InvoiceController extends Controller
         $invoice = Invoice::with('items')->findOrFail($id);
         $customers = Customer::orderBy('nama_instansi')->get();
         $services = Service::orderBy('title')->get();
+
         return view('admin.invoices.edit', compact('invoice', 'customers', 'services'));
     }
 
@@ -153,7 +158,7 @@ class InvoiceController extends Controller
             $subtotal = (float) str_replace(['.', ','], ['', '.'], $item['subtotal']);
             $total += $subtotal;
 
-            $namaItem = !empty($item['nama_item']) ? $item['nama_item'] : ($perihalArray[$itemIndex] ?? null);
+            $namaItem = ! empty($item['nama_item']) ? $item['nama_item'] : ($perihalArray[$itemIndex] ?? null);
 
             $itemsData[] = [
                 'nama_item' => $namaItem,
@@ -190,12 +195,13 @@ class InvoiceController extends Controller
 
     public function destroy(string $id)
     {
-        if (!auth()->user()->isAdmin()) {
+        if (! auth()->user()->isAdmin()) {
             abort(403, 'Unauthorized action.');
         }
 
         $invoice = Invoice::findOrFail($id);
         $invoice->delete();
+
         return redirect()->route('invoices.index')->with('success', 'Invoice berhasil dihapus.');
     }
 
@@ -203,10 +209,18 @@ class InvoiceController extends Controller
     {
         $invoice = Invoice::with(['customer', 'items'])->findOrFail($id);
 
-        $pdf = app('dompdf.wrapper')->loadView('admin.invoices.pdf', compact('invoice'))
-            ->setPaper(array(0, 0, 595.28, 935.43), 'portrait'); // F4 size
+        if (empty($invoice->verify_token)) {
+            $invoice->update(['verify_token' => (string) Str::uuid()]);
+            $invoice->refresh();
+        }
 
-        $filename = 'Invoice_' . str_replace('/', '_', $invoice->nomor_invoice) . '.pdf';
+        $verifyUrl = route('verify.invoice', $invoice->verify_token);
+        $qrCode = QRCodeHelper::generate($verifyUrl, 200);
+
+        $pdf = app('dompdf.wrapper')->loadView('admin.invoices.pdf', compact('invoice', 'qrCode'))
+            ->setPaper([0, 0, 595.28, 935.43], 'portrait');
+
+        $filename = 'Invoice_'.str_replace('/', '_', $invoice->nomor_invoice).'.pdf';
 
         return $pdf->stream($filename);
     }

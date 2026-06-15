@@ -68,6 +68,7 @@ class QuotationFactory extends Factory
                 $num -= $value;
             }
         }
+
         return $result;
     }
 }

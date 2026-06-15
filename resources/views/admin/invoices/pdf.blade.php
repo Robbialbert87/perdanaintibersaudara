@@ -279,23 +279,31 @@
 
     <table style="width: 100%; margin-top: 40px;">
         <tr>
-            <td style="width: 50%; vertical-align: top;">
-                <div class="bank-info">
-                    <p style="text-decoration: underline; font-weight: bold;">Pembayaran Melalui</p>
-                    <p>Bank BCA No Rekening 619-801-2191</p>
-                    <p>An. CV. Perdana Inti Bersaudara</p>
-                </div>
-            </td>
-            <td style="width: 50%; vertical-align: top; text-align: right;">
-                <div class="ttd">
-                    <p style="font-weight: bold;">Hormat Saya,</p>
-                    <br><br><br>
-                    <p><strong>Erwin Darmawan</strong></p>
-                    <p>Direktur</p>
-                </div>
+            <td style="text-align: right; vertical-align: middle;">
+                <table cellpadding="0" cellspacing="0" style="width: auto; border-collapse: collapse; margin-left: auto;">
+                    <tr>
+                        <td style="padding: 0; padding-right: 15px; vertical-align: middle; text-align: center;">
+                            <img src="{{ $qrCode }}" alt="QR Code" style="width: 100px; height: 100px; display: block;">
+                        </td>
+                        <td style="padding: 0; vertical-align: middle; text-align: left;">
+                            <div class="ttd" style="margin-top: 0; text-align: left;">
+                                <p style="margin: 0; padding-bottom: 10px;">Ditandatangani secara elektronik oleh:</p>
+                                <p style="margin: 0;"><strong>CV. PERDANA INTI BERSAUDARA</strong></p>
+                                <p style="margin: 0;"><strong>Erwin Darmawan</strong></p>
+                                <p style="margin: 0;">Direktur</p>
+                            </div>
+                        </td>
+                    </tr>
+                </table>
             </td>
         </tr>
     </table>
+
+    <div class="bank-info">
+        <p style="text-decoration: underline; font-weight: bold;">Pembayaran Melalui</p>
+        <p>Bank BCA No Rekening 619-801-2191</p>
+        <p>An. CV. Perdana Inti Bersaudara</p>
+    </div>
 
 </div>
 

@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers;
 
+use App\Models\Customer;
 use Illuminate\Http\Request;
 
 class CustomerController extends Controller
@@ -11,18 +12,18 @@ class CustomerController extends Controller
      */
     public function index(Request $request)
     {
-        $query = \App\Models\Customer::query();
-        
+        $query = Customer::query();
+
         if ($request->has('search')) {
             $search = str_replace(['%', '_'], ['\\%', '\\_'], $request->get('search'));
             $query->where('nama_instansi', 'like', "%{$search}%")
-                  ->orWhere('contact_person', 'like', "%{$search}%")
-                  ->orWhere('telepon', 'like', "%{$search}%")
-                  ->orWhere('email', 'like', "%{$search}%");
+                ->orWhere('contact_person', 'like', "%{$search}%")
+                ->orWhere('telepon', 'like', "%{$search}%")
+                ->orWhere('email', 'like', "%{$search}%");
         }
 
         $customers = $query->latest()->paginate(10);
-        
+
         return view('admin.customers.index', compact('customers'));
     }
 
@@ -48,7 +49,7 @@ class CustomerController extends Controller
             'contact_person' => 'nullable|string|max:150',
         ]);
 
-        \App\Models\Customer::create($validated);
+        Customer::create($validated);
 
         return redirect()->route('customers.index')->with('success', 'Customer berhasil ditambahkan.');
     }
@@ -66,7 +67,8 @@ class CustomerController extends Controller
      */
     public function edit(string $id)
     {
-        $customer = \App\Models\Customer::findOrFail($id);
+        $customer = Customer::findOrFail($id);
+
         return view('admin.customers.edit', compact('customer'));
     }
 
@@ -84,7 +86,7 @@ class CustomerController extends Controller
             'contact_person' => 'nullable|string|max:150',
         ]);
 
-        $customer = \App\Models\Customer::findOrFail($id);
+        $customer = Customer::findOrFail($id);
         $customer->update($validated);
 
         return redirect()->route('customers.index')->with('success', 'Customer berhasil diperbarui.');
@@ -95,7 +97,7 @@ class CustomerController extends Controller
      */
     public function destroy(string $id)
     {
-        $customer = \App\Models\Customer::findOrFail($id);
+        $customer = Customer::findOrFail($id);
         $customer->delete();
 
         return redirect()->route('customers.index')->with('success', 'Customer berhasil dihapus.');

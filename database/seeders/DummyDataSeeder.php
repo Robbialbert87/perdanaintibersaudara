@@ -25,16 +25,16 @@ class DummyDataSeeder extends Seeder
         DB::statement('SET FOREIGN_KEY_CHECKS=1');
 
         $products = Product::factory()->count(3)->create();
-        $this->command->info('Created ' . $products->count() . ' products.');
+        $this->command->info('Created '.$products->count().' products.');
 
         $services = Service::factory()->count(14)->create();
-        $this->command->info('Created ' . $services->count() . ' services.');
+        $this->command->info('Created '.$services->count().' services.');
 
         $activities = Activity::factory()->count(7)->create();
-        $this->command->info('Created ' . $activities->count() . ' activities.');
+        $this->command->info('Created '.$activities->count().' activities.');
 
         $customers = Customer::factory()->count(12)->create();
-        $this->command->info('Created ' . $customers->count() . ' customers.');
+        $this->command->info('Created '.$customers->count().' customers.');
 
         $productList = Product::all();
 
@@ -58,8 +58,8 @@ class DummyDataSeeder extends Seeder
                     'quotation_id' => $quotation->id,
                     'product_id' => $product->id,
                     'nama_item' => $product->name,
-                    'deskripsi' => 'Unit baru, spesifikasi sesuai standar. ' . ($product->description ? substr($product->description, 0, 100) . '...' : ''),
-                    'volume' => $volume . ' ' . ($product->satuan ?? 'Unit'),
+                    'deskripsi' => 'Unit baru, spesifikasi sesuai standar. '.($product->description ? substr($product->description, 0, 100).'...' : ''),
+                    'volume' => $volume.' '.($product->satuan ?? 'Unit'),
                     'harga_satuan' => $price,
                     'subtotal' => $volume * $price,
                 ]));
@@ -72,7 +72,7 @@ class DummyDataSeeder extends Seeder
         }
 
         $quotationCount = Quotation::count();
-        $this->command->info('Created ' . $quotationCount . ' quotations with items.');
+        $this->command->info('Created '.$quotationCount.' quotations with items.');
     }
 
     private function randomStatus(int $index): string

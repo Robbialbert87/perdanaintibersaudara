@@ -69,7 +69,7 @@ class ActivityFactory extends Factory
                 try {
                     $response = Http::timeout(15)->get($url);
                     if ($response->successful()) {
-                        $filename = 'activities/' . Str::random(40) . '.jpg';
+                        $filename = 'activities/'.Str::random(40).'.jpg';
                         Storage::disk('public')->put($filename, $response->body());
                         $images[] = $filename;
                     }
@@ -78,7 +78,7 @@ class ActivityFactory extends Factory
                 }
             }
 
-            if (!empty($images)) {
+            if (! empty($images)) {
                 $activity->update([
                     'images' => $images,
                     'active_images' => $images,

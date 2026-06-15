@@ -16,7 +16,7 @@ class Quotation extends Model
         'perihal',
         'total',
         'status',
-        'catatan'
+        'catatan',
     ];
 
     protected $casts = [

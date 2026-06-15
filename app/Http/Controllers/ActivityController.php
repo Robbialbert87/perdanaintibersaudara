@@ -12,8 +12,9 @@ class ActivityController extends Controller
     public function index()
     {
         $activities = Activity::latest()->get();
+
         return view('admin.activities.index', [
-            'activities' => $activities
+            'activities' => $activities,
         ]);
     }
 
@@ -25,13 +26,13 @@ class ActivityController extends Controller
     public function store(Request $request)
     {
         $validated = $request->validate([
-            'title'   => 'required|string|max:255',
+            'title' => 'required|string|max:255',
             'content' => 'required|string',
-            'date'    => 'required|date',
-            'images'  => 'nullable|array|max:5',
-            'images.*'=> 'image|mimes:jpg,jpeg,png,webp|max:5120',
-            'videos'  => 'nullable|array|max:3',
-            'videos.*'=> 'mimes:mp4,avi,mov,mkv,webm,flv,wmv|max:102400',
+            'date' => 'required|date',
+            'images' => 'nullable|array|max:5',
+            'images.*' => 'image|mimes:jpg,jpeg,png,webp|max:5120',
+            'videos' => 'nullable|array|max:3',
+            'videos.*' => 'mimes:mp4,avi,mov,mkv,webm,flv,wmv|max:102400',
         ]);
 
         $imagePaths = [];
@@ -60,24 +61,24 @@ class ActivityController extends Controller
     public function edit(Activity $activity)
     {
         return view('admin.activities.form', [
-            'activity' => $activity
+            'activity' => $activity,
         ]);
     }
 
     public function update(Request $request, Activity $activity)
     {
         $validated = $request->validate([
-            'title'   => 'required|string|max:255',
+            'title' => 'required|string|max:255',
             'content' => 'required|string',
-            'date'    => 'required|date',
+            'date' => 'required|date',
             'active_images' => 'nullable|array',
             'active_images.*' => 'string',
             'active_videos' => 'nullable|array',
             'active_videos.*' => 'string',
-            'images'  => 'nullable|array|max:5',
-            'images.*'=> 'image|mimes:jpg,jpeg,png,webp|max:5120',
-            'videos'  => 'nullable|array|max:3',
-            'videos.*'=> 'mimes:mp4,avi,mov,mkv,webm,flv,wmv|max:102400',
+            'images' => 'nullable|array|max:5',
+            'images.*' => 'image|mimes:jpg,jpeg,png,webp|max:5120',
+            'videos' => 'nullable|array|max:3',
+            'videos.*' => 'mimes:mp4,avi,mov,mkv,webm,flv,wmv|max:102400',
         ]);
 
         $newImagePaths = [];
@@ -115,7 +116,7 @@ class ActivityController extends Controller
 
         $file = $request->input('file');
 
-        if (!Str::startsWith($file, ['activities/', 'activities/videos/'])) {
+        if (! Str::startsWith($file, ['activities/', 'activities/videos/'])) {
             return redirect()->back()->with('error', 'Path file tidak valid.');
         }
 

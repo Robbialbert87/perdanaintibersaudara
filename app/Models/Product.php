@@ -19,7 +19,7 @@ class Product extends Model
         'active_videos',
         'spesifikasi',
         'satuan',
-        'harga_default'
+        'harga_default',
     ];
 
     protected $casts = [

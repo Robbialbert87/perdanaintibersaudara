@@ -186,7 +186,7 @@ class ServiceFactory extends Factory
             try {
                 $response = Http::timeout(15)->get($url);
                 if ($response->successful()) {
-                    $filename = 'services/' . Str::random(40) . '.jpg';
+                    $filename = 'services/'.Str::random(40).'.jpg';
                     Storage::disk('public')->put($filename, $response->body());
                     $service->update(['image' => $filename]);
                 }

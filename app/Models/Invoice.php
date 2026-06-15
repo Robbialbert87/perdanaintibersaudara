@@ -4,6 +4,7 @@ namespace App\Models;
 
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
+use Illuminate\Support\Str;
 
 class Invoice extends Model
 {
@@ -20,6 +21,7 @@ class Invoice extends Model
         'status',
         'catatan',
         'bukti_bayar',
+        'verify_token',
     ];
 
     protected $casts = [
@@ -27,6 +29,15 @@ class Invoice extends Model
         'tanggal_bayar' => 'date',
         'perihal' => 'array',
     ];
+
+    protected static function booted(): void
+    {
+        static::creating(function (Invoice $invoice) {
+            if (empty($invoice->verify_token)) {
+                $invoice->verify_token = (string) Str::uuid();
+            }
+        });
+    }
 
     public function customer()
     {

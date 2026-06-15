@@ -2,6 +2,7 @@
 
 namespace Database\Factories;
 
+use App\Models\Product;
 use App\Models\QuotationItem;
 use Illuminate\Database\Eloquent\Factories\Factory;
 
@@ -43,13 +44,13 @@ class QuotationItemFactory extends Factory
                 'Spesifikasi sesuai purchase order',
                 'Termasuk pengiriman ke lokasi',
             ]),
-            'volume' => $volume . ' Unit',
+            'volume' => $volume.' Unit',
             'harga_satuan' => $hargaSatuan,
             'subtotal' => $volume * $hargaSatuan,
         ];
     }
 
-    public function withProduct(\App\Models\Product $product): static
+    public function withProduct(Product $product): static
     {
         return $this->state(function (array $attributes) use ($product) {
             $volume = $this->faker->numberBetween(1, 5);
@@ -59,7 +60,7 @@ class QuotationItemFactory extends Factory
                 'product_id' => $product->id,
                 'nama_item' => $product->name,
                 'deskripsi' => $product->description ? substr($product->description, 0, 150) : 'Unit baru, spesifikasi sesuai standar',
-                'volume' => $volume . ' ' . ($product->satuan ?? 'Unit'),
+                'volume' => $volume.' '.($product->satuan ?? 'Unit'),
                 'harga_satuan' => $price,
                 'subtotal' => $volume * $price,
             ];

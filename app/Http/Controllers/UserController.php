@@ -11,7 +11,7 @@ class UserController extends Controller
 {
     private function authorizeAdmin(): void
     {
-        if (!auth()->user()->isAdmin()) {
+        if (! auth()->user()->isAdmin()) {
             abort(403, 'Unauthorized.');
         }
     }
@@ -25,7 +25,7 @@ class UserController extends Controller
         if ($request->has('search')) {
             $search = str_replace(['%', '_'], ['\\%', '\\_'], $request->get('search'));
             $query->where('name', 'like', "%{$search}%")
-                  ->orWhere('email', 'like', "%{$search}%");
+                ->orWhere('email', 'like', "%{$search}%");
         }
 
         $users = $query->latest()->paginate(10);
@@ -63,6 +63,7 @@ class UserController extends Controller
         $this->authorizeAdmin();
 
         $user = User::findOrFail($id);
+
         return view('admin.users.edit', compact('user'));
     }
 
@@ -79,7 +80,7 @@ class UserController extends Controller
             'role' => 'required|in:admin,user',
         ]);
 
-        if (!empty($validated['password'])) {
+        if (! empty($validated['password'])) {
             $validated['password'] = Hash::make($validated['password']);
         } else {
             unset($validated['password']);

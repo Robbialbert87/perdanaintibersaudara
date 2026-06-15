@@ -15,6 +15,6 @@ class Customer extends Model
         'kota',
         'telepon',
         'email',
-        'contact_person'
+        'contact_person',
     ];
 }

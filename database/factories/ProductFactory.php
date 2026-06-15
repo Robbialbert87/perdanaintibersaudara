@@ -58,7 +58,7 @@ class ProductFactory extends Factory
                 try {
                     $response = Http::timeout(15)->get($url);
                     if ($response->successful()) {
-                        $filename = 'products/' . Str::random(40) . '.jpg';
+                        $filename = 'products/'.Str::random(40).'.jpg';
                         Storage::disk('public')->put($filename, $response->body());
                         $images[] = $filename;
                     }
@@ -67,7 +67,7 @@ class ProductFactory extends Factory
                 }
             }
 
-            if (!empty($images)) {
+            if (! empty($images)) {
                 $product->update([
                     'images' => $images,
                     'active_images' => $images,

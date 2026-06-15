@@ -2,7 +2,11 @@
 
 namespace App\Http\Controllers;
 
+use App\Models\Customer;
+use App\Models\Product;
+use App\Models\Quotation;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\DB;
 
 class QuotationController extends Controller
 {
@@ -11,18 +15,19 @@ class QuotationController extends Controller
      */
     public function index(Request $request)
     {
-        $query = \App\Models\Quotation::with('customer');
+        $query = Quotation::with('customer');
 
         if ($request->has('search')) {
             $search = str_replace(['%', '_'], ['\\%', '\\_'], $request->get('search'));
             $query->where('nomor_surat', 'like', "%{$search}%")
-                  ->orWhere('perihal', 'like', "%{$search}%")
-                  ->orWhereHas('customer', function($q) use ($search) {
-                      $q->where('nama_instansi', 'like', "%{$search}%");
-                  });
+                ->orWhere('perihal', 'like', "%{$search}%")
+                ->orWhereHas('customer', function ($q) use ($search) {
+                    $q->where('nama_instansi', 'like', "%{$search}%");
+                });
         }
 
         $quotations = $query->latest()->paginate(10);
+
         return view('admin.quotations.index', compact('quotations'));
     }
 
@@ -31,8 +36,9 @@ class QuotationController extends Controller
      */
     public function create()
     {
-        $customers = \App\Models\Customer::orderBy('nama_instansi')->get();
-        $products = \App\Models\Product::orderBy('name')->get();
+        $customers = Customer::orderBy('nama_instansi')->get();
+        $products = Product::orderBy('name')->get();
+
         return view('admin.quotations.create', compact('customers', 'products'));
     }
 
@@ -63,8 +69,8 @@ class QuotationController extends Controller
             $harga = (float) str_replace(['.', ','], ['', '.'], $item['harga_satuan']);
             $subtotal = (float) str_replace(['.', ','], ['', '.'], $item['subtotal']);
             $total += $subtotal;
-            
-            $namaItem = !empty($item['nama_item']) ? $item['nama_item'] : ($perihalArray[$itemIndex] ?? null);
+
+            $namaItem = ! empty($item['nama_item']) ? $item['nama_item'] : ($perihalArray[$itemIndex] ?? null);
 
             $itemsData[] = [
                 'nama_item' => $namaItem,
@@ -76,16 +82,16 @@ class QuotationController extends Controller
             $itemIndex++;
         }
 
-        \Illuminate\Support\Facades\DB::transaction(function () use ($request, $itemsData, $total) {
+        DB::transaction(function () use ($request, $itemsData, $total) {
             $month = date('n', strtotime($request->tanggal));
             $year = date('Y', strtotime($request->tanggal));
-            $romans = ['I','II','III','IV','V','VI','VII','VIII','IX','X','XI','XII'];
+            $romans = ['I', 'II', 'III', 'IV', 'V', 'VI', 'VII', 'VIII', 'IX', 'X', 'XI', 'XII'];
             $romanMonth = $romans[$month - 1];
 
-            $lastQuotation = \App\Models\Quotation::whereYear('tanggal', $year)
-                                ->whereMonth('tanggal', $month)
-                                ->orderBy('id', 'desc')
-                                ->first();
+            $lastQuotation = Quotation::whereYear('tanggal', $year)
+                ->whereMonth('tanggal', $month)
+                ->orderBy('id', 'desc')
+                ->first();
 
             $nextNumber = 1;
             if ($lastQuotation) {
@@ -95,7 +101,7 @@ class QuotationController extends Controller
 
             $nomorSurat = sprintf('%03d/SP/CV.PIB-JMB/%s/%s', $nextNumber, $romanMonth, $year);
 
-            $quotation = \App\Models\Quotation::create([
+            $quotation = Quotation::create([
                 'nomor_surat' => $nomorSurat,
                 'tanggal' => $request->tanggal,
                 'customer_id' => $request->customer_id,
@@ -120,7 +126,8 @@ class QuotationController extends Controller
      */
     public function show(string $id)
     {
-        $quotation = \App\Models\Quotation::with(['customer', 'items.product'])->findOrFail($id);
+        $quotation = Quotation::with(['customer', 'items.product'])->findOrFail($id);
+
         return view('admin.quotations.show', compact('quotation'));
     }
 
@@ -129,14 +136,14 @@ class QuotationController extends Controller
      */
     public function exportPdf(string $id)
     {
-        $quotation = \App\Models\Quotation::with(['customer', 'items.product'])->findOrFail($id);
-        
+        $quotation = Quotation::with(['customer', 'items.product'])->findOrFail($id);
+
         $pdf = app('dompdf.wrapper')->loadView('admin.quotations.pdf', compact('quotation'))
-                ->setPaper(array(0, 0, 595.28, 935.43), 'portrait'); // F4 size
-                
+            ->setPaper([0, 0, 595.28, 935.43], 'portrait'); // F4 size
+
         // Generate a filename based on quotation number
-        $filename = 'Penawaran_' . str_replace('/', '_', $quotation->nomor_surat) . '.pdf';
-        
+        $filename = 'Penawaran_'.str_replace('/', '_', $quotation->nomor_surat).'.pdf';
+
         return $pdf->stream($filename);
     }
 
@@ -145,9 +152,10 @@ class QuotationController extends Controller
      */
     public function edit(string $id)
     {
-        $quotation = \App\Models\Quotation::with('items')->findOrFail($id);
-        $customers = \App\Models\Customer::orderBy('nama_instansi')->get();
-        $products = \App\Models\Product::orderBy('name')->get();
+        $quotation = Quotation::with('items')->findOrFail($id);
+        $customers = Customer::orderBy('nama_instansi')->get();
+        $products = Product::orderBy('name')->get();
+
         return view('admin.quotations.edit', compact('quotation', 'customers', 'products'));
     }
 
@@ -179,8 +187,8 @@ class QuotationController extends Controller
             $harga = (float) str_replace(['.', ','], ['', '.'], $item['harga_satuan']);
             $subtotal = (float) str_replace(['.', ','], ['', '.'], $item['subtotal']);
             $total += $subtotal;
-            
-            $namaItem = !empty($item['nama_item']) ? $item['nama_item'] : ($perihalArray[$itemIndex] ?? null);
+
+            $namaItem = ! empty($item['nama_item']) ? $item['nama_item'] : ($perihalArray[$itemIndex] ?? null);
 
             $itemsData[] = [
                 'nama_item' => $namaItem,
@@ -192,9 +200,9 @@ class QuotationController extends Controller
             $itemIndex++;
         }
 
-        $quotation = \App\Models\Quotation::findOrFail($id);
+        $quotation = Quotation::findOrFail($id);
 
-        \Illuminate\Support\Facades\DB::transaction(function () use ($request, $quotation, $itemsData, $total) {
+        DB::transaction(function () use ($request, $quotation, $itemsData, $total) {
             $quotation->update([
                 'tanggal' => $request->tanggal,
                 'customer_id' => $request->customer_id,
@@ -205,7 +213,7 @@ class QuotationController extends Controller
 
             // Hapus items lama
             $quotation->items()->delete();
-            
+
             foreach ($itemsData as $item) {
                 $quotation->items()->create($item);
             }
@@ -221,8 +229,9 @@ class QuotationController extends Controller
      */
     public function destroy(string $id)
     {
-        $quotation = \App\Models\Quotation::findOrFail($id);
+        $quotation = Quotation::findOrFail($id);
         $quotation->delete();
+
         return redirect()->route('quotations.index')->with('success', 'Penawaran berhasil dihapus.');
     }
 }

@@ -1,12 +1,13 @@
 <?php
 
 use App\Http\Controllers\ActivityController;
+use App\Http\Controllers\CustomerController;
 use App\Http\Controllers\InvoiceController;
 use App\Http\Controllers\ProductController;
-use App\Http\Controllers\CustomerController;
 use App\Http\Controllers\QuotationController;
 use App\Http\Controllers\ServiceController;
 use App\Http\Controllers\UserController;
+use App\Http\Controllers\VerifyController;
 use App\Models\Activity;
 use App\Models\Product;
 use App\Models\Service;
@@ -26,22 +27,27 @@ Route::get('/about', function () {
 
 Route::get('/layanan', function () {
     $services = Service::latest()->get();
+
     return view('style.layanan', compact('services'));
 })->name('layanan.page');
 
 Route::get('/produk', function () {
     $products = Product::latest()->get();
+
     return view('style.produk', compact('products'));
 })->name('produk.page');
 
 Route::get('/kegiatan', function () {
     $activities = Activity::latest()->get();
+
     return view('style.kegiatan', compact('activities'));
 })->name('kegiatan.page');
 
 Route::get('/contact', function () {
     return view('style.contact');
 })->name('contact.page');
+
+Route::get('/verify/{token}', [VerifyController::class, 'show'])->name('verify.invoice');
 Route::get('/produk/{id}', function ($id) {
     $product = Product::findOrFail($id);
 
@@ -49,7 +55,7 @@ Route::get('/produk/{id}', function ($id) {
 })->name('produk.detail');
 
 Route::get('/layanan/{id}', function ($id) {
-    $service = \App\Models\Service::findOrFail($id);
+    $service = Service::findOrFail($id);
 
     return view('style.layanan-detail', compact('service'));
 })->name('layanan.detail');

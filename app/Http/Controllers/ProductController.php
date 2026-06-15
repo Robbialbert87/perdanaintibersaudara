@@ -12,8 +12,9 @@ class ProductController extends Controller
     public function index()
     {
         $products = Product::latest()->get();
+
         return view('admin.products.index', [
-            'products' => $products
+            'products' => $products,
         ]);
     }
 
@@ -31,10 +32,10 @@ class ProductController extends Controller
             'spesifikasi' => 'nullable|string',
             'satuan' => 'nullable|string|max:50',
             'harga_default' => 'nullable|numeric|min:0',
-            'images'  => 'nullable|array|max:5',
-            'images.*'=> 'image|mimes:jpg,jpeg,png,webp|max:5120',
-            'videos'  => 'nullable|array|max:3',
-            'videos.*'=> 'mimes:mp4,avi,mov,mkv,webm,flv,wmv|max:102400',
+            'images' => 'nullable|array|max:5',
+            'images.*' => 'image|mimes:jpg,jpeg,png,webp|max:5120',
+            'videos' => 'nullable|array|max:3',
+            'videos.*' => 'mimes:mp4,avi,mov,mkv,webm,flv,wmv|max:102400',
         ]);
 
         $imagePaths = [];
@@ -63,7 +64,7 @@ class ProductController extends Controller
     public function edit(Product $product)
     {
         return view('admin.products.form', [
-            'product' => $product
+            'product' => $product,
         ]);
     }
 
@@ -121,7 +122,7 @@ class ProductController extends Controller
 
         $file = $request->input('file');
 
-        if (!Str::startsWith($file, ['products/', 'products/videos/'])) {
+        if (! Str::startsWith($file, ['products/', 'products/videos/'])) {
             return redirect()->back()->with('error', 'Path file tidak valid.');
         }
 
