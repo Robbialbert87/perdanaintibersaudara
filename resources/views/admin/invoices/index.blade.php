@@ -85,7 +85,7 @@
                             <a href="{{ route('invoices.show', $invoice->id) }}" class="btn btn-info btn-sm text-white" title="Detail">
                                 <i class="bi bi-eye"></i>
                             </a>
-                            <a href="{{ route('invoices.export_pdf', $invoice->id) }}" target="_blank" class="btn btn-secondary btn-sm" title="Export PDF">
+                            <a href="{{ route('invoices.export_pdf', $invoice->id) }}" class="btn btn-secondary btn-sm" title="Download PDF">
                                 <i class="bi bi-file-earmark-pdf"></i>
                             </a>
                             <a href="{{ route('invoices.edit', $invoice->id) }}" class="btn btn-warning btn-sm" title="Edit">

@@ -27,7 +27,7 @@
         <div class="d-flex flex-column flex-sm-row justify-content-between align-items-start align-items-sm-center gap-2">
             <h5 class="mb-0 text-primary"><i class="bi bi-receipt me-2"></i>Detail Invoice</h5>
             <div class="d-flex flex-wrap gap-1">
-                <a href="{{ route('invoices.export_pdf', $invoice->id) }}" target="_blank" class="btn btn-secondary btn-sm">
+                <a href="{{ route('invoices.export_pdf', $invoice->id) }}" class="btn btn-secondary btn-sm">
                     <i class="bi bi-file-earmark-pdf"></i> <span class="d-none d-sm-inline">Export PDF</span>
                 </a>
                 <a href="{{ route('invoices.edit', $invoice->id) }}" class="btn btn-warning btn-sm">

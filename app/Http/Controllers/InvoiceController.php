@@ -222,7 +222,7 @@ class InvoiceController extends Controller
 
         $filename = 'Invoice_'.str_replace('/', '_', $invoice->nomor_invoice).'.pdf';
 
-        return $pdf->stream($filename);
+        return $pdf->download($filename);
     }
 
     public function markAsPaid(Request $request, string $id)

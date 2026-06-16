@@ -144,7 +144,7 @@ class QuotationController extends Controller
         // Generate a filename based on quotation number
         $filename = 'Penawaran_'.str_replace('/', '_', $quotation->nomor_surat).'.pdf';
 
-        return $pdf->stream($filename);
+        return $pdf->download($filename);
     }
 
     /**
