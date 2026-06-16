@@ -4,6 +4,13 @@
 
 @push('styles')
 <style>
+@keyframes blink {
+    0%, 100% { opacity: 1; }
+    50% { opacity: .2; }
+}
+.bi-hourglass-split {
+    animation: blink 1.2s ease-in-out infinite;
+}
 .stat-card {
     border: none;
     border-radius: 16px;
