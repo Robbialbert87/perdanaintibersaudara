@@ -225,6 +225,36 @@
             });
         });
 
+        document.getElementById('add-feature').addEventListener('click', function() {
+            var container = document.getElementById('features-container');
+            var item = document.createElement('div');
+            item.className = 'input-group mb-2 feature-item';
+            item.innerHTML = '<span class="input-group-text"><i class="bi bi-check2"></i></span><input type="text" name="features[]" class="form-control" placeholder="Nama fitur..."><button class="btn btn-outline-danger remove-feature" type="button"><i class="bi bi-x"></i></button>';
+            container.appendChild(item);
+            updateRemoveFeatureButtons();
+        });
+
+        document.getElementById('features-container').addEventListener('click', function(e) {
+            if (e.target.closest('.remove-feature')) {
+                var btn = e.target.closest('.remove-feature');
+                var items = document.querySelectorAll('.feature-item');
+                if (items.length > 1) {
+                    btn.closest('.feature-item').remove();
+                    updateRemoveFeatureButtons();
+                }
+            }
+        });
+
+        function updateRemoveFeatureButtons() {
+            var items = document.querySelectorAll('.feature-item');
+            items.forEach(function(item) {
+                var btn = item.querySelector('.remove-feature');
+                if (btn) btn.disabled = (items.length === 1);
+            });
+        }
+
+        updateRemoveFeatureButtons();
+
         if (document.getElementById('sortable-images')) {
             new Sortable(document.getElementById('sortable-images'), {
                 animation: 150,
