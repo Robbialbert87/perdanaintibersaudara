@@ -64,7 +64,7 @@
                         </tr>
                     </thead>
                     <tbody id="itemsBody">
-                        <!-- Baris pertama (default) -->
+                        <!-- Baris (jika Kegiatan Optional) pertama (default) -->
                         <tr class="item-row">
                             <td>
                                 <small class="text-primary fw-semibold perihal-badge d-block mb-1"></small>
@@ -101,7 +101,7 @@
                 </table>
             </div>
             
-            <button type="button" id="addRow" class="btn btn-success btn-sm mb-4"><i class="bi bi-plus-lg"></i> Baris</button>
+            <button type="button" id="addRow" class="btn btn-success btn-sm mb-4"><i class="bi bi-plus-lg"></i> Baris (jika Kegiatan Optional)</button>
 
             <div class="mb-4">
                 <label class="form-label">Catatan Tambahan (Opsional)</label>
