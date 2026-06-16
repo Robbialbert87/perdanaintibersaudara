@@ -295,7 +295,9 @@
                             <div class="ttd" style="margin-top: 0; text-align: left;">
                                 <p style="margin: 0; padding-bottom: 10px;">Ditandatangani secara elektronik oleh:</p>
                                 <p style="margin: 0;"><strong>CV. PERDANA INTI BERSAUDARA</strong></p>
+                                @if($invoice->customer->email !== 'info.jmb@rsrapha.com')
                                 <p style="margin: 0;"><strong>Erwin Darmawan</strong></p>
+                                @endif
                                 <p style="margin: 0;">Direktur</p>
                             </div>
                         </td>

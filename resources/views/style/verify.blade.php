@@ -134,10 +134,12 @@
                         <td class="value">: {{ ucfirst($invoice->status) }}</td>
                     </tr>
                     @endif
+                    @if($invoice->customer->email !== 'info.jmb@rsrapha.com')
                     <tr class="divider">
                         <td class="label">Dibuat Oleh</td>
                         <td class="value">: Erwin Darmawan</td>
                     </tr>
+                    @endif
                     <tr>
                         <td class="label">Tanggal Generate</td>
                         <td class="value">: {{ $tanggalGenerate }}</td>
