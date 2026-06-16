@@ -158,7 +158,7 @@
                 </table>
             </div>
 
-            <button type="button" id="addRow" class="btn btn-success btn-sm mb-4"><i class="bi bi-plus-lg"></i> Tambah Baris Item</button>
+            <button type="button" id="addRow" class="btn btn-success btn-sm mb-4"><i class="bi bi-plus-lg"></i> Baris</button>
 
             <div class="mb-4">
                 <label class="form-label">Catatan Tambahan (Opsional)</label>
