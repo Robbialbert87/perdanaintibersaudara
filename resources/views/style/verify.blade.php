@@ -33,12 +33,14 @@
         margin-bottom: 4px;
         font-size: 1.1rem;
         letter-spacing: 1px;
+        color: #fff;
     }
     .verify-header h2 {
         font-family: 'Quicksand', sans-serif;
         font-weight: 800;
         margin-bottom: 0;
         font-size: 1.6rem;
+        color: #fff;
     }
     .verify-body {
         padding: 30px;
