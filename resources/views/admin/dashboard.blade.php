@@ -8,7 +8,7 @@
     0%, 100% { opacity: 1; }
     50% { opacity: .2; }
 }
-.bi-hourglass-split {
+.bi-hourglass-split.blink {
     animation: blink 1.2s ease-in-out infinite;
 }
 .stat-card {
@@ -58,7 +58,8 @@
                         <h2 class="text-white mb-2 fw-bold">{{ \App\Models\Invoice::count() }} Total</h2>
                         <div class="d-flex gap-3">
                             <span class="text-white-50 small"><i class="bi bi-check-circle-fill text-success me-1"></i> Lunas: {{ \App\Models\Invoice::where('status', 'dibayar')->count() }}</span>
-                            <span class="text-white-50 small"><i class="bi bi-hourglass-split text-warning me-1"></i> Belum Lunas: {{ \App\Models\Invoice::whereIn('status', ['draft', 'dikirim'])->count() }}</span>
+                            @php $belumLunas = \App\Models\Invoice::whereIn('status', ['draft', 'dikirim'])->count(); @endphp
+                            <span class="text-white-50 small"><i class="bi bi-hourglass-split text-warning me-1{{ $belumLunas > 0 ? ' blink' : '' }}"></i> Belum Lunas: {{ $belumLunas }}</span>
                         </div>
                     </div>
                     <div class="icon-wrapper" style="background: rgba(255,255,255,0.15); color: white;">
