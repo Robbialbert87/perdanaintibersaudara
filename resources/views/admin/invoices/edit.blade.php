@@ -4,10 +4,48 @@
 
 @push('styles')
 <style>
-@media (max-width: 576px) {
-    .perihal-row .form-select { font-size: 13px; }
-    .item-row input, .item-row textarea { font-size: 13px; }
-    #itemsTable th { font-size: 11px; white-space: nowrap; }
+@media (max-width: 768px) {
+    #itemsTable, #itemsTable thead, #itemsTable tbody,
+    #itemsTable tr, #itemsTable td { display: block; }
+    #itemsTable { min-width: auto !important; }
+    #itemsTable thead { display: none; }
+    #itemsTable tr.item-row {
+        background: #1c252e;
+        border: 1px solid #454f5b;
+        border-radius: 10px;
+        padding: 16px;
+        margin-bottom: 16px;
+    }
+    #itemsTable td {
+        border: none !important;
+        padding: 6px 0 !important;
+        width: 100% !important;
+    }
+    #itemsTable td:before {
+        content: attr(data-label);
+        display: block;
+        font-weight: 600;
+        font-size: 11px;
+        color: #637381;
+        text-transform: uppercase;
+        letter-spacing: .5px;
+        margin-bottom: 4px;
+    }
+    #itemsTable td:last-child {
+        text-align: right;
+        padding-top: 12px !important;
+    }
+    #itemsTable td textarea { min-height: 54px; }
+    #itemsTable tfoot tr {
+        display: flex;
+        align-items: center;
+        gap: 8px;
+    }
+    #itemsTable tfoot td { border: none !important; }
+    #itemsTable tfoot td:first-child { flex: 1; text-align: right; padding: 0 !important; }
+    #itemsTable tfoot td:last-child { flex: 1; padding: 0 !important; }
+    #itemsTable tfoot td:last-child .input-group { margin-bottom: 0; }
+    #itemsTable tfoot td:before { display: none; }
 }
 </style>
 @endpush
@@ -82,25 +120,25 @@
                     <tbody id="itemsBody">
                         @foreach($invoice->items as $index => $item)
                         <tr class="item-row">
-                            <td>
+                            <td data-label="Layanan">
                                 <small class="text-primary fw-semibold perihal-badge d-block"></small>
                             </td>
-                            <td>
+                            <td data-label="Deskripsi">
                                 <textarea name="items[{{ $index }}][deskripsi]" class="form-control deskripsi-input" rows="2" required>{{ $item->deskripsi }}</textarea>
                             </td>
-                            <td>
+                            <td data-label="Tgl Kegiatan">
                                 <input type="date" name="items[{{ $index }}][tanggal_kegiatan]" class="form-control tanggal-input" value="{{ $item->tanggal_kegiatan }}">
                             </td>
-                            <td>
-                                <input type="text" name="items[{{ $index }}][volume]" class="form-control volume-input" value="{{ $item->volume }}" required placeholder="Vol">
+                            <td data-label="Volume">
+                                <input type="number" name="items[{{ $index }}][volume]" class="form-control volume-input" value="{{ $item->volume }}" required placeholder="0" step="any" min="0">
                             </td>
-                            <td>
+                            <td data-label="Harga Satuan">
                                 <input type="text" name="items[{{ $index }}][harga_satuan]" class="form-control harga-input currency-format" value="{{ floatval($item->harga_satuan) }}" required placeholder="0">
                             </td>
-                            <td>
+                            <td data-label="Jumlah Harga">
                                 <input type="text" name="items[{{ $index }}][subtotal]" class="form-control subtotal-input" value="{{ number_format($item->subtotal, 0, ',', '.') }}" readonly placeholder="Otomatis">
                             </td>
-                            <td class="text-center">
+                            <td class="text-center" data-label="">
                                 <button type="button" class="btn btn-danger btn-sm remove-row"><i class="bi bi-trash"></i></button>
                             </td>
                         </tr>
@@ -189,25 +227,25 @@ document.addEventListener('DOMContentLoaded', function() {
         const badgeHTML = namaItem ? `<small class="text-primary fw-semibold perihal-badge d-block mb-1"><i class="bi bi-tag-fill me-1"></i>${namaItem}</small>` : `<small class="text-primary fw-semibold perihal-badge d-block"></small>`;
         return `
         <tr class="item-row">
-            <td>
+            <td data-label="Layanan">
                 ${badgeHTML}
             </td>
-            <td>
+            <td data-label="Deskripsi">
                 <textarea name="items[${index}][deskripsi]" class="form-control deskripsi-input" rows="2" required placeholder="Deskripsi pekerjaan/barang..."></textarea>
             </td>
-            <td>
+            <td data-label="Tgl Kegiatan">
                 <input type="date" name="items[${index}][tanggal_kegiatan]" class="form-control tanggal-input">
             </td>
-            <td>
-                <input type="text" name="items[${index}][volume]" class="form-control volume-input" value="" required placeholder="Vol">
+            <td data-label="Volume">
+                <input type="number" name="items[${index}][volume]" class="form-control volume-input" value="" required placeholder="0" step="any" min="0">
             </td>
-            <td>
+            <td data-label="Harga Satuan">
                 <input type="text" name="items[${index}][harga_satuan]" class="form-control harga-input currency-format" value="" required placeholder="0">
             </td>
-            <td>
+            <td data-label="Jumlah Harga">
                 <input type="text" name="items[${index}][subtotal]" class="form-control subtotal-input" value="" readonly placeholder="Otomatis">
             </td>
-            <td class="text-center">
+            <td class="text-center" data-label="">
                 <button type="button" class="btn btn-danger btn-sm remove-row"><i class="bi bi-trash"></i></button>
             </td>
         </tr>`;
