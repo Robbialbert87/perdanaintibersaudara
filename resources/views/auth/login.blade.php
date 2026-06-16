@@ -4,7 +4,7 @@
 <div class="card">
     <div class="card-body">
         <div class="brand-top">
-            <div class="brand-icon">P</div>
+            <div class="brand-icon"><img src="{{ asset('style/assets/img/pib-logo.png') }}" alt="PIB"></div>
             <h1>Welcome Back</h1>
             <p>Masuk ke panel admin PIB</p>
         </div>

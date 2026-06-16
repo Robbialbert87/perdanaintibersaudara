@@ -4,9 +4,14 @@
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1">
 <meta name="csrf-token" content="{{ csrf_token() }}">
+<meta name="theme-color" content="#141a21">
+<meta name="apple-mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+<meta name="apple-mobile-web-app-title" content="PIB Admin">
+<link rel="manifest" href="{{ asset('manifest.json') }}">
 <title>Login - (PIB) Perdana Inti Bersaudara</title>
 <link href="{{ asset('logo1.png') }}" rel="icon">
-<link href="{{ asset('logo1.png') }}" rel="apple-touch-icon">
+<link href="{{ asset('icon-192x192.png') }}" rel="apple-touch-icon">
 <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet">
 <link href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.3/font/bootstrap-icons.min.css" rel="stylesheet">
 <link rel="preconnect" href="https://fonts.googleapis.com">
@@ -19,7 +24,8 @@ html,body{height:100%;background:#141a21;font-family:'Public Sans',sans-serif;-w
 body{display:flex;align-items:center;justify-content:center;padding:20px}
 
 .brand-top{text-align:center;margin-bottom:32px}
-.brand-top .brand-icon{width:48px;height:48px;border-radius:12px;background:var(--primary);display:flex;align-items:center;justify-content:center;font-size:24px;font-weight:700;color:#fff;margin:0 auto 12px}
+.brand-top .brand-icon{width:48px;height:48px;border-radius:12px;display:flex;align-items:center;justify-content:center;margin:0 auto 12px}
+.brand-top .brand-icon img{width:100%;height:100%;object-fit:contain;border-radius:12px}
 .brand-top h1{font-weight:700;font-size:22px;color:#f4f6f8;letter-spacing:-.4px;margin:0}
 .brand-top p{font-size:14px;color:#637381;margin:4px 0 0}
 
@@ -54,5 +60,10 @@ a:hover{color:#00c884}
   @yield('content')
 </div>
 <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"></script>
+<script>
+if ('serviceWorker' in navigator) {
+    navigator.serviceWorker.register('/sw.js');
+}
+</script>
 </body>
 </html>
