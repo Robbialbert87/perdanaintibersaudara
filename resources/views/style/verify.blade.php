@@ -128,10 +128,12 @@
                         <td class="label">Total Invoice</td>
                         <td class="value">: Rp {{ number_format($invoice->total, 0, ',', '.') }}</td>
                     </tr>
+                    @if($invoice->status !== 'draft')
                     <tr>
                         <td class="label">Status</td>
                         <td class="value">: {{ ucfirst($invoice->status) }}</td>
                     </tr>
+                    @endif
                     <tr class="divider">
                         <td class="label">Dibuat Oleh</td>
                         <td class="value">: Erwin Darmawan</td>
