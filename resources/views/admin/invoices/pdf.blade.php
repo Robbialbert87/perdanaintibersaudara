@@ -270,6 +270,12 @@
         </tfoot>
     </table>
 
+    <div class="bank-info">
+        <p style="text-decoration: underline; font-weight: bold;">Pembayaran Melalui</p>
+        <p>Bank BCA No Rekening 619-801-2191</p>
+        <p>An. CV. Perdana Inti Bersaudara</p>
+    </div>
+
     @if(!empty($invoice->catatan))
     <div class="footer-info">
         <div class="keterangan-title">Keterangan :</div>
@@ -298,12 +304,6 @@
             </td>
         </tr>
     </table>
-
-    <div class="bank-info">
-        <p style="text-decoration: underline; font-weight: bold;">Pembayaran Melalui</p>
-        <p>Bank BCA No Rekening 619-801-2191</p>
-        <p>An. CV. Perdana Inti Bersaudara</p>
-    </div>
 
 </div>
 

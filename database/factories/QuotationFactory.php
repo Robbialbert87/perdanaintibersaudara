@@ -49,7 +49,7 @@ class QuotationFactory extends Factory
         $romanYear = $year;
 
         return [
-            'nomor_surat' => sprintf('%03d/SP/CV.PIB-JMB/%s/%d', $seq, $roman, $romanYear),
+            'nomor_surat' => sprintf('%03d/SP/PIB-JMB/%s/%d', $seq, $roman, $romanYear),
             'tanggal' => $tanggal,
             'perihal' => [$this->faker->randomElement(static::$perihalOptions)],
             'total' => 0,

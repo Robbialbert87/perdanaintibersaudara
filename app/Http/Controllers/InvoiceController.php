@@ -94,7 +94,7 @@ class InvoiceController extends Controller
                 $nextNumber = intval($parts[0]) + 1;
             }
 
-            $nomorInvoice = sprintf('%03d/INV/CV.PIB-JMB/%s/%s', $nextNumber, $romanMonth, $year);
+            $nomorInvoice = sprintf('%03d/INV/PIB-JMB/%s/%s', $nextNumber, $romanMonth, $year);
 
             $invoice = Invoice::create([
                 'nomor_invoice' => $nomorInvoice,

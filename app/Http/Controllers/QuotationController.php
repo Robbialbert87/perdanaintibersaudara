@@ -99,7 +99,7 @@ class QuotationController extends Controller
                 $nextNumber = intval($parts[0]) + 1;
             }
 
-            $nomorSurat = sprintf('%03d/SP/CV.PIB-JMB/%s/%s', $nextNumber, $romanMonth, $year);
+            $nomorSurat = sprintf('%03d/SP/PIB-JMB/%s/%s', $nextNumber, $romanMonth, $year);
 
             $quotation = Quotation::create([
                 'nomor_surat' => $nomorSurat,
