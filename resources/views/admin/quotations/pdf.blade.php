@@ -102,7 +102,7 @@
         .table-items th, .table-items td {
             border: 1px solid black;
             padding: 6px 8px;
-            vertical-align: top;
+            vertical-align: middle;
         }
         .table-items th {
             text-align: center;
