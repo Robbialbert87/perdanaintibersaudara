@@ -133,6 +133,14 @@
                 <textarea name="catatan" class="form-control" rows="3" placeholder="Contoh: Harga belum termasuk PPN, franco Jakarta, dll.">{{ old('catatan') }}</textarea>
             </div>
 
+            <div class="mb-4">
+                <div class="form-check form-switch">
+                    <input class="form-check-input" type="checkbox" id="tampilkanGambar" name="tampilkan_gambar" value="1" {{ old('tampilkan_gambar') ? 'checked' : '' }}>
+                    <label class="form-check-label" for="tampilkanGambar"><i class="bi bi-image me-1"></i>Tampilkan gambar pada hasil PDF</label>
+                </div>
+                <small class="text-muted">Aktifkan untuk menyertakan lampiran gambar produk/jasa di PDF penawaran.</small>
+            </div>
+
             <div class="d-flex justify-content-between">
                 <a href="{{ route('quotations.index') }}" class="btn btn-secondary"><i class="bi bi-arrow-left"></i> Kembali</a>
                 <button type="submit" class="btn btn-primary"><i class="bi bi-save"></i> Buat Penawaran</button>

@@ -240,7 +240,7 @@
         <tfoot>
             <tr>
                 <td colspan="4" class="text-right" style="font-weight: bold; border: 1px solid black; padding: 6px 8px;"><strong>TOTAL</strong></td>
-                <td class="text-right" style="font-weight: bold; border: 1px solid black; padding: 6px 8px;"><strong>Rp {{ number_format($quotation->items->sum(fn($item) => (float) $item->volume * $item->harga_satuan), 0, ',', '.') }}</strong></td>
+                <td class="text-center" style="font-weight: bold; border: 1px solid black; padding: 6px 8px;"><strong>Rp {{ number_format($quotation->items->sum(fn($item) => (float) $item->volume * $item->harga_satuan), 0, ',', '.') }}</strong></td>
             </tr>
         </tfoot>
     </table>
@@ -291,7 +291,7 @@
     </table>
     @endif
 
-    @if(isset($perihalImages) && count(array_filter(array_column($perihalImages, 'path'))) > 0)
+    @if($quotation->tampilkan_gambar && isset($perihalImages) && count(array_filter(array_column($perihalImages, 'path'))) > 0)
     <div style="page-break-before: always; margin-top: 20px;">
         <h2 style="text-align: center; margin-bottom: 20px;">Lampiran Gambar</h2>
         <table style="width: 100%; border-collapse: collapse;">

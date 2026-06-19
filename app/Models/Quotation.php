@@ -18,6 +18,7 @@ class Quotation extends Model
         'status',
         'verify_token',
         'catatan',
+        'tampilkan_gambar',
     ];
 
     protected $casts = [

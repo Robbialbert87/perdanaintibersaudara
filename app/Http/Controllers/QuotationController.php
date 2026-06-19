@@ -115,6 +115,7 @@ class QuotationController extends Controller
                 'customer_id' => $request->customer_id,
                 'perihal' => json_encode($request->perihal),
                 'catatan' => $request->catatan,
+                'tampilkan_gambar' => $request->boolean('tampilkan_gambar'),
                 'status' => 'draft',
                 'total' => 0, // will be calculated
             ]);
@@ -245,6 +246,7 @@ class QuotationController extends Controller
                 'perihal' => json_encode($request->perihal),
                 'status' => $request->status,
                 'catatan' => $request->catatan,
+                'tampilkan_gambar' => $request->boolean('tampilkan_gambar'),
             ]);
 
             // Hapus items lama
