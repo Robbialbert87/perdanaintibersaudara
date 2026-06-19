@@ -48,6 +48,7 @@ Route::get('/contact', function () {
 })->name('contact.page');
 
 Route::get('/verify/{token}', [VerifyController::class, 'show'])->name('verify.invoice');
+Route::get('/verify-quotation/{token}', [VerifyController::class, 'showQuotation'])->name('verify.quotation');
 Route::get('/produk/{id}', function ($id) {
     $product = Product::findOrFail($id);
 

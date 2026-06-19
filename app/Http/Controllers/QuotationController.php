@@ -145,8 +145,13 @@ class QuotationController extends Controller
     {
         $quotation = Quotation::with(['customer', 'items.product'])->findOrFail($id);
 
-        $qrData = route('quotations.show', $quotation->id);
-        $qrCode = QRCodeHelper::generate($qrData, 150);
+        if (empty($quotation->verify_token)) {
+            $quotation->update(['verify_token' => (string) Str::uuid()]);
+            $quotation->refresh();
+        }
+
+        $verifyUrl = route('verify.quotation', $quotation->verify_token);
+        $qrCode = QRCodeHelper::generate($verifyUrl, 150);
 
         $pdf = app('dompdf.wrapper')->loadView('admin.quotations.pdf', compact('quotation', 'qrCode'))
             ->setPaper([0, 0, 595.28, 935.43], 'portrait'); // F4 size

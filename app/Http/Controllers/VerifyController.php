@@ -3,6 +3,7 @@
 namespace App\Http\Controllers;
 
 use App\Models\Invoice;
+use App\Models\Quotation;
 use Carbon\Carbon;
 
 class VerifyController extends Controller
@@ -18,5 +19,18 @@ class VerifyController extends Controller
         $tanggalGenerate = Carbon::now('Asia/Jakarta')->locale('id')->translatedFormat('d F Y H:i').' WIB';
 
         return view('style.verify', compact('invoice', 'tanggalGenerate'));
+    }
+
+    public function showQuotation(string $token)
+    {
+        $quotation = Quotation::with(['customer', 'items.product'])->where('verify_token', $token)->first();
+
+        if (! $quotation) {
+            return view('style.verify-not-found');
+        }
+
+        $tanggalGenerate = Carbon::now('Asia/Jakarta')->locale('id')->translatedFormat('d F Y H:i').' WIB';
+
+        return view('style.verify-quotation', compact('quotation', 'tanggalGenerate'));
     }
 }

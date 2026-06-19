@@ -16,6 +16,7 @@ class Quotation extends Model
         'perihal',
         'total',
         'status',
+        'verify_token',
         'catatan',
     ];
 
