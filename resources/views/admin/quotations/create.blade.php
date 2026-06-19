@@ -34,16 +34,18 @@
                     <div id="perihalContainer">
                         <div class="input-group mb-2 perihal-row">
                             <span class="input-group-text perihal-number">1.</span>
-                            <select name="perihal[]" class="form-select" required>
+                            <select name="perihal[]" class="form-select perihal-select" required>
                                 <option value="">-- Pilih Produk/Jasa --</option>
                                 <optgroup label="Produk">
                                     @foreach($products as $p)
-                                        <option value="{{ $p->name }}">{{ $p->name }}</option>
+                                        @php $firstImg = $p->active_images[0] ?? $p->images[0] ?? null; @endphp
+                                        <option value="{{ $p->name }}" data-image="{{ $firstImg ? Storage::url($firstImg) : '' }}">{{ $p->name }}</option>
                                     @endforeach
                                 </optgroup>
                                 <optgroup label="Layanan">
                                     @foreach($services as $s)
-                                        <option value="{{ $s->title }}">{{ $s->title }}</option>
+                                        @php $firstImg = $s->active_images[0] ?? $s->images[0] ?? $s->image ?? null; @endphp
+                                        <option value="{{ $s->title }}" data-image="{{ $firstImg ? Storage::url($firstImg) : '' }}">{{ $s->title }}</option>
                                     @endforeach
                                 </optgroup>
                             </select>
@@ -51,6 +53,7 @@
                         </div>
                     </div>
                     <button type="button" class="btn btn-sm btn-outline-success" id="addPerihal"><i class="bi bi-plus"></i> Tambah Perihal</button>
+                    <div id="perihalPreview" class="mt-2 d-flex flex-wrap gap-2"></div>
                     @error('perihal')<div class="text-danger small mt-1">{{ $message }}</div>@enderror
                 </div>
             </div>
@@ -287,7 +290,8 @@ document.addEventListener('DOMContentLoaded', function() {
 
     // Listen for perihal changes
     perihalContainer.addEventListener('change', function(e) {
-        if (e.target.matches('select[name="perihal[]"]')) {
+        if (e.target.matches('.perihal-select')) {
+            updatePerihalPreview();
             const idx = Array.from(perihalContainer.querySelectorAll('.perihal-row')).indexOf(e.target.closest('.perihal-row'));
             const rows = tbody.querySelectorAll('.item-row');
             if (rows[idx]) {
@@ -311,21 +315,38 @@ document.addEventListener('DOMContentLoaded', function() {
         }
     });
 
+    const updatePerihalPreview = () => {
+        const container = document.getElementById('perihalPreview');
+        container.innerHTML = '';
+        document.querySelectorAll('.perihal-select').forEach(select => {
+            const option = select.options[select.selectedIndex];
+            if (option && option.dataset.image) {
+                const img = document.createElement('img');
+                img.src = option.dataset.image;
+                img.alt = option.value;
+                img.className = 'img-thumbnail';
+                img.style = 'max-height: 80px; width: auto;';
+                container.appendChild(img);
+            }
+        });
+    };
+
     // Tambah Perihal
     document.getElementById('addPerihal').addEventListener('click', function() {
         const rowCount = perihalContainer.querySelectorAll('.perihal-row').length;
         const optionsHTML = `<option value="">-- Pilih Produk/Jasa --</option>` +
-            Array.from(document.querySelectorAll('select[name="perihal[]"]:first-of-type option')).slice(1).map(o =>
-                `<option value="${o.value}">${o.textContent}</option>`
+            Array.from(perihalContainer.querySelectorAll('.perihal-select')[0].options).slice(1).map(o =>
+                `<option value="${o.value}"${o.dataset.image ? ` data-image="${o.dataset.image}"` : ''}>${o.textContent}</option>`
             ).join('');
         const newPerihal = `
             <div class="input-group mb-2 perihal-row">
                 <span class="input-group-text perihal-number">${rowCount + 1}.</span>
-                <select name="perihal[]" class="form-select" required>${optionsHTML}</select>
+                <select name="perihal[]" class="form-select perihal-select" required>${optionsHTML}</select>
                 <button type="button" class="btn btn-danger remove-perihal"><i class="bi bi-x"></i></button>
             </div>`;
         perihalContainer.insertAdjacentHTML('beforeend', newPerihal);
         updatePerihalNumbers();
+        updatePerihalPreview();
 
         // Add a matching blank item row
         tbody.insertAdjacentHTML('beforeend', buildRowHTML(itemIndex++, ''));
@@ -342,6 +363,7 @@ document.addEventListener('DOMContentLoaded', function() {
                 const perihalIndex = Array.from(perihalContainer.querySelectorAll('.perihal-row')).indexOf(perihalRow);
                 perihalRow.remove();
                 updatePerihalNumbers();
+                updatePerihalPreview();
 
                 // Remove matching item row
                 const itemRows = tbody.querySelectorAll('.item-row');
@@ -384,6 +406,7 @@ document.addEventListener('DOMContentLoaded', function() {
     // Initialize
     updateRemoveButtons();
     updatePerihalNumbers();
+    updatePerihalPreview();
     
     // Apply formatting initially
     document.querySelectorAll('.currency-format').forEach(input => {

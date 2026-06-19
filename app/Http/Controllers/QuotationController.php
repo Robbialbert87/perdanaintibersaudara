@@ -9,6 +9,7 @@ use App\Models\Quotation;
 use App\Models\Service;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
+use Illuminate\Support\Facades\Storage;
 use Illuminate\Support\Str;
 
 class QuotationController extends Controller
@@ -153,7 +154,24 @@ class QuotationController extends Controller
         $verifyUrl = route('verify.quotation', $quotation->verify_token);
         $qrCode = QRCodeHelper::generate($verifyUrl, 150);
 
-        $pdf = app('dompdf.wrapper')->loadView('admin.quotations.pdf', compact('quotation', 'qrCode'))
+        // Collect images for each perihal item
+        $products = Product::select('name', 'images', 'active_images')->get()->keyBy('name');
+        $services = Service::select('title', 'image', 'images', 'active_images')->get()->keyBy('title');
+        $perihalImages = [];
+        $perihalArray = is_array($quotation->perihal) ? $quotation->perihal : (json_decode($quotation->perihal, true) ?? []);
+        foreach ($perihalArray as $name) {
+            $localPath = null;
+            if ($product = $products->get($name)) {
+                $firstImg = $product->active_images[0] ?? $product->images[0] ?? null;
+                if ($firstImg) $localPath = Storage::disk('public')->path($firstImg);
+            } elseif ($service = $services->get($name)) {
+                $firstImg = $service->active_images[0] ?? $service->images[0] ?? $service->image ?? null;
+                if ($firstImg) $localPath = Storage::disk('public')->path($firstImg);
+            }
+            $perihalImages[] = ['name' => $name, 'path' => $localPath && file_exists($localPath) ? $localPath : null];
+        }
+
+        $pdf = app('dompdf.wrapper')->loadView('admin.quotations.pdf', compact('quotation', 'qrCode', 'perihalImages'))
             ->setPaper([0, 0, 595.28, 935.43], 'portrait'); // F4 size
 
         // Generate a filename based on quotation number

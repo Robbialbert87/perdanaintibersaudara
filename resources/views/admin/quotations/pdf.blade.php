@@ -208,7 +208,7 @@
     </div>
     
     <div class="isi-surat">
-        Dengan ini kami (PIB) Perdana Inti Bersaudara yang berkedudukan di Jambi ingin menawarkan produk berupa {{ strtolower($perihalText) }} kepada {{ $quotation->customer->nama_instansi }}, adapun harga dan spesifikasi yang ditawarkan adalah sebagai berikut:
+        Dengan ini kami (PIB) Perdana Inti Bersaudara yang berkedudukan di Jambi ingin menawarkan produk berupa {{ $perihalText }} kepada {{ $quotation->customer->nama_instansi }}, adapun harga dan spesifikasi yang ditawarkan adalah sebagai berikut:
     </div>
 
     <table class="table-items">
@@ -289,6 +289,31 @@
             </td>
         </tr>
     </table>
+    @endif
+
+    @if(isset($perihalImages) && count(array_filter(array_column($perihalImages, 'path'))) > 0)
+    <div style="page-break-before: always; margin-top: 20px;">
+        <h2 style="text-align: center; margin-bottom: 20px;">Lampiran Gambar</h2>
+        <table style="width: 100%; border-collapse: collapse;">
+            @foreach($perihalImages as $img)
+                @if($img['path'])
+                @php
+                    $imgType = pathinfo($img['path'], PATHINFO_EXTENSION);
+                    $imgData = file_exists($img['path']) ? file_get_contents($img['path']) : '';
+                    $imgBase64 = $imgData ? 'data:image/' . $imgType . ';base64,' . base64_encode($imgData) : '';
+                @endphp
+                @if($imgBase64)
+                <tr>
+                    <td style="text-align: center; padding: 15px; border: 1px solid #ddd; margin-bottom: 15px;">
+                        <p style="margin: 0 0 10px; font-weight: bold;">{{ $img['name'] }}</p>
+                        <img src="{{ $imgBase64 }}" alt="{{ $img['name'] }}" style="max-width: 450px; max-height: 400px;">
+                    </td>
+                </tr>
+                @endif
+                @endif
+            @endforeach
+        </table>
+    </div>
     @endif
 
 </body>
