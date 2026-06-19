@@ -2,11 +2,13 @@
 
 namespace App\Http\Controllers;
 
+use App\Helpers\QRCodeHelper;
 use App\Models\Customer;
 use App\Models\Product;
 use App\Models\Quotation;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
+use Illuminate\Support\Str;
 
 class QuotationController extends Controller
 {
@@ -93,10 +95,11 @@ class QuotationController extends Controller
                 ->orderBy('id', 'desc')
                 ->first();
 
-            $nextNumber = 1;
+            $nextNumber = 101;
             if ($lastQuotation) {
                 $parts = explode('/', $lastQuotation->nomor_surat);
-                $nextNumber = intval($parts[0]) + 1;
+                $lastNumber = intval($parts[0]);
+                $nextNumber = max(101, $lastNumber + 1);
             }
 
             $nomorSurat = sprintf('%03d/SP/PIB-JMB/%s/%s', $nextNumber, $romanMonth, $year);
@@ -128,7 +131,10 @@ class QuotationController extends Controller
     {
         $quotation = Quotation::with(['customer', 'items.product'])->findOrFail($id);
 
-        return view('admin.quotations.show', compact('quotation'));
+        $qrData = route('quotations.show', $quotation->id);
+        $qrCode = QRCodeHelper::generate($qrData, 150);
+
+        return view('admin.quotations.show', compact('quotation', 'qrCode'));
     }
 
     /**
@@ -138,7 +144,10 @@ class QuotationController extends Controller
     {
         $quotation = Quotation::with(['customer', 'items.product'])->findOrFail($id);
 
-        $pdf = app('dompdf.wrapper')->loadView('admin.quotations.pdf', compact('quotation'))
+        $qrData = route('quotations.show', $quotation->id);
+        $qrCode = QRCodeHelper::generate($qrData, 150);
+
+        $pdf = app('dompdf.wrapper')->loadView('admin.quotations.pdf', compact('quotation', 'qrCode'))
             ->setPaper([0, 0, 595.28, 935.43], 'portrait'); // F4 size
 
         // Generate a filename based on quotation number

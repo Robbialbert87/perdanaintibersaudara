@@ -40,7 +40,7 @@
                         <td class="d-none d-sm-table-cell">{{ date('d/m/Y', strtotime($quotation->tanggal)) }}</td>
                         <td class="text-nowrap">{{ $quotation->customer->nama_instansi }}</td>
                         <td class="d-none d-sm-table-cell">
-                            @php $perihalArray = $quotation->perihal ?? [$quotation->perihal]; @endphp
+                            @php $perihalArray = is_array($quotation->perihal) ? $quotation->perihal : (json_decode($quotation->perihal, true) ?? [$quotation->perihal]); @endphp
                             @if(count($perihalArray) > 1)
                                 <ul class="mb-0 ps-3 list-unstyled">
                                     @foreach($perihalArray as $p)

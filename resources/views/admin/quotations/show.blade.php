@@ -37,7 +37,7 @@
                         <td>Perihal</td>
                         <td>:</td>
                         <td>
-                            @php $perihalArray = $quotation->perihal ?? [$quotation->perihal]; @endphp
+                            @php $perihalArray = is_array($quotation->perihal) ? $quotation->perihal : (json_decode($quotation->perihal, true) ?? [$quotation->perihal]); @endphp
                             @if(count($perihalArray) > 1)
                                 <ol class="mb-0 ps-3">
                                     @foreach($perihalArray as $p)
@@ -140,4 +140,14 @@
         @endif
     </div>
 </div>
+
+@if(isset($qrCode))
+<div class="card shadow-sm border-0 mb-4">
+    <div class="card-body text-center">
+        <h6 class="text-muted mb-3">QR Code Penawaran</h6>
+        <img src="{{ $qrCode }}" alt="QR Code" style="width: 130px; height: 130px;">
+        <p class="text-muted small mt-2 mb-0">Scan untuk melihat detail penawaran</p>
+    </div>
+</div>
+@endif
 @endsection

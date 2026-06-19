@@ -153,7 +153,7 @@
         $fmtDate = \Carbon\Carbon::parse($quotation->tanggal)->locale('id')->translatedFormat('d F Y');
 
         // Parse Perihal
-        $perihalArray = $quotation->perihal ?? [$quotation->perihal];
+        $perihalArray = is_array($quotation->perihal) ? $quotation->perihal : (json_decode($quotation->perihal, true) ?? [$quotation->perihal]);
         $perihalText = implode(', ', $perihalArray);
     @endphp
 
@@ -266,6 +266,31 @@
             <p>(PIB) Perdana Inti Bersaudara</p>
         </div>
     </div>
+
+    @if(isset($qrCode))
+    <table style="width: 100%; margin-top: 30px;">
+        <tr>
+            <td style="text-align: right; vertical-align: middle;">
+                <table cellpadding="0" cellspacing="0" style="width: auto; border-collapse: collapse; margin-left: auto;">
+                    <tr>
+                        <td style="padding: 0; padding-right: 15px; vertical-align: middle; text-align: center;">
+                            <img src="{{ $qrCode }}" alt="QR Code" style="width: 100px; height: 100px; display: block;">
+                        </td>
+                        <td style="padding: 0; vertical-align: middle; text-align: left;">
+                            <div class="ttd" style="margin-top: 0; text-align: left;">
+                                <p style="margin: 0;">Hormat Kami,</p>
+                                <br>
+                                <p style="margin: 0;"><strong>CV. PERDANA INTI BERSAUDARA</strong></p>
+                                <p style="margin: 0;"><strong>Erwin Darmawan</strong></p>
+                                <p style="margin: 0;">Direktur</p>
+                            </div>
+                        </td>
+                    </tr>
+                </table>
+            </td>
+        </tr>
+    </table>
+    @endif
 
 </body>
 </html>
