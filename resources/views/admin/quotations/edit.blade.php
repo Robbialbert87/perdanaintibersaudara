@@ -39,9 +39,16 @@
                             <span class="input-group-text perihal-number">{{ $index + 1 }}.</span>
                             <select name="perihal[]" class="form-select" required>
                                 <option value="">-- Pilih Produk/Jasa --</option>
-                                @foreach($products as $p)
-                                    <option value="{{ $p->name }}" {{ old('perihal.'.$index, $perihal) == $p->name ? 'selected' : '' }}>{{ $p->name }}</option>
-                                @endforeach
+                                <optgroup label="Produk">
+                                    @foreach($products as $p)
+                                        <option value="{{ $p->name }}" {{ old('perihal.'.$index, $perihal) == $p->name ? 'selected' : '' }}>{{ $p->name }}</option>
+                                    @endforeach
+                                </optgroup>
+                                <optgroup label="Layanan">
+                                    @foreach($services as $s)
+                                        <option value="{{ $s->title }}" {{ old('perihal.'.$index, $perihal) == $s->title ? 'selected' : '' }}>{{ $s->title }}</option>
+                                    @endforeach
+                                </optgroup>
                             </select>
                             <button type="button" class="btn btn-danger remove-perihal" {{ count($perihalArray) == 1 ? 'disabled' : '' }}><i class="bi bi-x"></i></button>
                         </div>
@@ -68,12 +75,13 @@
                 <table class="table table-bordered align-middle" id="itemsTable">
                     <thead class="table-light">
                         <tr>
-                            <th width="25%">Produk/Jasa (Opsional)</th>
-                            <th width="30%">Deskripsi Detail <span class="text-danger">*</span></th>
-                            <th width="10%">Volume</th>
+                            <th width="20%">Produk/Jasa (Opsional)</th>
+                            <th width="25%">Deskripsi Detail <span class="text-danger">*</span></th>
+                            <th width="8%">Volume</th>
+                            <th width="10%">Satuan</th>
                             <th width="15%">Harga Satuan</th>
                             <th width="15%">Jumlah Harga</th>
-                            <th width="5%" class="text-center">Aksi</th>
+                            <th width="7%" class="text-center">Aksi</th>
                         </tr>
                     </thead>
                     <tbody id="itemsBody">
@@ -90,10 +98,24 @@
                                 <input type="text" name="items[{{ $index }}][volume]" class="form-control volume-input" value="{{ $item->volume }}" required>
                             </td>
                             <td>
+                                <select name="items[{{ $index }}][satuan]" class="form-select satuan-input">
+                                    <option value="">--</option>
+                                    <option value="Unit" {{ ($item->satuan ?? 'Unit') == 'Unit' ? 'selected' : '' }}>Unit</option>
+                                    <option value="Paket" {{ ($item->satuan ?? '') == 'Paket' ? 'selected' : '' }}>Paket</option>
+                                    <option value="Pcs" {{ ($item->satuan ?? '') == 'Pcs' ? 'selected' : '' }}>Pcs</option>
+                                    <option value="Cm" {{ ($item->satuan ?? '') == 'Cm' ? 'selected' : '' }}>Cm</option>
+                                    <option value="Set" {{ ($item->satuan ?? '') == 'Set' ? 'selected' : '' }}>Set</option>
+                                    <option value="Lembar" {{ ($item->satuan ?? '') == 'Lembar' ? 'selected' : '' }}>Lembar</option>
+                                    <option value="Buah" {{ ($item->satuan ?? '') == 'Buah' ? 'selected' : '' }}>Buah</option>
+                                    <option value="Bulan" {{ ($item->satuan ?? '') == 'Bulan' ? 'selected' : '' }}>Bulan</option>
+                                    <option value="Tahun" {{ ($item->satuan ?? '') == 'Tahun' ? 'selected' : '' }}>Tahun</option>
+                                </select>
+                            </td>
+                            <td>
                                 <input type="text" name="items[{{ $index }}][harga_satuan]" class="form-control harga-input currency-format" value="{{ floatval($item->harga_satuan) }}" required>
                             </td>
                             <td>
-                                <input type="text" name="items[{{ $index }}][subtotal]" class="form-control subtotal-input currency-format" value="{{ $item->subtotal }}" required>
+                                <input type="text" name="items[{{ $index }}][subtotal]" class="form-control subtotal-input currency-format" value="{{ $item->subtotal }}" readonly>
                             </td>
                             <td class="text-center">
                                 <button type="button" class="btn btn-danger btn-sm remove-row"><i class="bi bi-trash"></i></button>
@@ -139,6 +161,10 @@ document.addEventListener('DOMContentLoaded', function() {
 
     const formatIDR = (num) => new Intl.NumberFormat('id-ID').format(num);
 
+    const parseIDR = (val) => {
+        return parseFloat(val.replace(/\./g, '').replace(',', '.')) || 0;
+    };
+
     // Format input as currency while typing
     const formatCurrencyInput = (input) => {
         let val = input.value.replace(/[^,\d]/g, '');
@@ -153,20 +179,30 @@ document.addEventListener('DOMContentLoaded', function() {
         input.value = parts.length > 1 ? integerPart + ',' + parts[1] : integerPart;
     };
 
+    const calculateRowSubtotal = (row) => {
+        const volume = parseFloat(row.querySelector('.volume-input').value) || 0;
+        const harga = parseIDR(row.querySelector('.harga-input').value);
+        const subtotal = volume * harga;
+        row.querySelector('.subtotal-input').value = subtotal > 0 ? formatIDR(subtotal) : '0';
+    };
+
     const calculateTotal = () => {
         let total = 0;
         document.querySelectorAll('.item-row').forEach(row => {
-            let val = row.querySelector('.subtotal-input').value.replace(/\./g, '').replace(',', '.');
-            total += parseFloat(val) || 0;
+            total += parseIDR(row.querySelector('.subtotal-input').value);
         });
-        document.getElementById('totalKeseluruhan').value = formatIDR(total);
+        document.getElementById('totalKeseluruhan').value = total > 0 ? formatIDR(total) : '0';
     };
 
     tbody.addEventListener('input', function(e) {
         if (e.target.classList.contains('currency-format')) {
             formatCurrencyInput(e.target);
         }
-        if (e.target.classList.contains('subtotal-input')) calculateTotal();
+        if (e.target.classList.contains('volume-input') || e.target.classList.contains('harga-input') || e.target.classList.contains('currency-format')) {
+            const row = e.target.closest('.item-row');
+            if (row) calculateRowSubtotal(row);
+            calculateTotal();
+        }
     });
 
     const buildRowHTML = (index, namaItem = '') => {
@@ -186,10 +222,24 @@ document.addEventListener('DOMContentLoaded', function() {
                 <input type="text" name="items[${index}][volume]" class="form-control volume-input" value="1" required>
             </td>
             <td>
-                <input type="text" name="items[${index}][harga_satuan]" class="form-control harga-input currency-format" value="0" required>
+                <select name="items[${index}][satuan]" class="form-select satuan-input">
+                    <option value="">--</option>
+                    <option value="Unit" selected>Unit</option>
+                    <option value="Paket">Paket</option>
+                    <option value="Pcs">Pcs</option>
+                    <option value="Cm">Cm</option>
+                    <option value="Set">Set</option>
+                    <option value="Lembar">Lembar</option>
+                    <option value="Buah">Buah</option>
+                    <option value="Bulan">Bulan</option>
+                    <option value="Tahun">Tahun</option>
+                </select>
             </td>
             <td>
-                <input type="text" name="items[${index}][subtotal]" class="form-control subtotal-input currency-format" value="0" required>
+                <input type="text" name="items[${index}][harga_satuan]" class="form-control harga-input currency-format" value="" required>
+            </td>
+            <td>
+                <input type="text" name="items[${index}][subtotal]" class="form-control subtotal-input currency-format" value="0" readonly>
             </td>
             <td class="text-center">
                 <button type="button" class="btn btn-danger btn-sm remove-row"><i class="bi bi-trash"></i></button>
@@ -321,6 +371,9 @@ document.addEventListener('DOMContentLoaded', function() {
     document.querySelectorAll('.currency-format').forEach(input => {
         if(input.value) formatCurrencyInput(input);
     });
+
+    // Calculate initial row subtotals
+    document.querySelectorAll('.item-row').forEach(row => calculateRowSubtotal(row));
     calculateTotal();
 });
 </script>

@@ -115,7 +115,7 @@
                             @endif
                             {!! nl2br(e($item->deskripsi)) !!}
                         </td>
-                        <td class="text-center">{{ $item->volume }} {{ $item->product->satuan ?? '' }}</td>
+                        <td class="text-center">{{ $item->volume }} {{ $item->satuan ?? $item->product->satuan ?? '' }}</td>
                         <td class="text-end">{{ number_format($item->harga_satuan, 0, ',', '.') }}</td>
                         <td class="text-end">{{ number_format($item->subtotal, 0, ',', '.') }}</td>
                     </tr>
@@ -140,14 +140,4 @@
         @endif
     </div>
 </div>
-
-@if(isset($qrCode))
-<div class="card shadow-sm border-0 mb-4">
-    <div class="card-body text-center">
-        <h6 class="text-muted mb-3">QR Code Penawaran</h6>
-        <img src="{{ $qrCode }}" alt="QR Code" style="width: 130px; height: 130px;">
-        <p class="text-muted small mt-2 mb-0">Scan untuk melihat detail penawaran</p>
-    </div>
-</div>
-@endif
 @endsection

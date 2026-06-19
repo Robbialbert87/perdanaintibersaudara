@@ -6,6 +6,7 @@ use App\Helpers\QRCodeHelper;
 use App\Models\Customer;
 use App\Models\Product;
 use App\Models\Quotation;
+use App\Models\Service;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Str;
@@ -40,8 +41,9 @@ class QuotationController extends Controller
     {
         $customers = Customer::orderBy('nama_instansi')->get();
         $products = Product::orderBy('name')->get();
+        $services = Service::orderBy('title')->get();
 
-        return view('admin.quotations.create', compact('customers', 'products'));
+        return view('admin.quotations.create', compact('customers', 'products', 'services'));
     }
 
     /**
@@ -59,8 +61,8 @@ class QuotationController extends Controller
             'items.*.nama_item' => 'nullable|string|max:255',
             'items.*.deskripsi' => 'required|string',
             'items.*.volume' => 'required|string|max:255',
+            'items.*.satuan' => 'nullable|string|max:50',
             'items.*.harga_satuan' => 'required',
-            'items.*.subtotal' => 'required',
         ]);
 
         $total = 0;
@@ -69,7 +71,8 @@ class QuotationController extends Controller
         $itemIndex = 0;
         foreach ($request->items as $item) {
             $harga = (float) str_replace(['.', ','], ['', '.'], $item['harga_satuan']);
-            $subtotal = (float) str_replace(['.', ','], ['', '.'], $item['subtotal']);
+            $volume = (float) str_replace(['.', ','], ['', '.'], $item['volume']);
+            $subtotal = $volume * $harga;
             $total += $subtotal;
 
             $namaItem = ! empty($item['nama_item']) ? $item['nama_item'] : ($perihalArray[$itemIndex] ?? null);
@@ -78,6 +81,7 @@ class QuotationController extends Controller
                 'nama_item' => $namaItem,
                 'deskripsi' => $item['deskripsi'],
                 'volume' => $item['volume'],
+                'satuan' => $item['satuan'] ?? null,
                 'harga_satuan' => $harga,
                 'subtotal' => $subtotal,
             ];
@@ -131,10 +135,7 @@ class QuotationController extends Controller
     {
         $quotation = Quotation::with(['customer', 'items.product'])->findOrFail($id);
 
-        $qrData = route('quotations.show', $quotation->id);
-        $qrCode = QRCodeHelper::generate($qrData, 150);
-
-        return view('admin.quotations.show', compact('quotation', 'qrCode'));
+        return view('admin.quotations.show', compact('quotation'));
     }
 
     /**
@@ -164,8 +165,9 @@ class QuotationController extends Controller
         $quotation = Quotation::with('items')->findOrFail($id);
         $customers = Customer::orderBy('nama_instansi')->get();
         $products = Product::orderBy('name')->get();
+        $services = Service::orderBy('title')->get();
 
-        return view('admin.quotations.edit', compact('quotation', 'customers', 'products'));
+        return view('admin.quotations.edit', compact('quotation', 'customers', 'products', 'services'));
     }
 
     /**
@@ -184,8 +186,8 @@ class QuotationController extends Controller
             'items.*.nama_item' => 'nullable|string|max:255',
             'items.*.deskripsi' => 'required|string',
             'items.*.volume' => 'required|string|max:255',
+            'items.*.satuan' => 'nullable|string|max:50',
             'items.*.harga_satuan' => 'required',
-            'items.*.subtotal' => 'required',
         ]);
 
         $total = 0;
@@ -194,7 +196,8 @@ class QuotationController extends Controller
         $itemIndex = 0;
         foreach ($request->items as $item) {
             $harga = (float) str_replace(['.', ','], ['', '.'], $item['harga_satuan']);
-            $subtotal = (float) str_replace(['.', ','], ['', '.'], $item['subtotal']);
+            $volume = (float) str_replace(['.', ','], ['', '.'], $item['volume']);
+            $subtotal = $volume * $harga;
             $total += $subtotal;
 
             $namaItem = ! empty($item['nama_item']) ? $item['nama_item'] : ($perihalArray[$itemIndex] ?? null);
@@ -203,6 +206,7 @@ class QuotationController extends Controller
                 'nama_item' => $namaItem,
                 'deskripsi' => $item['deskripsi'],
                 'volume' => $item['volume'],
+                'satuan' => $item['satuan'] ?? null,
                 'harga_satuan' => $harga,
                 'subtotal' => $subtotal,
             ];

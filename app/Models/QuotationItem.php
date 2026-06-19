@@ -15,6 +15,7 @@ class QuotationItem extends Model
         'nama_item',
         'deskripsi',
         'volume',
+        'satuan',
         'harga_satuan',
         'subtotal',
     ];

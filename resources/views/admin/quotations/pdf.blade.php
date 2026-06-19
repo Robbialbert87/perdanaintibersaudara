@@ -113,8 +113,7 @@
         .text-right { text-align: right; }
         
         .item-desc {
-            white-space: pre-line;
-            margin-top: 3px;
+            word-break: break-word;
         }
 
         /* Keterangan & Bank */
@@ -217,9 +216,9 @@
             <tr>
                 <th width="5%">No</th>
                 <th width="35%">Jenis Kegiatan</th>
-                <th width="20%">Volume</th>
-                <th width="20%">Harga Satuan</th>
-                <th width="20%">Jumlah Harga</th>
+                <th width="20%" class="text-center">Volume</th>
+                <th width="20%" class="text-center">Harga Satuan</th>
+                <th width="20%" class="text-center">Jumlah Harga</th>
             </tr>
         </thead>
         <tbody>
@@ -232,16 +231,16 @@
                     @endif
                     <div class="item-desc">{!! nl2br(e($item->deskripsi)) !!}</div>
                 </td>
-                <td class="text-center">{{ $item->volume }}</td>
-                <td class="text-right">Rp {{ number_format($item->harga_satuan, 0, ',', '.') }}</td>
-                <td class="text-right">Rp {{ number_format($item->subtotal, 0, ',', '.') }}</td>
+                <td class="text-center">{{ $item->volume }} {{ $item->satuan ?? '' }}</td>
+                <td class="text-center">Rp {{ number_format($item->harga_satuan, 0, ',', '.') }}</td>
+                <td class="text-center">Rp {{ number_format((float) $item->volume * $item->harga_satuan, 0, ',', '.') }}</td>
             </tr>
             @endforeach
         </tbody>
         <tfoot>
             <tr>
                 <td colspan="4" class="text-right" style="font-weight: bold; border: 1px solid black; padding: 6px 8px;"><strong>TOTAL</strong></td>
-                <td class="text-right" style="font-weight: bold; border: 1px solid black; padding: 6px 8px;"><strong>Rp {{ number_format($quotation->total, 0, ',', '.') }}</strong></td>
+                <td class="text-right" style="font-weight: bold; border: 1px solid black; padding: 6px 8px;"><strong>Rp {{ number_format($quotation->items->sum(fn($item) => (float) $item->volume * $item->harga_satuan), 0, ',', '.') }}</strong></td>
             </tr>
         </tfoot>
     </table>
