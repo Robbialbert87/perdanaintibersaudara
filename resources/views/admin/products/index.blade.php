@@ -16,9 +16,9 @@
                 <thead class="table-light">
                     <tr>
                         <th width="50" class="d-none d-sm-table-cell">No</th>
+                        <th width="120" class="d-none d-sm-table-cell">Gambar</th>
                         <th>Nama Produk</th>
                         <th class="d-none d-sm-table-cell">Kategori</th>
-                        <th width="100" class="d-none d-sm-table-cell">Media</th>
                         <th width="150">Aksi</th>
                     </tr>
                 </thead>
@@ -26,20 +26,23 @@
                     @forelse($products as $index => $product)
                     <tr>
                         <td class="d-none d-sm-table-cell">{{ $index + 1 }}</td>
-                        <td class="text-nowrap">{{ $product->name }}</td>
-                        <td class="d-none d-sm-table-cell">{{ $product->category }}</td>
                         <td class="d-none d-sm-table-cell">
-                            @php $imgCount = count($product->active_images ?? []); @endphp
-                            @php $vidCount = count($product->active_videos ?? []); @endphp
-                            @if($imgCount > 0 || $vidCount > 0)
-                                <span class="badge bg-info">{{ $imgCount }} Foto</span>
-                                @if($vidCount > 0)
-                                    <span class="badge bg-danger">{{ $vidCount }} Video</span>
-                                @endif
+                            @php $adminProdImg = $product->active_images[0] ?? $product->images[0] ?? null; @endphp
+                            @if($adminProdImg)
+                                <img src="{{ Storage::url($adminProdImg) }}" alt="{{ $product->name }}" class="img-thumbnail" style="max-height: 80px; width: auto;">
                             @else
-                                <span class="text-muted small">-</span>
+                                <span class="text-muted small">No Image</span>
                             @endif
                         </td>
+                        <td>
+                            <strong>{{ $product->name }}</strong>
+                            <div class="small text-muted mt-1">
+                                @if(!empty($product->active_images)) {{ count($product->active_images) }} gambar @endif
+                                @if(!empty($product->active_images) && !empty($product->active_videos)) | @endif
+                                @if(!empty($product->active_videos)) {{ count($product->active_videos) }} video @endif
+                            </div>
+                        </td>
+                        <td class="d-none d-sm-table-cell">{{ $product->category }}</td>
                         <td class="text-nowrap">
                             <a href="{{ route('products.edit', $product->id) }}" class="btn btn-sm btn-info text-white" title="Edit">
                                 <i class="bi bi-pencil-square"></i>
