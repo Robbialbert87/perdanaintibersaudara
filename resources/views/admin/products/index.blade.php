@@ -27,14 +27,14 @@
                     @forelse($products as $index => $product)
                     <tr>
                         <td class="d-none d-sm-table-cell">{{ $index + 1 }}</td>
-                        <td class="d-none d-sm-table-cell">
-                            @php $adminProdImg = $product->active_images[0] ?? $product->images[0] ?? null; @endphp
-                            @if($adminProdImg)
-                                <img src="{{ Storage::url($adminProdImg) }}" alt="{{ $product->name }}" class="img-thumbnail" style="max-height: 80px; width: auto;">
-                            @else
-                                <span class="text-muted small">No Image</span>
-                            @endif
-                        </td>
+<td class="d-none d-sm-table-cell">
+    @php $adminProdImg = $product->active_images[0] ?? $product->images[0] ?? null; @endphp
+    @if($adminProdImg)
+        <img src="{{ Storage::url($adminProdImg) }}" alt="{{ $product->name }}" class="img-thumbnail gallery-img" style="max-height: 80px; width: auto; cursor: pointer;" data-all-images='{{ json_encode($product->active_images ?? $product->images ?? []) }}' data-name="{{ $product->name }}">
+    @else
+        <span class="text-muted small">No Image</span>
+    @endif
+</td>
                         <td>
                             <strong>{{ $product->name }}</strong>
                             <div class="small text-muted mt-1">
@@ -68,4 +68,134 @@
         </div>
     </div>
 </div>
+
+<!-- Lightbox -->
+<div class="lightbox-overlay" id="lightboxOverlay">
+    <span class="lightbox-close" id="lightboxClose">&times;</span>
+    <span class="lightbox-nav lightbox-prev" id="lightboxPrev">&#10094;</span>
+    <img id="lightboxImg" src="" alt="">
+    <span class="lightbox-nav lightbox-next" id="lightboxNext">&#10095;</span>
+</div>
 @endsection
+
+@push('styles')
+<style>
+.lightbox-overlay {
+    position: fixed;
+    top: 0; left: 0;
+    width: 100%; height: 100%;
+    background: rgba(0,0,0,0.85);
+    z-index: 9999;
+    display: none;
+    align-items: center;
+    justify-content: center;
+    cursor: pointer;
+}
+.lightbox-overlay.active {
+    display: flex;
+}
+.lightbox-overlay img {
+    max-width: 90%;
+    max-height: 90%;
+    border-radius: 8px;
+    box-shadow: 0 4px 30px rgba(0,0,0,0.5);
+    cursor: default;
+}
+.lightbox-nav {
+    position: fixed;
+    top: 50%;
+    transform: translateY(-50%);
+    color: #fff;
+    font-size: 40px;
+    cursor: pointer;
+    z-index: 10000;
+    padding: 10px;
+    user-select: none;
+    opacity: 0.7;
+    transition: opacity .2s;
+}
+.lightbox-nav:hover { opacity: 1; }
+.lightbox-prev { left: 20px; }
+.lightbox-next { right: 20px; }
+.lightbox-close {
+    position: fixed;
+    top: 15px;
+    right: 25px;
+    color: #fff;
+    font-size: 35px;
+    cursor: pointer;
+    z-index: 10000;
+    opacity: 0.7;
+    transition: opacity .2s;
+}
+.lightbox-close:hover { opacity: 1; }
+</style>
+@endpush
+
+@push('scripts')
+<script>
+document.addEventListener('DOMContentLoaded', function() {
+    const overlay = document.getElementById('lightboxOverlay');
+    const lightboxImg = document.getElementById('lightboxImg');
+    const prevBtn = document.getElementById('lightboxPrev');
+    const nextBtn = document.getElementById('lightboxNext');
+    let currentImages = [];
+    let currentIndex = 0;
+
+    document.querySelectorAll('.gallery-img').forEach(img => {
+        img.addEventListener('click', function(e) {
+            e.stopPropagation();
+            try {
+                currentImages = JSON.parse(this.dataset.allImages || '[]');
+            } catch(e) { currentImages = []; }
+            if (!currentImages.length) return;
+            const src = this.src;
+            currentIndex = currentImages.findIndex(p => StorageUrl(p) === src);
+            if (currentIndex === -1) currentIndex = 0;
+            showImage(currentIndex);
+            overlay.classList.add('active');
+            document.body.style.overflow = 'hidden';
+        });
+    });
+
+    function StorageUrl(path) {
+        return '{{ Storage::url('') }}' + path;
+    }
+
+    function showImage(index) {
+        if (!currentImages.length) return;
+        lightboxImg.src = StorageUrl(currentImages[index]);
+        prevBtn.style.display = currentImages.length > 1 ? 'block' : 'none';
+        nextBtn.style.display = currentImages.length > 1 ? 'block' : 'none';
+    }
+
+    prevBtn.addEventListener('click', function(e) {
+        e.stopPropagation();
+        currentIndex = (currentIndex - 1 + currentImages.length) % currentImages.length;
+        showImage(currentIndex);
+    });
+
+    nextBtn.addEventListener('click', function(e) {
+        e.stopPropagation();
+        currentIndex = (currentIndex + 1) % currentImages.length;
+        showImage(currentIndex);
+    });
+
+    function closeLightbox() {
+        overlay.classList.remove('active');
+        document.body.style.overflow = '';
+    }
+
+    overlay.addEventListener('click', closeLightbox);
+    document.getElementById('lightboxClose').addEventListener('click', closeLightbox);
+    lightboxImg.addEventListener('click', function(e) { e.stopPropagation(); });
+
+    document.addEventListener('keydown', function(e) {
+        if (!overlay.classList.contains('active')) return;
+        if (e.key === 'Escape') closeLightbox();
+        if (e.key === 'ArrowLeft') prevBtn.click();
+        if (e.key === 'ArrowRight') nextBtn.click();
+    });
+});
+</script>
+@endpush
