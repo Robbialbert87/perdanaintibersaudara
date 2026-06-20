@@ -67,8 +67,9 @@
                 </div>
                 <div class="col-md-4">
                     <label class="form-label">Pilih Customer <span class="text-danger">*</span></label>
-                    <select name="customer_id" class="form-select @error('customer_id') is-invalid @enderror" required>
+                    <select name="customer_id" class="form-select @error('customer_id') is-invalid @enderror" required onchange="if(this.value==='__add__'){ window.open('{{ route('customers.create') }}','_blank'); this.value=''; }">
                         <option value="">-- Pilih Customer --</option>
+                        <option value="__add__">+ Tambah Customer Baru</option>
                         @foreach($customers as $c)
                             <option value="{{ $c->id }}" {{ old('customer_id') == $c->id ? 'selected' : '' }}>
                                 {{ $c->nama_instansi }}
