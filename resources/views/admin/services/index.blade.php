@@ -71,9 +71,12 @@
 <!-- Lightbox -->
 <div class="lightbox-overlay" id="lightboxOverlay">
     <span class="lightbox-close" id="lightboxClose">&times;</span>
-    <span class="lightbox-nav lightbox-prev" id="lightboxPrev">&#10094;</span>
     <img id="lightboxImg" src="" alt="">
-    <span class="lightbox-nav lightbox-next" id="lightboxNext">&#10095;</span>
+    <div class="lightbox-nav-bottom">
+        <span class="lightbox-nav lightbox-prev" id="lightboxPrev">&#10094;</span>
+        <span class="lightbox-counter" id="lightboxCounter"></span>
+        <span class="lightbox-nav lightbox-next" id="lightboxNext">&#10095;</span>
+    </div>
 </div>
 @endsection
 
@@ -86,6 +89,7 @@
     background: rgba(0,0,0,0.85);
     z-index: 9999;
     display: none;
+    flex-direction: column;
     align-items: center;
     justify-content: center;
     cursor: pointer;
@@ -95,27 +99,38 @@
 }
 .lightbox-overlay img {
     max-width: 90%;
-    max-height: 90%;
+    max-height: 80%;
     border-radius: 8px;
     box-shadow: 0 4px 30px rgba(0,0,0,0.5);
     cursor: default;
 }
-.lightbox-nav {
-    position: fixed;
-    top: 50%;
-    transform: translateY(-50%);
-    color: #fff;
-    font-size: 40px;
-    cursor: pointer;
-    z-index: 10000;
-    padding: 10px;
-    user-select: none;
-    opacity: 0.7;
-    transition: opacity .2s;
+.lightbox-nav-bottom {
+    margin-top: 20px;
+    display: flex;
+    gap: 20px;
+    align-items: center;
 }
-.lightbox-nav:hover { opacity: 1; }
-.lightbox-prev { left: 20px; }
-.lightbox-next { right: 20px; }
+.lightbox-nav {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    width: 44px;
+    height: 44px;
+    border-radius: 50%;
+    background: rgba(255,255,255,0.15);
+    color: #fff;
+    font-size: 22px;
+    cursor: pointer;
+    user-select: none;
+    transition: background .2s;
+}
+.lightbox-nav:hover { background: rgba(255,255,255,0.3); }
+.lightbox-counter {
+    color: #fff;
+    font-size: 14px;
+    font-family: sans-serif;
+    opacity: 0.8;
+}
 .lightbox-close {
     position: fixed;
     top: 15px;
@@ -164,8 +179,13 @@ document.addEventListener('DOMContentLoaded', function() {
     function showImage(index) {
         if (!currentImages.length) return;
         lightboxImg.src = StorageUrl(currentImages[index]);
-        prevBtn.style.display = currentImages.length > 1 ? 'block' : 'none';
-        nextBtn.style.display = currentImages.length > 1 ? 'block' : 'none';
+        const navBottom = document.querySelector('.lightbox-nav-bottom');
+        if (currentImages.length > 1) {
+            navBottom.style.display = 'flex';
+            document.getElementById('lightboxCounter').textContent = (index + 1) + ' / ' + currentImages.length;
+        } else {
+            navBottom.style.display = 'none';
+        }
     }
 
     prevBtn.addEventListener('click', function(e) {
