@@ -210,7 +210,7 @@
     </div>
     
     <div class="isi-surat">
-        Dengan ini kami (PIB) Perdana Inti Bersaudara yang berkedudukan di Jambi ingin menawarkan produk berupa {{ $perihalText }} kepada {{ $quotation->customer->nama_instansi }}, adapun harga dan spesifikasi yang ditawarkan adalah sebagai berikut:
+        Dengan ini kami (PIB) Perdana Inti Bersaudara yang berkedudukan di Jambi ingin menawarkan {{ $perihalLabel }} berupa {{ $perihalText }} kepada {{ $quotation->customer->nama_instansi }}, adapun rincian harga yang ditawarkan adalah sebagai berikut:
     </div>
 
     <table class="table-items">

@@ -198,7 +198,22 @@ class QuotationController extends Controller
             }
         }
 
-        $pdf = app('dompdf.wrapper')->loadView('admin.quotations.pdf', compact('quotation', 'qrCode', 'perihalImages'))
+        // Determine perihal type label
+        $perihalArray = is_array($quotation->perihal) ? $quotation->perihal : (json_decode($quotation->perihal, true) ?? [$quotation->perihal]);
+        $hasProduct = false;
+        $hasService = false;
+        foreach ($perihalArray as $name) {
+            if ($products->has($name)) $hasProduct = true;
+            if ($services->has($name)) $hasService = true;
+        }
+        $perihalLabel = 'produk';
+        if ($hasProduct && $hasService) {
+            $perihalLabel = 'produk dan layanan';
+        } elseif ($hasService) {
+            $perihalLabel = 'layanan';
+        }
+
+        $pdf = app('dompdf.wrapper')->loadView('admin.quotations.pdf', compact('quotation', 'qrCode', 'perihalImages', 'perihalLabel'))
             ->setPaper([0, 0, 595.28, 935.43], 'portrait'); // F4 size
 
         // Generate a filename based on quotation number
