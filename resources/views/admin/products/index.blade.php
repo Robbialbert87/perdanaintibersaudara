@@ -19,6 +19,7 @@
                         <th width="120" class="d-none d-sm-table-cell">Gambar</th>
                         <th>Nama Produk</th>
                         <th class="d-none d-sm-table-cell">Kategori</th>
+                        <th class="d-none d-sm-table-cell">Deskripsi</th>
                         <th width="150">Aksi</th>
                     </tr>
                 </thead>
@@ -43,6 +44,7 @@
                             </div>
                         </td>
                         <td class="d-none d-sm-table-cell">{{ $product->category }}</td>
+                        <td class="d-none d-sm-table-cell">{{ Str::limit($product->description, 80) }}</td>
                         <td class="text-nowrap">
                             <a href="{{ route('products.edit', $product->id) }}" class="btn btn-sm btn-info text-white" title="Edit">
                                 <i class="bi bi-pencil-square"></i>
@@ -58,7 +60,7 @@
                     </tr>
                     @empty
                     <tr>
-                        <td colspan="5" class="text-center text-muted py-4">Belum ada data produk.</td>
+                        <td colspan="6" class="text-center text-muted py-4">Belum ada data produk.</td>
                     </tr>
                     @endforelse
                 </tbody>
