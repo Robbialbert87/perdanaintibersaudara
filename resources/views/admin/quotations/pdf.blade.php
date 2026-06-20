@@ -193,7 +193,7 @@
         <tr>
             <td>Perihal</td>
             <td>:</td>
-            <td>{{ $perihalText }}</td>
+            <td>Surat Penawaran</td>
         </tr>
     </table>
 
