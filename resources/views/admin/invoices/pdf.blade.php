@@ -16,7 +16,7 @@
             width: 100%;
             margin-bottom: 5px;
             border-bottom: 3px solid black;
-            padding-bottom: 5px;
+            padding-bottom: 10px;
         }
         .header-table {
             width: 100%;
@@ -25,39 +25,41 @@
         .header-logo {
             width: 90px;
             text-align: center;
-            vertical-align: top;
+            vertical-align: middle;
             padding-right: 15px;
+            padding-top: 25px;
+        }
+        .header-logo img {
+            width: 80px;
         }
         .header-content {
-            vertical-align: top;
+            vertical-align: middle;
             padding-top: 5px;
+            text-align: center;
         }
         .header-content h1 {
             margin: 0;
-            font-size: 18pt;
+            font-size: 22pt;
             font-weight: bold;
         }
         .header-content h3 {
             margin: 3px 0;
-            font-size: 10pt;
+            font-size: 12pt;
             font-weight: bold;
             letter-spacing: 0.5px;
         }
         .header-footer {
             font-size: 8.5pt;
-            display: table;
-            width: 100%;
             margin-top: 5px;
             padding-top: 2px;
             font-weight: bold;
+            width: 100%;
         }
         .header-footer-left {
-            display: table-cell;
-            text-align: left;
+            float: left;
         }
         .header-footer-right {
-            display: table-cell;
-            text-align: right;
+            float: right;
         }
 
         .info-table {
@@ -187,7 +189,7 @@
             <tr>
                 <td class="header-logo">
                     @if(file_exists($path))
-                        <img src="{{ $base64 }}" alt="Logo" style="width: 80px;">
+                        <img src="{{ $base64 }}" alt="Logo">
                     @else
                         <h1>PIB</h1>
                     @endif
@@ -196,8 +198,8 @@
                     <h1>CV. PERDANA INTI BERSAUDARA</h1>
                     <h3>RADIOLOGI-SERVICE-SPAREPART-TIMBAL-ACCESORIES</h3>
                     <div class="header-footer">
-                        <div class="header-footer-left">Jl. Kepodang 1 N0. 205 RT 24 Kel. Andil Jaya Jambi HP. 0852 6305 6505</div>
-                        <div class="header-footer-right">E-mail : perdanaintibersaudara@gmail.com</div>
+                        <span class="header-footer-left">Jl. Kepodang 1 N0. 205 RT 24 Kel. Andil Jaya Jambi HP. 0852 6305 6505</span>
+                        <span class="header-footer-right">E-mail : perdanaintibersaudara@gmail.com</span>
                     </div>
                 </td>
             </tr>

@@ -869,24 +869,10 @@
                 href="{{ route('quotations.index') }}">
                 <i class="bi bi-file-earmark-text"></i><span>Penawaran</span><span class="arr">&rarr;</span>
             </a>
-            <div class="sidebar-dropdown">
-                <a class="sidebar-link {{ request()->routeIs('invoices.*') ? 'active' : '' }}" href="#"
-                    onclick="toggleInvoiceMenu(event)">
-                    <i class="bi bi-receipt"></i><span>Invoice</span><span class="arr" id="invoiceArrow"
-                        style="transform:{{ request()->routeIs('invoices.*') ? 'rotate(90deg)' : '' }}">&#9654;</span>
-                </a>
-                <div class="sidebar-submenu" id="invoiceSubmenu"
-                    style="display:{{ request()->routeIs('invoices.*') ? 'block' : 'none' }}">
-                    <a class="sidebar-link sublink {{ request()->routeIs('invoices.index') ? 'active' : '' }}"
-                        href="{{ route('invoices.index') }}">
-                        <i class="bi bi-list-ul"></i><span>List Invoice</span>
-                    </a>
-                    <a class="sidebar-link sublink {{ request()->routeIs('invoices.create') ? 'active' : '' }}"
-                        href="{{ route('invoices.create') }}">
-                        <i class="bi bi-plus-circle"></i><span>Tambah Invoice</span>
-                    </a>
-                </div>
-            </div>
+            <a class="sidebar-link {{ request()->routeIs('invoices.*') ? 'active' : '' }}"
+                href="{{ route('invoices.index') }}">
+                <i class="bi bi-receipt"></i><span>Invoice</span><span class="arr">&rarr;</span>
+            </a>
 
             <div class="sidebar-label">Lainnya</div>
             <a class="sidebar-link {{ request()->routeIs('activities.*') ? 'active' : '' }}"
@@ -968,18 +954,6 @@
             if (o) o.addEventListener('click', hide);
         })();
 
-        function toggleInvoiceMenu(e) {
-            e.preventDefault();
-            var sub = document.getElementById('invoiceSubmenu'),
-                arr = document.getElementById('invoiceArrow');
-            if (sub.style.display === 'none' || !sub.style.display) {
-                sub.style.display = 'block';
-                if (arr) arr.style.transform = 'rotate(90deg)';
-            } else {
-                sub.style.display = 'none';
-                if (arr) arr.style.transform = '';
-            }
-        }
     </script>
 
     <script>

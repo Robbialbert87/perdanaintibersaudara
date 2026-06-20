@@ -41,23 +41,27 @@
                                 <option value="">-- Pilih Produk/Jasa --</option>
                                 <optgroup label="Produk">
                                     @foreach($products as $p)
-                                        @php $firstImg = $p->active_images[0] ?? $p->images[0] ?? null; @endphp
-                                        <option value="{{ $p->name }}" {{ old('perihal.'.$index, $perihal) == $p->name ? 'selected' : '' }} data-image="{{ $firstImg ? Storage::url($firstImg) : '' }}">{{ $p->name }}</option>
+                                        @php
+                                            $allPaths = $p->active_images ?? $p->images ?? [];
+                                        @endphp
+                                        <option value="{{ $p->name }}" {{ old('perihal.'.$index, $perihal) == $p->name ? 'selected' : '' }} data-images="{{ json_encode($allPaths) }}">{{ $p->name }}</option>
                                     @endforeach
                                 </optgroup>
                                 <optgroup label="Layanan">
                                     @foreach($services as $s)
-                                        @php $firstImg = $s->active_images[0] ?? $s->images[0] ?? $s->image ?? null; @endphp
-                                        <option value="{{ $s->title }}" {{ old('perihal.'.$index, $perihal) == $s->title ? 'selected' : '' }} data-image="{{ $firstImg ? Storage::url($firstImg) : '' }}">{{ $s->title }}</option>
+                                        @php
+                                            $allPaths = $s->active_images ?? $s->images ?? ($s->image ? [$s->image] : []);
+                                        @endphp
+                                        <option value="{{ $s->title }}" {{ old('perihal.'.$index, $perihal) == $s->title ? 'selected' : '' }} data-images="{{ json_encode($allPaths) }}">{{ $s->title }}</option>
                                     @endforeach
                                 </optgroup>
                             </select>
                             <button type="button" class="btn btn-danger remove-perihal" {{ count($perihalArray) == 1 ? 'disabled' : '' }}><i class="bi bi-x"></i></button>
                         </div>
+                        <div class="perihal-images mt-2 d-flex flex-wrap gap-2"></div>
                         @endforeach
                     </div>
                     <button type="button" class="btn btn-sm btn-outline-success" id="addPerihal"><i class="bi bi-plus"></i> Tambah Perihal</button>
-                    <div id="perihalPreview" class="mt-2 d-flex flex-wrap gap-2"></div>
                     @error('perihal')<div class="text-danger small mt-1">{{ $message }}</div>@enderror
                 </div>
                 <div class="col-md-2">
@@ -108,6 +112,7 @@
                                     <option value="Pcs" {{ ($item->satuan ?? '') == 'Pcs' ? 'selected' : '' }}>Pcs</option>
                                     <option value="Cm" {{ ($item->satuan ?? '') == 'Cm' ? 'selected' : '' }}>Cm</option>
                                     <option value="Set" {{ ($item->satuan ?? '') == 'Set' ? 'selected' : '' }}>Set</option>
+                                    <option value="Rim" {{ ($item->satuan ?? '') == 'Rim' ? 'selected' : '' }}>Rim</option>
                                     <option value="Lembar" {{ ($item->satuan ?? '') == 'Lembar' ? 'selected' : '' }}>Lembar</option>
                                     <option value="Buah" {{ ($item->satuan ?? '') == 'Buah' ? 'selected' : '' }}>Buah</option>
                                     <option value="Bulan" {{ ($item->satuan ?? '') == 'Bulan' ? 'selected' : '' }}>Bulan</option>
@@ -148,11 +153,12 @@
             </div>
 
             <div class="mb-4">
-                <div class="form-check form-switch">
-                    <input class="form-check-input" type="checkbox" id="tampilkanGambar" name="tampilkan_gambar" value="1" {{ (old('tampilkan_gambar', $quotation->tampilkan_gambar)) ? 'checked' : '' }}>
-                    <label class="form-check-label" for="tampilkanGambar"><i class="bi bi-image me-1"></i>Tampilkan gambar pada hasil PDF</label>
+                <div class="d-flex align-items-center gap-2 mb-1">
+                    <i class="bi bi-image text-primary fs-5"></i>
+                    <span class="fw-semibold">Lampiran Gambar PDF</span>
                 </div>
-                <small class="text-muted">Aktifkan untuk menyertakan lampiran gambar produk/jasa di PDF penawaran.</small>
+                <p class="text-muted small mb-2">Klik pada gambar di bawah setiap perihal untuk memilih gambar yang akan ditampilkan di PDF.</p>
+                <input type="hidden" name="selected_images" id="selectedImagesInput" value="{{ json_encode(is_array($quotation->selected_images) ? $quotation->selected_images : (json_decode($quotation->selected_images ?? '{}', true) ?: [])) }}">
             </div>
 
             <div class="d-flex justify-content-between">
@@ -165,6 +171,7 @@
 
 
 <script>
+const STORAGE_URL = '{{ Storage::url('') }}';
 document.addEventListener('DOMContentLoaded', function() {
     let itemIndex = {{ count($quotation->items) }};
     const tbody = document.getElementById('itemsBody');
@@ -176,17 +183,13 @@ document.addEventListener('DOMContentLoaded', function() {
         return parseFloat(val.replace(/\./g, '').replace(',', '.')) || 0;
     };
 
-    // Format input as currency while typing
     const formatCurrencyInput = (input) => {
         let val = input.value.replace(/[^,\d]/g, '');
         let parts = val.split(',');
         let integerPart = parts[0].replace(/\B(?=(\d{3})+(?!\d))/g, ".");
-        
-        // Prevent typing multiple commas
         if (parts.length > 2) {
             parts = [parts[0], parts[1]];
         }
-        
         input.value = parts.length > 1 ? integerPart + ',' + parts[1] : integerPart;
     };
 
@@ -216,6 +219,104 @@ document.addEventListener('DOMContentLoaded', function() {
         }
     });
 
+    // --- Selected images tracking ---
+    let selectedImagesMap = {};
+
+    try {
+        const saved = document.getElementById('selectedImagesInput').value;
+        if (saved) selectedImagesMap = JSON.parse(saved);
+    } catch (e) {}
+
+    const getPerihalName = (selectEl) => selectEl.value;
+
+    const getImagesContainer = (selectEl) => {
+        const row = selectEl.closest('.perihal-row');
+        return row ? row.nextElementSibling : null;
+    };
+
+    const renderImageGallery = (selectEl) => {
+        const container = getImagesContainer(selectEl);
+        if (!container) return;
+
+        const option = selectEl.options[selectEl.selectedIndex];
+        container.innerHTML = '';
+
+        if (!option || !option.value || !option.dataset.images) return;
+
+        let images;
+        try {
+            images = JSON.parse(option.dataset.images);
+        } catch (e) { return; }
+
+        if (!images.length) return;
+
+        const name = option.value;
+        if (!selectedImagesMap[name]) selectedImagesMap[name] = [];
+
+        images.forEach((rawPath, idx) => {
+            const displayUrl = STORAGE_URL + rawPath;
+            const isSelected = selectedImagesMap[name].includes(rawPath);
+            const wrapper = document.createElement('div');
+            wrapper.className = 'image-option' + (isSelected ? ' selected' : '');
+            wrapper.style.cssText = `
+                position: relative; cursor: pointer; border-radius: 8px; overflow: hidden;
+                border: 3px solid ${isSelected ? '#28a745' : '#dee2e6'};
+                transition: border-color .2s; width: 100px; height: 80px; flex-shrink: 0;
+            `;
+            wrapper.title = isSelected ? 'Klik untuk hapus pilihan' : 'Klik untuk pilih';
+
+            const img = document.createElement('img');
+            img.src = displayUrl;
+            img.alt = `Gambar ${idx + 1}`;
+            img.style.cssText = 'width: 100%; height: 100%; object-fit: cover; display: block;';
+
+            const check = document.createElement('div');
+            check.className = 'image-check';
+            check.innerHTML = '&#10003;';
+            check.style.cssText = `
+                position: absolute; top: 4px; right: 4px; width: 22px; height: 22px;
+                border-radius: 50%; background: ${isSelected ? '#28a745' : '#6c757d'};
+                color: #fff; font-size: 14px; font-weight: bold; display: flex;
+                align-items: center; justify-content: center; opacity: ${isSelected ? '1' : '0.6'};
+                transition: all .2s;
+            `;
+
+            wrapper.appendChild(img);
+            wrapper.appendChild(check);
+
+            wrapper.addEventListener('click', function(e) {
+                e.stopPropagation();
+                if (!selectedImagesMap[name]) selectedImagesMap[name] = [];
+                const idx = selectedImagesMap[name].indexOf(rawPath);
+                if (idx > -1) {
+                    selectedImagesMap[name].splice(idx, 1);
+                    wrapper.style.borderColor = '#dee2e6';
+                    check.style.background = '#6c757d';
+                    check.style.opacity = '0.6';
+                    wrapper.title = 'Klik untuk pilih';
+                } else {
+                    selectedImagesMap[name].push(rawPath);
+                    wrapper.style.borderColor = '#28a745';
+                    check.style.background = '#28a745';
+                    check.style.opacity = '1';
+                    wrapper.title = 'Klik untuk hapus pilihan';
+                }
+                if (selectedImagesMap[name].length === 0) delete selectedImagesMap[name];
+                updateSelectedImagesInput();
+            });
+
+            container.appendChild(wrapper);
+        });
+    };
+
+    const updateSelectedImagesInput = () => {
+        document.getElementById('selectedImagesInput').value = JSON.stringify(selectedImagesMap);
+    };
+
+    const renderAllGalleries = () => {
+        document.querySelectorAll('.perihal-select').forEach(renderImageGallery);
+    };
+
     const buildRowHTML = (index, namaItem = '') => {
         const badgeHTML = namaItem ? `<small class="text-primary fw-semibold perihal-badge d-block mb-1"><i class="bi bi-tag-fill me-1"></i>${namaItem}</small>` : `<small class="text-primary fw-semibold perihal-badge d-block mb-1"></small>`;
         return `
@@ -234,12 +335,13 @@ document.addEventListener('DOMContentLoaded', function() {
             </td>
             <td>
                 <select name="items[${index}][satuan]" class="form-select satuan-input">
-                    <option value="">--</option>
-                    <option value="Unit" selected>Unit</option>
+                    <option value="" selected>--</option>
+                    <option value="Unit">Unit</option>
                     <option value="Paket">Paket</option>
                     <option value="Pcs">Pcs</option>
                     <option value="Cm">Cm</option>
                     <option value="Set">Set</option>
+                    <option value="Rim">Rim</option>
                     <option value="Lembar">Lembar</option>
                     <option value="Buah">Buah</option>
                     <option value="Bulan">Bulan</option>
@@ -278,20 +380,22 @@ document.addEventListener('DOMContentLoaded', function() {
     // Listen for perihal change → update matching item nama_item
     perihalContainer.addEventListener('change', function(e) {
         if (e.target.matches('.perihal-select')) {
-            updatePerihalPreview();
+            const name = getPerihalName(e.target);
             const idx = Array.from(perihalContainer.querySelectorAll('.perihal-row')).indexOf(e.target.closest('.perihal-row'));
             const rows = tbody.querySelectorAll('.item-row');
+
+            renderImageGallery(e.target);
+
             if (rows[idx]) {
                 const namaInput = rows[idx].querySelector('.nama-item-input');
                 const badge = rows[idx].querySelector('.perihal-badge');
                 if (namaInput && namaInput.dataset.autofilled !== 'false') {
-                    namaInput.value = e.target.value;
+                    namaInput.value = name;
                     namaInput.dataset.autofilled = 'true';
                 }
-                if (badge) badge.innerHTML = e.target.value ? `<i class="bi bi-tag-fill me-1"></i>${e.target.value}` : '';
+                if (badge) badge.innerHTML = name ? `<i class="bi bi-tag-fill me-1"></i>${name}` : '';
             } else {
-                // Add new row for newly selected perihal
-                tbody.insertAdjacentHTML('beforeend', buildRowHTML(itemIndex++, e.target.value));
+                tbody.insertAdjacentHTML('beforeend', buildRowHTML(itemIndex++, name));
                 reindexRows();
                 updateRemoveButtons();
             }
@@ -305,40 +409,20 @@ document.addEventListener('DOMContentLoaded', function() {
         }
     });
 
-    const updatePerihalPreview = () => {
-        const container = document.getElementById('perihalPreview');
-        container.innerHTML = '';
-        document.querySelectorAll('.perihal-select').forEach(select => {
-            const option = select.options[select.selectedIndex];
-            if (option && option.dataset.image) {
-                const img = document.createElement('img');
-                img.src = option.dataset.image;
-                img.alt = option.value;
-                img.className = 'img-thumbnail';
-                img.style = 'max-height: 80px; width: auto;';
-                container.appendChild(img);
-            }
-        });
-    };
-
     // Tambah Perihal
     document.getElementById('addPerihal').addEventListener('click', function() {
         const rowCount = perihalContainer.querySelectorAll('.perihal-row').length;
-        const optionsHTML = `<option value="">-- Pilih Produk/Jasa --</option>` +
-            Array.from(perihalContainer.querySelectorAll('.perihal-select')[0].options).slice(1).map(o =>
-                `<option value="${o.value}"${o.dataset.image ? ` data-image="${o.dataset.image}"` : ''}>${o.textContent}</option>`
-            ).join('');
+        const optionsHTML = perihalContainer.querySelector('.perihal-select').innerHTML.replace(/\s+selected/g, '');
         const newPerihal = `
             <div class="input-group mb-2 perihal-row">
                 <span class="input-group-text perihal-number">${rowCount + 1}.</span>
                 <select name="perihal[]" class="form-select perihal-select" required>${optionsHTML}</select>
                 <button type="button" class="btn btn-danger remove-perihal"><i class="bi bi-x"></i></button>
-            </div>`;
+            </div>
+            <div class="perihal-images mt-2 d-flex flex-wrap gap-2"></div>`;
         perihalContainer.insertAdjacentHTML('beforeend', newPerihal);
         updatePerihalNumbers();
-        updatePerihalPreview();
 
-        // Add a matching blank item row
         tbody.insertAdjacentHTML('beforeend', buildRowHTML(itemIndex++, ''));
         reindexRows();
         updateRemoveButtons();
@@ -351,11 +435,18 @@ document.addEventListener('DOMContentLoaded', function() {
             if (!btn.disabled) {
                 const perihalRow = btn.closest('.perihal-row');
                 const perihalIndex = Array.from(perihalContainer.querySelectorAll('.perihal-row')).indexOf(perihalRow);
-                perihalRow.remove();
-                updatePerihalNumbers();
-                updatePerihalPreview();
+                const select = perihalRow.querySelector('.perihal-select');
+                const oldName = getPerihalName(select);
+                if (oldName && selectedImagesMap[oldName]) delete selectedImagesMap[oldName];
+                updateSelectedImagesInput();
 
-                // Remove matching item row
+                const imagesContainer = perihalRow.nextElementSibling;
+                perihalRow.remove();
+                if (imagesContainer && imagesContainer.classList.contains('perihal-images')) {
+                    imagesContainer.remove();
+                }
+                updatePerihalNumbers();
+
                 const itemRows = tbody.querySelectorAll('.item-row');
                 if (itemRows[perihalIndex]) itemRows[perihalIndex].remove();
                 reindexRows();
@@ -373,14 +464,12 @@ document.addEventListener('DOMContentLoaded', function() {
         });
     };
 
-    // Manual add item row (independent)
     document.getElementById('addRow').addEventListener('click', function() {
         tbody.insertAdjacentHTML('beforeend', buildRowHTML(itemIndex++, ''));
         reindexRows();
         updateRemoveButtons();
     });
 
-    // Remove item row manually
     tbody.addEventListener('click', function(e) {
         if (e.target.closest('.remove-row')) {
             const btn = e.target.closest('.remove-row');
@@ -393,17 +482,20 @@ document.addEventListener('DOMContentLoaded', function() {
         }
     });
 
+    // Form submit → serialize selected images
+    document.getElementById('quotationForm').addEventListener('submit', function() {
+        updateSelectedImagesInput();
+    });
+
     // Initialize
     updateRemoveButtons();
     updatePerihalNumbers();
-    updatePerihalPreview();
+    renderAllGalleries();
     
-    // Apply formatting initially
     document.querySelectorAll('.currency-format').forEach(input => {
         if(input.value) formatCurrencyInput(input);
     });
 
-    // Calculate initial row subtotals
     document.querySelectorAll('.item-row').forEach(row => calculateRowSubtotal(row));
     calculateTotal();
 });

@@ -17,6 +17,8 @@
     .info-table td { display: block; padding: 4px 0 !important; border: none !important; }
     .info-table tr { display: block; margin-bottom: 4px; }
     .info-table td:first-child { font-weight: 600; color: #637381; }
+    .info-table td:nth-child(2) { display: none; }
+    .info-table td:first-child::after { content: " :"; font-weight: normal; color: #637381; }
 }
 </style>
 @endpush

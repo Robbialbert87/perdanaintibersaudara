@@ -78,20 +78,30 @@
                     @error('customer_id')<div class="invalid-feedback">{{ $message }}</div>@enderror
                 </div>
                 <div class="col-md-4">
-                    <label class="form-label">Perihal (Layanan) <span class="text-danger">*</span></label>
+                    <label class="form-label">Perihal (Produk/Jasa) <span class="text-danger">*</span></label>
                     <div id="perihalContainer">
                         <div class="input-group mb-2 perihal-row">
                             <span class="input-group-text perihal-number">1.</span>
-                            <select name="perihal[]" class="form-select" required>
-                                <option value="">-- Pilih Layanan --</option>
-                                @foreach($services as $s)
-                                    <option value="{{ $s->title }}">{{ $s->title }}</option>
-                                @endforeach
+                            <select name="perihal[]" class="form-select perihal-select" required>
+                                <option value="">-- Pilih Produk/Jasa --</option>
+                                <optgroup label="Produk">
+                                    @foreach($products as $p)
+                                        @php $firstImg = $p->active_images[0] ?? $p->images[0] ?? null; @endphp
+                                        <option value="{{ $p->name }}" data-image="{{ $firstImg ? Storage::url($firstImg) : '' }}">{{ $p->name }}</option>
+                                    @endforeach
+                                </optgroup>
+                                <optgroup label="Layanan">
+                                    @foreach($services as $s)
+                                        @php $firstImg = $s->active_images[0] ?? $s->images[0] ?? $s->image ?? null; @endphp
+                                        <option value="{{ $s->title }}" data-image="{{ $firstImg ? Storage::url($firstImg) : '' }}">{{ $s->title }}</option>
+                                    @endforeach
+                                </optgroup>
                             </select>
                             <button type="button" class="btn btn-danger remove-perihal" disabled><i class="bi bi-x"></i></button>
                         </div>
                     </div>
                     <button type="button" class="btn btn-sm btn-outline-success mt-1" id="addPerihal"><i class="bi bi-plus"></i> Tambah Perihal</button>
+                    <div id="perihalPreview" class="mt-2 d-flex flex-wrap gap-2"></div>
                     @error('perihal')<div class="text-danger small mt-1">{{ $message }}</div>@enderror
                 </div>
             </div>
@@ -103,19 +113,21 @@
                 <table class="table table-bordered align-middle" id="itemsTable" style="min-width:600px;">
                     <thead class="table-light">
                         <tr>
-                            <th width="15%">Layanan</th>
-                            <th width="20%">Deskripsi <span class="text-danger">*</span></th>
-                            <th width="13%">Tgl Kegiatan</th>
-                            <th width="8%">Vol</th>
-                            <th width="15%">Harga Satuan</th>
-                            <th width="16%">Jumlah Harga</th>
+                            <th width="16%">Produk/Jasa</th>
+                            <th width="17%">Deskripsi <span class="text-danger">*</span></th>
+                            <th width="12%">Tgl Kegiatan</th>
+                            <th width="7%">Vol</th>
+                            <th width="9%">Satuan</th>
+                            <th width="13%">Harga Satuan</th>
+                            <th width="13%">Jumlah Harga</th>
                             <th width="3%" class="text-center">#</th>
                         </tr>
                     </thead>
                     <tbody id="itemsBody">
                         <tr class="item-row">
-                            <td data-label="Layanan">
-                                <small class="text-primary fw-semibold perihal-badge d-block"></small>
+                            <td data-label="Produk/Jasa">
+                                <small class="text-primary fw-semibold perihal-badge d-block mb-1"></small>
+                                <input type="text" name="items[0][nama_item]" class="form-control nama-item-input" placeholder="Nama Barang/Pekerjaan (opsional jika ada label)" data-autofilled="false">
                             </td>
                             <td data-label="Deskripsi">
                                 <textarea name="items[0][deskripsi]" class="form-control deskripsi-input" rows="2" required placeholder="Deskripsi pekerjaan/barang..."></textarea>
@@ -125,6 +137,21 @@
                             </td>
                             <td data-label="Volume">
                                 <input type="number" name="items[0][volume]" class="form-control volume-input" value="" required placeholder="0" step="any" min="0">
+                            </td>
+                            <td data-label="Satuan">
+                                <select name="items[0][satuan]" class="form-select satuan-input">
+                                    <option value="" selected>--</option>
+                                    <option value="Unit">Unit</option>
+                                    <option value="Paket">Paket</option>
+                                    <option value="Pcs">Pcs</option>
+                                    <option value="Cm">Cm</option>
+                                    <option value="Set">Set</option>
+                                    <option value="Rim">Rim</option>
+                                    <option value="Lembar">Lembar</option>
+                                    <option value="Buah">Buah</option>
+                                    <option value="Bulan">Bulan</option>
+                                    <option value="Tahun">Tahun</option>
+                                </select>
                             </td>
                             <td data-label="Harga Satuan">
                                 <input type="text" name="items[0][harga_satuan]" class="form-control harga-input currency-format" value="" required placeholder="0">
@@ -137,9 +164,9 @@
                             </td>
                         </tr>
                     </tbody>
-                    <tfoot class="table-light">
+                    <tfoot class="table-dark">
                         <tr>
-                            <td colspan="5" class="text-end fw-bold align-middle"><strong>TOTAL</strong></td>
+                            <td colspan="6" class="text-end fw-bold align-middle"><strong>TOTAL</strong></td>
                             <td colspan="2">
                                 <div class="input-group">
                                     <span class="input-group-text">Rp</span>
@@ -225,6 +252,12 @@ document.addEventListener('DOMContentLoaded', function() {
             if (!existingRows[i]) {
                 const newRowHTML = buildRowHTML(itemIndex++, selectedName);
                 tbody.insertAdjacentHTML('beforeend', newRowHTML);
+            } else {
+                const namaInput = existingRows[i].querySelector('.nama-item-input');
+                if (namaInput && (namaInput.dataset.autofilled === 'true' || namaInput.value === '')) {
+                    namaInput.value = selectedName;
+                    namaInput.dataset.autofilled = 'true';
+                }
             }
         });
 
@@ -239,11 +272,14 @@ document.addEventListener('DOMContentLoaded', function() {
     };
 
     const buildRowHTML = (index, namaItem = '') => {
-        const badgeHTML = namaItem ? `<small class="text-primary fw-semibold perihal-badge d-block mb-1"><i class="bi bi-tag-fill me-1"></i>${namaItem}</small>` : `<small class="text-primary fw-semibold perihal-badge d-block"></small>`;
+        const badgeHTML = namaItem ? `<small class="text-primary fw-semibold perihal-badge d-block mb-1"><i class="bi bi-tag-fill me-1"></i>${namaItem}</small>` : `<small class="text-primary fw-semibold perihal-badge d-block mb-1"></small>`;
         return `
         <tr class="item-row">
-            <td data-label="Layanan">
+            <td data-label="Produk/Jasa">
                 ${badgeHTML}
+                <input type="text" name="items[${index}][nama_item]" class="form-control nama-item-input"
+                    value="${namaItem}" placeholder="Nama Barang/Pekerjaan (opsional jika ada label)"
+                    data-autofilled="${namaItem !== '' ? 'true' : 'false'}">
             </td>
             <td data-label="Deskripsi">
                 <textarea name="items[${index}][deskripsi]" class="form-control deskripsi-input" rows="2" required placeholder="Deskripsi pekerjaan/barang..."></textarea>
@@ -253,6 +289,21 @@ document.addEventListener('DOMContentLoaded', function() {
             </td>
             <td data-label="Volume">
                 <input type="number" name="items[${index}][volume]" class="form-control volume-input" value="" required placeholder="0" step="any" min="0">
+            </td>
+            <td data-label="Satuan">
+                <select name="items[${index}][satuan]" class="form-select satuan-input">
+                    <option value="" selected>--</option>
+                    <option value="Unit">Unit</option>
+                    <option value="Paket">Paket</option>
+                    <option value="Pcs">Pcs</option>
+                    <option value="Cm">Cm</option>
+                    <option value="Set">Set</option>
+                    <option value="Rim">Rim</option>
+                    <option value="Lembar">Lembar</option>
+                    <option value="Buah">Buah</option>
+                    <option value="Bulan">Bulan</option>
+                    <option value="Tahun">Tahun</option>
+                </select>
             </td>
             <td data-label="Harga Satuan">
                 <input type="text" name="items[${index}][harga_satuan]" class="form-control harga-input currency-format" value="" required placeholder="0">
@@ -284,11 +335,17 @@ document.addEventListener('DOMContentLoaded', function() {
     };
 
     perihalContainer.addEventListener('change', function(e) {
-        if (e.target.matches('select[name="perihal[]"]')) {
+        if (e.target.matches('.perihal-select')) {
+            updatePerihalPreview();
             const idx = Array.from(perihalContainer.querySelectorAll('.perihal-row')).indexOf(e.target.closest('.perihal-row'));
             const rows = tbody.querySelectorAll('.item-row');
             if (rows[idx]) {
+                const namaInput = rows[idx].querySelector('.nama-item-input');
                 const badge = rows[idx].querySelector('.perihal-badge');
+                if (namaInput && namaInput.dataset.autofilled !== 'false') {
+                    namaInput.value = e.target.value;
+                    namaInput.dataset.autofilled = 'true';
+                }
                 if (badge) badge.innerHTML = e.target.value ? `<i class="bi bi-tag-fill me-1"></i>${e.target.value}` : '';
             } else {
                 syncItemsFromPerihal();
@@ -296,20 +353,43 @@ document.addEventListener('DOMContentLoaded', function() {
         }
     });
 
+    tbody.addEventListener('input', function(e) {
+        if (e.target.classList.contains('nama-item-input')) {
+            e.target.dataset.autofilled = 'false';
+        }
+    });
+
+    const updatePerihalPreview = () => {
+        const container = document.getElementById('perihalPreview');
+        container.innerHTML = '';
+        document.querySelectorAll('.perihal-select').forEach(select => {
+            const option = select.options[select.selectedIndex];
+            if (option && option.dataset.image) {
+                const img = document.createElement('img');
+                img.src = option.dataset.image;
+                img.alt = option.value;
+                img.className = 'img-thumbnail';
+                img.style = 'max-height: 80px; width: auto;';
+                container.appendChild(img);
+            }
+        });
+    };
+
     document.getElementById('addPerihal').addEventListener('click', function() {
         const rowCount = perihalContainer.querySelectorAll('.perihal-row').length;
-        const optionsHTML = `<option value="">-- Pilih Layanan --</option>` +
-            Array.from(document.querySelectorAll('select[name="perihal[]"]:first-of-type option')).slice(1).map(o =>
-                `<option value="${o.value}">${o.textContent}</option>`
+        const optionsHTML = `<option value="">-- Pilih Produk/Jasa --</option>` +
+            Array.from(perihalContainer.querySelectorAll('.perihal-select')[0].options).slice(1).map(o =>
+                `<option value="${o.value}"${o.dataset.image ? ` data-image="${o.dataset.image}"` : ''}>${o.textContent}</option>`
             ).join('');
         const newPerihal = `
             <div class="input-group mb-2 perihal-row">
                 <span class="input-group-text perihal-number">${rowCount + 1}.</span>
-                <select name="perihal[]" class="form-select" required>${optionsHTML}</select>
+                <select name="perihal[]" class="form-select perihal-select" required>${optionsHTML}</select>
                 <button type="button" class="btn btn-danger remove-perihal"><i class="bi bi-x"></i></button>
             </div>`;
         perihalContainer.insertAdjacentHTML('beforeend', newPerihal);
         updatePerihalNumbers();
+        updatePerihalPreview();
         tbody.insertAdjacentHTML('beforeend', buildRowHTML(itemIndex++));
         reindexRows();
         updateRemoveButtons();
@@ -323,6 +403,7 @@ document.addEventListener('DOMContentLoaded', function() {
                 const perihalIndex = Array.from(perihalContainer.querySelectorAll('.perihal-row')).indexOf(perihalRow);
                 perihalRow.remove();
                 updatePerihalNumbers();
+                updatePerihalPreview();
                 const itemRows = tbody.querySelectorAll('.item-row');
                 if (itemRows[perihalIndex]) itemRows[perihalIndex].remove();
                 reindexRows();
@@ -360,6 +441,7 @@ document.addEventListener('DOMContentLoaded', function() {
 
     updateRemoveButtons();
     updatePerihalNumbers();
+    updatePerihalPreview();
     document.querySelectorAll('.currency-format').forEach(input => {
         if(input.value) formatCurrencyInput(input);
     });

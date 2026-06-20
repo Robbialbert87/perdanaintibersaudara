@@ -16,6 +16,7 @@ class InvoiceItem extends Model
         'deskripsi',
         'tanggal_kegiatan',
         'volume',
+        'satuan',
         'harga_satuan',
         'subtotal',
     ];

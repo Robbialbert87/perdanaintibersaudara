@@ -19,11 +19,13 @@ class Quotation extends Model
         'verify_token',
         'catatan',
         'tampilkan_gambar',
+        'selected_images',
     ];
 
     protected $casts = [
         'tanggal' => 'date',
         'perihal' => 'array',
+        'selected_images' => 'array',
     ];
 
     public function customer()

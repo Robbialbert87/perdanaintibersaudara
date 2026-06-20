@@ -2,27 +2,41 @@
 
 @section('title', 'Detail Penawaran')
 
+@push('styles')
+<style>
+@media (max-width: 576px) {
+    .info-table td { display: block; padding: 4px 0 !important; border: none !important; }
+    .info-table tr { display: block; margin-bottom: 4px; }
+    .info-table td:first-child { font-weight: 600; color: #637381; }
+    .info-table td:nth-child(2) { display: none; }
+    .info-table td:first-child::after { content: " :"; font-weight: normal; color: #637381; }
+}
+</style>
+@endpush
+
 @section('content')
 <div class="card shadow-sm border-0 mb-4">
-    <div class="card-header bg-white py-3 d-flex justify-content-between align-items-center">
-        <h5 class="mb-0 text-primary"><i class="bi bi-file-earmark-text me-2"></i>Detail Penawaran</h5>
-        <div>
-            <a href="{{ route('quotations.export_pdf', $quotation->id) }}" target="_blank" class="btn btn-secondary btn-sm">
-                <i class="bi bi-file-earmark-pdf"></i> Export PDF
-            </a>
-            <a href="{{ route('quotations.edit', $quotation->id) }}" class="btn btn-warning btn-sm">
-                <i class="bi bi-pencil"></i> Edit
-            </a>
-            <a href="{{ route('quotations.index') }}" class="btn btn-secondary btn-sm">
-                <i class="bi bi-arrow-left"></i> Kembali
-            </a>
+    <div class="card-header bg-white py-3">
+        <div class="d-flex flex-column flex-sm-row justify-content-between align-items-start align-items-sm-center gap-2">
+            <h5 class="mb-0 text-primary"><i class="bi bi-file-earmark-text me-2"></i>Detail Penawaran</h5>
+            <div class="d-flex flex-wrap gap-1">
+                <a href="{{ route('quotations.export_pdf', $quotation->id) }}" target="_blank" class="btn btn-secondary btn-sm">
+                    <i class="bi bi-file-earmark-pdf"></i> <span class="d-none d-sm-inline">Export PDF</span>
+                </a>
+                <a href="{{ route('quotations.edit', $quotation->id) }}" class="btn btn-warning btn-sm">
+                    <i class="bi bi-pencil"></i> <span class="d-none d-sm-inline">Edit</span>
+                </a>
+                <a href="{{ route('quotations.index') }}" class="btn btn-secondary btn-sm">
+                    <i class="bi bi-arrow-left"></i> <span class="d-none d-sm-inline">Kembali</span>
+                </a>
+            </div>
         </div>
     </div>
     <div class="card-body">
         <div class="row mb-4">
             <div class="col-md-6">
                 <h6 class="text-muted mb-1">Informasi Penawaran</h6>
-                <table class="table table-sm table-borderless">
+                <table class="table table-sm table-borderless info-table">
                     <tr>
                         <td width="130">Nomor Surat</td>
                         <td width="10">:</td>
@@ -68,7 +82,7 @@
             </div>
             <div class="col-md-6">
                 <h6 class="text-muted mb-1">Tujuan (Customer)</h6>
-                <table class="table table-sm table-borderless">
+                <table class="table table-sm table-borderless info-table">
                     <tr>
                         <td width="130">Instansi</td>
                         <td width="10">:</td>
@@ -121,10 +135,10 @@
                     </tr>
                     @endforeach
                 </tbody>
-                <tfoot class="table-light">
+                <tfoot class="table-dark">
                     <tr>
-                        <td colspan="4" class="text-end font-weight-bold"><strong>TOTAL</strong></td>
-                        <td class="text-end font-weight-bold"><strong>Rp {{ number_format($quotation->total, 0, ',', '.') }}</strong></td>
+                        <td colspan="4" class="text-end fw-bold"><strong>TOTAL</strong></td>
+                        <td class="text-end fw-bold"><strong>Rp {{ number_format($quotation->total, 0, ',', '.') }}</strong></td>
                     </tr>
                 </tfoot>
             </table>

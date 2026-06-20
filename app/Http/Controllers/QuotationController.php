@@ -109,13 +109,19 @@ class QuotationController extends Controller
 
             $nomorSurat = sprintf('%03d/SP/PIB-JMB/%s/%s', $nextNumber, $romanMonth, $year);
 
+            $selectedImages = $request->input('selected_images', '');
+            if (is_string($selectedImages)) {
+                $selectedImages = json_decode($selectedImages, true) ?? [];
+            }
+
             $quotation = Quotation::create([
                 'nomor_surat' => $nomorSurat,
                 'tanggal' => $request->tanggal,
                 'customer_id' => $request->customer_id,
                 'perihal' => json_encode($request->perihal),
                 'catatan' => $request->catatan,
-                'tampilkan_gambar' => $request->boolean('tampilkan_gambar'),
+                'tampilkan_gambar' => !empty($selectedImages),
+                'selected_images' => $selectedImages,
                 'status' => 'draft',
                 'total' => 0, // will be calculated
             ]);
@@ -159,17 +165,37 @@ class QuotationController extends Controller
         $products = Product::select('name', 'images', 'active_images')->get()->keyBy('name');
         $services = Service::select('title', 'image', 'images', 'active_images')->get()->keyBy('title');
         $perihalImages = [];
-        $perihalArray = is_array($quotation->perihal) ? $quotation->perihal : (json_decode($quotation->perihal, true) ?? []);
-        foreach ($perihalArray as $name) {
-            $localPath = null;
-            if ($product = $products->get($name)) {
-                $firstImg = $product->active_images[0] ?? $product->images[0] ?? null;
-                if ($firstImg) $localPath = Storage::disk('public')->path($firstImg);
-            } elseif ($service = $services->get($name)) {
-                $firstImg = $service->active_images[0] ?? $service->images[0] ?? $service->image ?? null;
-                if ($firstImg) $localPath = Storage::disk('public')->path($firstImg);
+
+        $selectedImages = $quotation->selected_images;
+        if (is_string($selectedImages)) {
+            $selectedImages = json_decode($selectedImages, true) ?? [];
+        } elseif (!is_array($selectedImages)) {
+            $selectedImages = [];
+        }
+
+        if (!empty($selectedImages)) {
+            foreach ($selectedImages as $name => $images) {
+                foreach ($images as $imgPath) {
+                    $localPath = Storage::disk('public')->path($imgPath);
+                    $perihalImages[] = [
+                        'name' => $name,
+                        'path' => file_exists($localPath) ? $localPath : null,
+                    ];
+                }
             }
-            $perihalImages[] = ['name' => $name, 'path' => $localPath && file_exists($localPath) ? $localPath : null];
+        } else {
+            $perihalArray = is_array($quotation->perihal) ? $quotation->perihal : (json_decode($quotation->perihal, true) ?? []);
+            foreach ($perihalArray as $name) {
+                $localPath = null;
+                if ($product = $products->get($name)) {
+                    $firstImg = $product->active_images[0] ?? $product->images[0] ?? null;
+                    if ($firstImg) $localPath = Storage::disk('public')->path($firstImg);
+                } elseif ($service = $services->get($name)) {
+                    $firstImg = $service->active_images[0] ?? $service->images[0] ?? $service->image ?? null;
+                    if ($firstImg) $localPath = Storage::disk('public')->path($firstImg);
+                }
+                $perihalImages[] = ['name' => $name, 'path' => $localPath && file_exists($localPath) ? $localPath : null];
+            }
         }
 
         $pdf = app('dompdf.wrapper')->loadView('admin.quotations.pdf', compact('quotation', 'qrCode', 'perihalImages'))
@@ -240,13 +266,19 @@ class QuotationController extends Controller
         $quotation = Quotation::findOrFail($id);
 
         DB::transaction(function () use ($request, $quotation, $itemsData, $total) {
+            $selectedImages = $request->input('selected_images', '');
+            if (is_string($selectedImages)) {
+                $selectedImages = json_decode($selectedImages, true) ?? [];
+            }
+
             $quotation->update([
                 'tanggal' => $request->tanggal,
                 'customer_id' => $request->customer_id,
                 'perihal' => json_encode($request->perihal),
                 'status' => $request->status,
                 'catatan' => $request->catatan,
-                'tampilkan_gambar' => $request->boolean('tampilkan_gambar'),
+                'tampilkan_gambar' => !empty($selectedImages),
+                'selected_images' => $selectedImages,
             ]);
 
             // Hapus items lama

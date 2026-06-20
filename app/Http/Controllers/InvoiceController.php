@@ -5,6 +5,7 @@ namespace App\Http\Controllers;
 use App\Helpers\QRCodeHelper;
 use App\Models\Customer;
 use App\Models\Invoice;
+use App\Models\Product;
 use App\Models\Service;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
@@ -33,9 +34,10 @@ class InvoiceController extends Controller
     public function create()
     {
         $customers = Customer::orderBy('nama_instansi')->get();
+        $products = Product::orderBy('name')->get();
         $services = Service::orderBy('title')->get();
 
-        return view('admin.invoices.create', compact('customers', 'services'));
+        return view('admin.invoices.create', compact('customers', 'products', 'services'));
     }
 
     public function store(Request $request)
@@ -51,6 +53,7 @@ class InvoiceController extends Controller
             'items.*.deskripsi' => 'required|string',
             'items.*.tanggal_kegiatan' => 'nullable|date',
             'items.*.volume' => 'required|string|max:255',
+            'items.*.satuan' => 'nullable|string|max:50',
             'items.*.harga_satuan' => 'required',
             'items.*.subtotal' => 'required',
         ]);
@@ -71,6 +74,7 @@ class InvoiceController extends Controller
                 'deskripsi' => $item['deskripsi'],
                 'tanggal_kegiatan' => $item['tanggal_kegiatan'] ?? null,
                 'volume' => $item['volume'],
+                'satuan' => $item['satuan'] ?? null,
                 'harga_satuan' => $harga,
                 'subtotal' => $subtotal,
             ];
@@ -127,9 +131,10 @@ class InvoiceController extends Controller
     {
         $invoice = Invoice::with('items')->findOrFail($id);
         $customers = Customer::orderBy('nama_instansi')->get();
+        $products = Product::orderBy('name')->get();
         $services = Service::orderBy('title')->get();
 
-        return view('admin.invoices.edit', compact('invoice', 'customers', 'services'));
+        return view('admin.invoices.edit', compact('invoice', 'customers', 'products', 'services'));
     }
 
     public function update(Request $request, string $id)
@@ -145,6 +150,7 @@ class InvoiceController extends Controller
             'items.*.deskripsi' => 'required|string',
             'items.*.tanggal_kegiatan' => 'nullable|date',
             'items.*.volume' => 'required|string|max:255',
+            'items.*.satuan' => 'nullable|string|max:50',
             'items.*.harga_satuan' => 'required',
             'items.*.subtotal' => 'required',
         ]);
@@ -165,6 +171,7 @@ class InvoiceController extends Controller
                 'deskripsi' => $item['deskripsi'],
                 'tanggal_kegiatan' => $item['tanggal_kegiatan'] ?? null,
                 'volume' => $item['volume'],
+                'satuan' => $item['satuan'] ?? null,
                 'harga_satuan' => $harga,
                 'subtotal' => $subtotal,
             ];
