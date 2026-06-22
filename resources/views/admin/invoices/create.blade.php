@@ -143,6 +143,7 @@
                                 <select name="items[0][satuan]" class="form-select satuan-input">
                                     <option value="" selected>--</option>
                                     <option value="Unit">Unit</option>
+                                    <option value="Orang">Orang</option>
                                     <option value="Paket">Paket</option>
                                     <option value="Pcs">Pcs</option>
                                     <option value="Cm">Cm</option>
@@ -295,6 +296,7 @@ document.addEventListener('DOMContentLoaded', function() {
                 <select name="items[${index}][satuan]" class="form-select satuan-input">
                     <option value="" selected>--</option>
                     <option value="Unit">Unit</option>
+                    <option value="Orang">Orang</option>
                     <option value="Paket">Paket</option>
                     <option value="Pcs">Pcs</option>
                     <option value="Cm">Cm</option>

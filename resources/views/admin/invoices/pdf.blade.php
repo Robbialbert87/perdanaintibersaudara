@@ -237,7 +237,7 @@
                 <th width="5%">No</th>
                 <th width="30%">Deskripsi Pekerjaan / Barang</th>
                 <th width="17%">Tgl Kegiatan</th>
-                <th width="8%">Vol</th>
+                <th width="8%">Volume</th>
                 <th width="20%">Harga Satuan</th>
                 <th width="20%">Jumlah Harga</th>
             </tr>
@@ -253,7 +253,7 @@
                     <div class="item-desc">{!! nl2br(e($item->deskripsi)) !!}</div>
                 </td>
                 <td class="text-center">{{ $item->tanggal_kegiatan ? \Carbon\Carbon::parse($item->tanggal_kegiatan)->locale('id')->translatedFormat('d F Y') : '-' }}</td>
-                <td class="text-center">{{ $item->volume }}</td>
+                <td class="text-center">{{ $item->volume }} {{ $item->satuan ?? '' }}</td>
                 <td class="text-right">Rp {{ number_format($item->harga_satuan, 0, ',', '.') }}</td>
                 <td class="text-right">Rp {{ number_format($item->subtotal, 0, ',', '.') }}</td>
             </tr>
@@ -272,18 +272,18 @@
         </tfoot>
     </table>
 
-    <div class="bank-info">
-        <p style="text-decoration: underline; font-weight: bold;">Pembayaran Melalui</p>
-        <p>Bank BCA No Rekening 619-801-2191</p>
-        <p>An. CV. Perdana Inti Bersaudara</p>
-    </div>
-
     @if(!empty($invoice->catatan))
     <div class="footer-info">
         <div class="keterangan-title">Keterangan :</div>
         <div style="padding-left: 20px; white-space: pre-line;">{!! nl2br(e($invoice->catatan)) !!}</div>
     </div>
     @endif
+
+    <div class="bank-info">
+        <p style="text-decoration: underline; font-weight: bold;">Pembayaran Melalui</p>
+        <p>Bank BCA No Rekening 619-801-2191</p>
+        <p>An. CV. Perdana Inti Bersaudara</p>
+    </div>
 
     <table style="width: 100%; margin-top: 40px;">
         <tr>

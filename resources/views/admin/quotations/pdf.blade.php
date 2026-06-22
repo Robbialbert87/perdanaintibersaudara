@@ -251,13 +251,6 @@
         <div class="keterangan-title">Keterangan :</div>
         @if(!empty($quotation->catatan))
             <div style="padding-left: 20px; white-space: pre-line;">{!! nl2br(e($quotation->catatan)) !!}</div>
-        @else
-            <ul class="keterangan-list">
-                <li>Harga sudah termasuk ongkir, transportasi dan akomodasi</li>
-                <li>Pembayaran DP 50% setelah serah terima 50%</li>
-                <li>Tidak termasuk PPn</li>
-                <li>Free uji paparan mandiri</li>
-            </ul>
         @endif
 
         <div class="bank-info">
