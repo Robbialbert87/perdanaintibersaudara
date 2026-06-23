@@ -125,57 +125,71 @@
 @push('scripts')
 <script>
 let aiGeneratedData = null;
-let mediaRecorder = null;
-let audioChunks = [];
 let isRecording = false;
 
+function voiceSupported() {
+    return !!(window.SpeechRecognition || window.webkitSpeechRecognition);
+}
+
+function requestMicPermission() {
+    return navigator.mediaDevices && navigator.mediaDevices.getUserMedia
+        ? navigator.mediaDevices.getUserMedia({ audio: true }).then(s => { s.getTracks().forEach(t => t.stop()); return true; })
+        : Promise.resolve(false);
+}
+
 function startRecording() {
-    if (!navigator.mediaDevices || !navigator.mediaDevices.getUserMedia) {
-        document.getElementById('aiPrompt').value = 'Browser tidak mendukung voice. Silakan ketik manual.';
+    const SpeechRecognition = window.SpeechRecognition || window.webkitSpeechRecognition;
+    if (!SpeechRecognition) {
+        document.getElementById('voiceNotSupported').classList.remove('d-none');
         return;
     }
     
     if (isRecording) { stopRecording(); return; }
     
     const btn = document.getElementById('micBtn');
-    btn.innerHTML = '<span class="spinner-border spinner-border-sm me-1"></span>Dengar...';
+    btn.innerHTML = '<span class="spinner-border spinner-border-sm me-1"></span>Izin mic...';
     btn.classList.replace('btn-outline-danger', 'btn-danger');
-    isRecording = true;
-    audioChunks = [];
     
-    navigator.mediaDevices.getUserMedia({ audio: true }).then(stream => {
-        const SpeechRecognition = window.SpeechRecognition || window.webkitSpeechRecognition;
-        if (SpeechRecognition) {
-            const recognition = new SpeechRecognition();
-            recognition.lang = 'id-ID';
-            recognition.continuous = true;
-            recognition.interimResults = true;
-            
-            recognition.onresult = function(event) {
-                let transcript = '';
-                for (let i = event.resultIndex; i < event.results.length; i++) {
-                    transcript += event.results[i][0].transcript;
-                }
-                document.getElementById('aiPrompt').value = transcript;
-            };
-            
-            recognition.onerror = function() {
-                stopRecording();
-                document.getElementById('aiPrompt').value = 'Gagal mendeteksi suara. Silakan ketik manual.';
-            };
-            
-            recognition.onend = function() { stopRecording(); };
-            recognition.start();
-            
-            // Auto stop after 10 seconds of silence
-            setTimeout(() => { recognition.stop(); }, 10000);
-        } else {
-            document.getElementById('aiPrompt').value = 'Browser tidak mendukung voice. Silakan ketik manual.';
+    requestMicPermission().then(granted => {
+        if (!granted) {
             stopRecording();
+            return;
         }
+        
+        btn.innerHTML = '<span class="spinner-border spinner-border-sm me-1"></span>Dengar...';
+        isRecording = true;
+        
+        const recognition = new SpeechRecognition();
+        recognition.lang = 'id-ID';
+        recognition.continuous = true;
+        recognition.interimResults = true;
+        
+        recognition.onresult = function(event) {
+            let transcript = '';
+            for (let i = event.resultIndex; i < event.results.length; i++) {
+                transcript += event.results[i][0].transcript;
+            }
+            document.getElementById('aiPrompt').value = transcript;
+        };
+        
+        recognition.onerror = function(event) {
+            stopRecording();
+            if (event.error === 'not-allowed' || event.error === 'permission-denied') {
+                document.getElementById('aiPrompt').value = 'Izin mic ditolak. Silakan ketik manual.';
+            } else if (event.error === 'no-speech') {
+                // silent, user can still type
+            } else {
+                document.getElementById('aiPrompt').value = 'Gagal mendeteksi suara: ' + event.error + '. Silakan ketik manual.';
+            }
+        };
+        
+        recognition.onend = function() { if (isRecording) stopRecording(); };
+        recognition.start();
+        
+        setTimeout(() => { try { recognition.stop(); } catch(e) {} }, 10000);
     }).catch(() => {
-        document.getElementById('aiPrompt').value = 'Izin mic ditolak. Silakan ketik manual.';
         stopRecording();
+        document.getElementById('aiPrompt').value = 'Izin mic ditolak. Silakan ketik manual.';
     });
 }
 
@@ -185,6 +199,11 @@ function stopRecording() {
     btn.classList.replace('btn-danger', 'btn-outline-danger');
     isRecording = false;
 }
+
+document.getElementById('aiModal').addEventListener('shown.bs.modal', function() {
+    document.getElementById('aiPrompt').focus();
+    document.getElementById('voiceNotSupported').classList.toggle('d-none', !voiceSupported());
+});
 
 function generateWithAI() {
     const prompt = document.getElementById('aiPrompt').value.trim();
@@ -242,9 +261,7 @@ function saveFromAI() {
     });
 }
 
-document.getElementById('aiModal').addEventListener('hidden.bs.modal', function() {
-    stopRecording();
-});
+
 </script>
 <script>
 document.addEventListener('click', function (e) {
@@ -281,7 +298,10 @@ document.addEventListener('click', function (e) {
                         <i class="bi bi-magic me-1"></i> Generate
                     </button>
                 </div>
-                <div class="mt-2">
+                <div id="voiceNotSupported" class="d-none mt-2">
+                    <small class="text-warning"><i class="bi bi-exclamation-triangle me-1"></i>Browser tidak mendukung voice. Silakan ketik prompt manual lalu klik Generate.</small>
+                </div>
+                <div class="mt-1">
                     <small class="text-muted">Klik mic 🎤 untuk voice input (Chrome/Edge). Cukup bicara natural.</small>
                 </div>
             </div>

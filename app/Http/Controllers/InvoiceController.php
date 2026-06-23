@@ -237,7 +237,7 @@ Output: {"customer_name":"RSUD Sultan Thaha Saifuddin","perihal":["MCU"],"items"
 PROMPT;
 
         $response = Http::timeout(30)->post(
-            "https://generativelanguage.googleapis.com/v1beta/models/gemini-2.5-flash:generateContent?key={$apiKey}",
+            "https://generativelanguage.googleapis.com/v1beta/models/gemini-2.5-flash-lite:generateContent?key={$apiKey}",
             [
                 'contents' => [
                     [
