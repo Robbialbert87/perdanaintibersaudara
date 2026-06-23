@@ -8,7 +8,7 @@
             font-family: 'Times New Roman', Times, serif;
             font-size: 11pt;
             line-height: 1.3;
-            margin: 30px 40px;
+            margin: 20px 30px;
             padding: 0;
         }
         
