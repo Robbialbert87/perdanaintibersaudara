@@ -157,6 +157,7 @@
                                     <option value="Pcs" {{ ($item->satuan ?? '') == 'Pcs' ? 'selected' : '' }}>Pcs</option>
                                     <option value="Cm" {{ ($item->satuan ?? '') == 'Cm' ? 'selected' : '' }}>Cm</option>
                                     <option value="Set" {{ ($item->satuan ?? '') == 'Set' ? 'selected' : '' }}>Set</option>
+                                    <option value="Box" {{ ($item->satuan ?? '') == 'Box' ? 'selected' : '' }}>Box</option>
                                     <option value="Rim" {{ ($item->satuan ?? '') == 'Rim' ? 'selected' : '' }}>Rim</option>
                                     <option value="Lembar" {{ ($item->satuan ?? '') == 'Lembar' ? 'selected' : '' }}>Lembar</option>
                                     <option value="Buah" {{ ($item->satuan ?? '') == 'Buah' ? 'selected' : '' }}>Buah</option>
@@ -282,6 +283,7 @@ document.addEventListener('DOMContentLoaded', function() {
                     <option value="Pcs">Pcs</option>
                     <option value="Cm">Cm</option>
                     <option value="Set">Set</option>
+                                    <option value="Box">Box</option>
                     <option value="Rim">Rim</option>
                     <option value="Lembar">Lembar</option>
                     <option value="Buah">Buah</option>

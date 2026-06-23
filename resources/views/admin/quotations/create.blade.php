@@ -100,6 +100,7 @@
                                     <option value="Pcs">Pcs</option>
                                     <option value="Cm">Cm</option>
                                     <option value="Set">Set</option>
+                                    <option value="Box">Box</option>
                                     <option value="Rim">Rim</option>
                                     <option value="Lembar">Lembar</option>
                                     <option value="Buah">Buah</option>
@@ -367,6 +368,7 @@ document.addEventListener('DOMContentLoaded', function() {
                     <option value="Pcs">Pcs</option>
                     <option value="Cm">Cm</option>
                     <option value="Set">Set</option>
+                                    <option value="Box">Box</option>
                     <option value="Rim">Rim</option>
                     <option value="Lembar">Lembar</option>
                     <option value="Buah">Buah</option>
