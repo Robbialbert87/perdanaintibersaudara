@@ -205,13 +205,19 @@
         <span style="margin-left: 20px;"><strong>&nbsp;&nbsp;&nbsp;&nbsp;{{ $quotation->customer->kota ?? 'Tempat' }}</strong></span>
     </div>
 
-    <div class="pembuka">
-        Dengan Hormat,
-    </div>
-    
-    <div class="isi-surat">
-        Dengan ini kami (PIB) Perdana Inti Bersaudara yang berkedudukan di Jambi ingin menawarkan {{ $perihalLabel }} berupa {{ $perihalText }} kepada {{ $quotation->customer->nama_instansi }}, adapun rincian harga yang ditawarkan adalah sebagai berikut:
-    </div>
+    @if($quotation->kata_pengantar)
+        <div class="pembuka" style="white-space: pre-line;">
+            {{ $quotation->kata_pengantar }}
+        </div>
+    @else
+        <div class="pembuka">
+            Dengan Hormat,
+        </div>
+        
+        <div class="isi-surat">
+            Dengan ini kami (PIB) Perdana Inti Bersaudara yang berkedudukan di Jambi ingin menawarkan {{ $perihalLabel }} berupa {{ $perihalText }} kepada {{ $quotation->customer->nama_instansi }}, adapun rincian harga yang ditawarkan adalah sebagai berikut:
+        </div>
+    @endif
 
     <table class="table-items">
         <thead>

@@ -152,6 +152,15 @@
             </div>
         </div>
         @endif
+
+        @if($quotation->kata_pengantar)
+        <div class="mt-4">
+            <h6 class="text-muted mb-1">Kata Pengantar:</h6>
+            <div class="p-3 bg-light rounded">
+                {!! nl2br(e($quotation->kata_pengantar)) !!}
+            </div>
+        </div>
+        @endif
     </div>
 </div>
 @endsection

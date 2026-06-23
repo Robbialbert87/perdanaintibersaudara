@@ -135,8 +135,14 @@
             <button type="button" id="addRow" class="btn btn-success btn-sm mb-4"><i class="bi bi-plus-lg"></i> Baris (jika Kegiatan Optional)</button>
 
             <div class="mb-4">
+                <label class="form-label">Kata Pengantar (Opsional)</label>
+                <p class="text-muted small mb-2">Sunting kata pengantar yang akan muncul di PDF. Kosongkan untuk menggunakan teks default.</p>
+                <textarea name="kata_pengantar" class="form-control" rows="5" placeholder="Dengan Hormat,&#10;&#10;Dengan ini kami (PIB) Perdana Inti Bersaudara yang berkedudukan di Jambi ingin menawarkan...">{{ old('kata_pengantar') }}</textarea>
+            </div>
+
+            <div class="mb-4">
                 <label class="form-label">Catatan Tambahan (Opsional)</label>
-                <textarea name="catatan" class="form-control" rows="3" placeholder="Contoh: Harga belum termasuk PPN, franco Jakarta, dll.">{{ old('catatan') }}</textarea>
+                <textarea name="catatan" class="form-control" rows="3" placeholder="Contoh: Harga belum termasuk PPN, franco Jakarta, dll.">{{ trim(old('catatan')) }}</textarea>
             </div>
 
             <div class="mb-4">

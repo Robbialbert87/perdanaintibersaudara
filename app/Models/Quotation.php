@@ -18,6 +18,7 @@ class Quotation extends Model
         'status',
         'verify_token',
         'catatan',
+        'kata_pengantar',
         'tampilkan_gambar',
         'selected_images',
     ];
