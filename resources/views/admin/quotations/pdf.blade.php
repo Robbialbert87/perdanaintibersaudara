@@ -50,20 +50,12 @@
             letter-spacing: 0.5px;
         }
         .header-footer {
-            font-size: 8.5pt;
+            font-size: 7.5pt;
             margin-top: 5px;
             padding-top: 2px;
             font-weight: bold;
             width: 100%;
-        }
-        .header-footer-left {
-            float: left;
-        }
-        .header-footer-right {
-            float: right;
-        }
-        .header-clear {
-            clear: both;
+            text-align: center;
         }
 
         /* Informasi Surat */
@@ -176,9 +168,7 @@
                     <h1>CV. PERDANA INTI BERSAUDARA</h1>
                     <h3>RADIOLOGI-SERVICE-SPAREPART-TIMBAL-ACCESORIES</h3>
                     <div class="header-footer">
-                        <span class="header-footer-left">Jl. Kepodang 1 N0. 205 RT 24 Kel. Andil Jaya Jambi &nbsp;&nbsp; HP. 0852 6305 6505</span>
-                        <span class="header-footer-right">E-mail : perdanaintibersaudara@gmail.com</span>
-                        <div class="header-clear"></div>
+                        Jl. Kepodang 1 N0. 205 RT 24 Kel. Andil Jaya Jambi &nbsp;&nbsp; HP. 0852 6305 6505 &nbsp;&nbsp; E-mail : perdanaintibersaudara@gmail.com
                     </div>
                 </td>
             </tr>
