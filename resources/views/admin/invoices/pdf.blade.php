@@ -275,7 +275,7 @@
     @if(!empty($invoice->catatan))
     <div class="footer-info">
         <div class="keterangan-title">Keterangan :</div>
-        <div style="padding-left: 20px; white-space: pre-line;">{!! nl2br(e($invoice->catatan)) !!}</div>
+        <div style="padding-left: 20px;">{!! nl2br(e($invoice->catatan)) !!}</div>
     </div>
     @endif
 

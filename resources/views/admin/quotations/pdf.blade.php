@@ -256,7 +256,7 @@
     <div class="footer-info">
         <div class="keterangan-title">Keterangan :</div>
         @if(!empty($quotation->catatan))
-            <div style="padding-left: 20px; white-space: pre-line;">{!! nl2br(e($quotation->catatan)) !!}</div>
+            <div style="padding-left: 20px;">{!! nl2br(e($quotation->catatan)) !!}</div>
         @endif
 
         <div class="bank-info">
