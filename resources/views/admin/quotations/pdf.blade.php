@@ -206,8 +206,8 @@
     </div>
 
     @if($quotation->kata_pengantar)
-        <div class="pembuka" style="white-space: pre-line;">
-            {{ $quotation->kata_pengantar }}
+        <div class="pembuka" style="text-align: justify; line-height: 1.6;">
+            {!! nl2br(e($quotation->kata_pengantar)) !!}
         </div>
     @else
         <div class="pembuka">
