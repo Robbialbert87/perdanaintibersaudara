@@ -105,7 +105,7 @@ class InvoiceController extends Controller
                 'tanggal' => $request->tanggal,
                 'customer_id' => $request->customer_id,
                 'perihal' => $request->perihal,
-                'catatan' => $request->catatan,
+                'catatan' => $request->filled('catatan') ? trim($request->catatan) : null,
                 'status' => 'draft',
                 'total' => 0,
             ]);
@@ -185,7 +185,7 @@ class InvoiceController extends Controller
                 'tanggal' => $request->tanggal,
                 'customer_id' => $request->customer_id,
                 'perihal' => $request->perihal,
-                'catatan' => $request->catatan,
+                'catatan' => $request->filled('catatan') ? trim($request->catatan) : null,
             ]);
 
             $invoice->items()->delete();

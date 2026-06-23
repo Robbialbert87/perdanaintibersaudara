@@ -194,7 +194,7 @@
 
             <div class="mb-4">
                 <label class="form-label">Catatan Tambahan (Opsional)</label>
-                <textarea name="catatan" class="form-control" rows="3">{{ old('catatan', $invoice->catatan) }}</textarea>
+                <textarea name="catatan" class="form-control" rows="3">{{ trim(old('catatan', $invoice->catatan ?? '')) }}</textarea>
             </div>
 
             <div class="d-flex justify-content-between">

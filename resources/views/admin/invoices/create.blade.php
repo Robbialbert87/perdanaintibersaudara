@@ -184,7 +184,7 @@
 
             <div class="mb-4">
                 <label class="form-label">Catatan Tambahan (Opsional)</label>
-                <textarea name="catatan" class="form-control" rows="3" placeholder="Contoh: Pembayaran via transfer Bank BCA, tempo 30 hari, dll.">{{ old('catatan') }}</textarea>
+                <textarea name="catatan" class="form-control" rows="3" placeholder="Contoh: Pembayaran via transfer Bank BCA, tempo 30 hari, dll.">{{ trim(old('catatan')) }}</textarea>
             </div>
 
             <div class="d-flex justify-content-between">
