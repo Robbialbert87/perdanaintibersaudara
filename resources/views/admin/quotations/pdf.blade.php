@@ -15,9 +15,9 @@
         /* Header / Kop Surat */
         .header {
             width: 100%;
-            margin-bottom: 5px;
+            margin-bottom: 2px;
             border-bottom: 3px solid black;
-            padding-bottom: 10px;
+            padding-bottom: 3px;
         }
         .header-table {
             width: 100%;
@@ -28,31 +28,32 @@
             text-align: center;
             vertical-align: middle;
             padding-right: 15px;
-            padding-top: 25px;
+            padding-top: 10px;
         }
         .header-logo img {
             width: 80px;
         }
         .header-content {
             vertical-align: middle;
-            padding-top: 5px;
+            padding-top: 0;
             text-align: center;
         }
         .header-content h1 {
             margin: 0;
             font-size: 22pt;
             font-weight: bold;
+            line-height: 1.1;
         }
         .header-content h3 {
-            margin: 3px 0;
+            margin: 1px 0;
             font-size: 12pt;
             font-weight: bold;
             letter-spacing: 0.5px;
         }
         .header-footer {
             font-size: 7.5pt;
-            margin-top: 5px;
-            padding-top: 2px;
+            margin-top: 1px;
+            padding-top: 0;
             font-weight: bold;
             width: 100%;
             text-align: center;
