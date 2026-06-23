@@ -206,8 +206,15 @@
     </div>
 
     @if($quotation->kata_pengantar)
+        @php
+            $paragraphs = preg_split('/\n\s*\n/', trim($quotation->kata_pengantar));
+        @endphp
         <div class="pembuka" style="text-align: justify; line-height: 1.6;">
-            {!! nl2br(e($quotation->kata_pengantar)) !!}
+            @foreach($paragraphs as $p)
+                @if(trim($p))
+                    <p style="text-indent: 30px; margin: 0 0 8px;">{!! nl2br(e(trim($p))) !!}</p>
+                @endif
+            @endforeach
         </div>
     @else
         <div class="pembuka">
