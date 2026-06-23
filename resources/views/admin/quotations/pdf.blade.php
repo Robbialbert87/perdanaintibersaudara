@@ -193,7 +193,7 @@
         <tr>
             <td>Perihal</td>
             <td>:</td>
-            <td>Surat Penawaran</td>
+            <td>{{ $quotation->perihal_surat ?: 'Surat Penawaran' }}</td>
         </tr>
     </table>
 

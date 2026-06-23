@@ -47,6 +47,13 @@
                         <td>:</td>
                         <td>{{ date('d F Y', strtotime($quotation->tanggal)) }}</td>
                     </tr>
+                    @if($quotation->perihal_surat)
+                    <tr>
+                        <td>Perihal Surat</td>
+                        <td>:</td>
+                        <td>{{ $quotation->perihal_surat }}</td>
+                    </tr>
+                    @endif
                     <tr>
                         <td>Perihal</td>
                         <td>:</td>

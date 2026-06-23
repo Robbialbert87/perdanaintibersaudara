@@ -76,6 +76,14 @@
                 </div>
             </div>
 
+            <div class="row mb-4">
+                <div class="col-md-6">
+                    <label class="form-label">Perihal Surat (Opsional)</label>
+                    <p class="text-muted small mb-2">Judul/perihal yang muncul di PDF. Kosongkan untuk menggunakan "Surat Penawaran".</p>
+                    <input type="text" name="perihal_surat" class="form-control" placeholder="Contoh: Pengadaan Alat Kesehatan" value="{{ old('perihal_surat', $quotation->perihal_surat) }}">
+                </div>
+            </div>
+
             <hr>
             <h6 class="mb-3">Item Penawaran</h6>
             

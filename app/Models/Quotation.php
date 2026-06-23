@@ -14,6 +14,7 @@ class Quotation extends Model
         'tanggal',
         'customer_id',
         'perihal',
+        'perihal_surat',
         'total',
         'status',
         'verify_token',
