@@ -156,6 +156,7 @@
         // Parse Perihal
         $perihalArray = is_array($quotation->perihal) ? $quotation->perihal : (json_decode($quotation->perihal, true) ?? [$quotation->perihal]);
         $perihalText = implode(', ', $perihalArray);
+        $perihalLabel = count($perihalArray) > 1 ? 'produk/jasa' : 'produk/jasa';
     @endphp
 
     <div class="header">
@@ -226,23 +227,28 @@
         </div>
     @endif
 
-    @php $itemCount = $quotation->items->count(); @endphp
+    @php
+        $itemCount = $quotation->items->count();
+        $hasPrice = $quotation->items->contains(fn($item) => (float) $item->harga_satuan > 0);
+    @endphp
     <table class="table-items">
         <thead>
             <tr>
-                @if($itemCount > 1)
+                @if($hasPrice && $itemCount > 1)
                 <th width="5%">No</th>
                 @endif
-                <th width="{{ $itemCount > 1 ? '35%' : '40%' }}">Jenis Kegiatan</th>
-                <th width="20%" class="text-center">Volume</th>
+                <th width="{{ !$hasPrice ? '60%' : ($itemCount > 1 ? '35%' : '40%') }}">Jenis Kegiatan</th>
+                <th width="{{ !$hasPrice ? '40%' : '20%' }}" class="text-center">Volume</th>
+                @if($hasPrice)
                 <th width="20%" class="text-center">Harga Satuan</th>
                 <th width="20%" class="text-center">Jumlah Harga</th>
+                @endif
             </tr>
         </thead>
         <tbody>
             @foreach($quotation->items as $index => $item)
             <tr>
-                @if($itemCount > 1)
+                @if($hasPrice && $itemCount > 1)
                 <td class="text-center">{{ $index + 1 }}</td>
                 @endif
                 <td>
@@ -252,17 +258,21 @@
                     <div class="item-desc">{!! nl2br(e($item->deskripsi)) !!}</div>
                 </td>
                 <td class="text-center">{{ $item->volume }} {{ $item->satuan ?? '' }}</td>
+                @if($hasPrice)
                 <td class="text-center">Rp {{ number_format($item->harga_satuan, 0, ',', '.') }}</td>
                 <td class="text-center">Rp {{ number_format((float) $item->volume * $item->harga_satuan, 0, ',', '.') }}</td>
+                @endif
             </tr>
             @endforeach
         </tbody>
+        @if($hasPrice)
         <tfoot>
             <tr>
                 <td colspan="{{ $itemCount > 1 ? 4 : 3 }}" class="text-right" style="font-weight: bold; border: 1px solid black; padding: 6px 8px;"><strong>TOTAL</strong></td>
                 <td class="text-center" style="font-weight: bold; border: 1px solid black; padding: 6px 8px;"><strong>Rp {{ number_format($quotation->items->sum(fn($item) => (float) $item->volume * $item->harga_satuan), 0, ',', '.') }}</strong></td>
             </tr>
         </tfoot>
+        @endif
     </table>
 
     <div class="footer-info">
