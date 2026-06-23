@@ -207,12 +207,14 @@ class InvoiceController extends Controller
 
         $apiKey = config('services.gemini.api_key');
         if (!$apiKey) {
-            return response()->json(['error' => 'GEMINI_API_KEY belum dikonfigurasi.'], 500);
+            return response()->json(['error' => 'Fitur AI belum aktif. Hubungi admin untuk mengatur API Key AI.'], 500);
         }
 
         $systemPrompt = <<<PROMPT
 Anda adalah asisten yang membantu mengisi form invoice.
-Dari teks berikut, ekstrak informasi customer, perihal, item (nama_item, deskripsi, volume, satuan, harga_satuan), dan catatan.
+Dari teks berikut, ekstrak informasi customer, perihal, item (nama_item, deskripsi, tanggal_kegiatan, volume, satuan, harga_satuan), dan catatan.
+catatan hanya diisi jika user secara eksplisit menyebutkan catatan atau keterangan tambahan.
+Tanggal kegiatan dimasukkan ke tanggal_kegiatan, BUKAN ke catatan.
 Kembalikan HANYA JSON tanpa markdown atau teks lain.
 
 Format JSON:
@@ -223,6 +225,7 @@ Format JSON:
     {
       "nama_item": "nama item",
       "deskripsi": "deskripsi",
+      "tanggal_kegiatan": "tanggal jika disebutkan atau kosong",
       "volume": "1",
       "satuan": "Unit",
       "harga_satuan": 0
@@ -231,26 +234,42 @@ Format JSON:
   "catatan": ""
 }
 
-Contoh:
+Contoh 1:
 Input: "MCU 50 orang harga 100.000 untuk RSUD Sultan Thaha"
-Output: {"customer_name":"RSUD Sultan Thaha Saifuddin","perihal":["MCU"],"items":[{"nama_item":"MCU","deskripsi":"Medical Check Up 50 orang","volume":"50","satuan":"Orang","harga_satuan":100000}],"catatan":""}
+Output: {"customer_name":"RSUD Sultan Thaha","perihal":["MCU"],"items":[{"nama_item":"","deskripsi":"Medical Check Up 50 orang","tanggal_kegiatan":"","volume":"50","satuan":"Orang","harga_satuan":100000}],"catatan":""}
+
+Contoh 2:
+Input: "Service X-Ray 1 unit @5.000.000 untuk RSUD Ahmad, tanggal 20 Juni 2026, catatan Harga sudah termasuk transport"
+Output: {"customer_name":"RSUD Ahmad","perihal":["Service"],"items":[{"nama_item":"Service X-Ray","deskripsi":"Service X-Ray 1 unit","tanggal_kegiatan":"20 Juni 2026","volume":"1","satuan":"Unit","harga_satuan":5000000}],"catatan":"Harga sudah termasuk transport"}
 PROMPT;
 
-        $response = Http::timeout(30)->post(
-            "https://generativelanguage.googleapis.com/v1beta/models/gemini-2.5-flash-lite:generateContent?key={$apiKey}",
-            [
-                'contents' => [
-                    [
-                        'parts' => [
-                            ['text' => $systemPrompt . "\nInput: " . $request->prompt . "\nOutput:"]
+        try {
+            $response = Http::timeout(30)->post(
+                "https://generativelanguage.googleapis.com/v1beta/models/gemini-2.5-flash-lite:generateContent?key={$apiKey}",
+                [
+                    'contents' => [
+                        [
+                            'parts' => [
+                                ['text' => $systemPrompt . "\nInput: " . $request->prompt . "\nOutput:"]
+                            ]
                         ]
                     ]
                 ]
-            ]
-        );
+            );
+        } catch (\Exception $e) {
+            return response()->json(['error' => 'Gagal terhubung ke server AI. Periksa koneksi internet.'], 500);
+        }
 
         if (!$response->successful()) {
-            return response()->json(['error' => 'Gagal memproses AI: ' . $response->body()], 500);
+            $status = $response->status();
+            $msg = match ($status) {
+                429 => 'AI sedang sibuk. Tunggu 1-2 menit, lalu coba lagi.',
+                503 => 'Server AI sedang sibuk. Coba lagi nanti.',
+                400 => 'Prompt tidak dikenali. Coba tulis ulang dengan lebih jelas.',
+                403 => 'Akses AI ditolak. Periksa API Key atau hubungi admin.',
+                default => 'Gagal memproses AI (kode ' . $status . '). Coba lagi.',
+            };
+            return response()->json(['error' => $msg], 500);
         }
 
         $body = $response->json();
@@ -270,7 +289,7 @@ PROMPT;
             $customer = $foundCustomers->first();
         }
 
-        // Hitung total
+        // Hitung total & konversi tanggal_kegiatan
         $total = 0;
         foreach ($data['items'] as &$item) {
             $harga = (float) ($item['harga_satuan'] ?? 0);
@@ -278,6 +297,7 @@ PROMPT;
             $subtotal = $volume * $harga;
             $item['subtotal'] = $subtotal;
             $total += $subtotal;
+            $item['tanggal_kegiatan'] = $this->convertIndonesianDate($item['tanggal_kegiatan'] ?? '');
         }
 
         // Format perihal
@@ -311,80 +331,84 @@ PROMPT;
 
     public function aiStore(Request $request)
     {
-        $request->validate([
-            'customer_id' => 'required|exists:customers,id',
-            'perihal' => 'required|array|min:1',
-            'perihal.*' => 'required|string|max:255',
-            'items' => 'required|array|min:1',
-            'items.*.nama_item' => 'nullable|string|max:255',
-            'items.*.deskripsi' => 'required|string',
-            'items.*.volume' => 'required|string|max:255',
-            'items.*.satuan' => 'nullable|string|max:50',
-            'items.*.harga_satuan' => 'required',
-            'items.*.subtotal' => 'required',
-            'catatan' => 'nullable|string',
-        ]);
+        try {
+            $request->validate([
+                'customer_id' => 'required|exists:customers,id',
+                'perihal' => 'required|array|min:1',
+                'perihal.*' => 'required|string|max:255',
+                'items' => 'required|array|min:1',
+                'items.*.nama_item' => 'nullable|string|max:255',
+                'items.*.deskripsi' => 'required|string',
+                'items.*.volume' => 'required|string|max:255',
+                'items.*.satuan' => 'nullable|string|max:50',
+                'items.*.harga_satuan' => 'required',
+                'items.*.subtotal' => 'required',
+                'catatan' => 'nullable|string',
+            ]);
 
-        $total = 0;
-        $itemsData = [];
-        $perihalArray = $request->perihal ?? [];
-        $itemIndex = 0;
-        foreach ($request->items as $item) {
-            $harga = (float) str_replace(['.', ','], ['', '.'], $item['harga_satuan']);
-            $subtotal = (float) str_replace(['.', ','], ['', '.'], $item['subtotal']);
-            $total += $subtotal;
+            $total = 0;
+            $itemsData = [];
+            $perihalArray = $request->perihal ?? [];
+            $itemIndex = 0;
+            foreach ($request->items as $item) {
+                $harga = (float) str_replace(['.', ','], ['', '.'], $item['harga_satuan']);
+                $subtotal = (float) str_replace(['.', ','], ['', '.'], $item['subtotal']);
+                $total += $subtotal;
 
-            $namaItem = !empty($item['nama_item']) ? $item['nama_item'] : ($perihalArray[$itemIndex] ?? null);
+                $namaItem = !empty($item['nama_item']) ? $item['nama_item'] : ($perihalArray[$itemIndex] ?? null);
 
             $itemsData[] = [
                 'nama_item' => $namaItem,
                 'deskripsi' => $item['deskripsi'],
-                'tanggal_kegiatan' => $item['tanggal_kegiatan'] ?? null,
-                'volume' => $item['volume'],
-                'satuan' => $item['satuan'] ?? null,
-                'harga_satuan' => $harga,
-                'subtotal' => $subtotal,
-            ];
-            $itemIndex++;
+                'tanggal_kegiatan' => $this->convertIndonesianDate($item['tanggal_kegiatan'] ?? ''),
+                    'volume' => $item['volume'],
+                    'satuan' => $item['satuan'] ?? null,
+                    'harga_satuan' => $harga,
+                    'subtotal' => $subtotal,
+                ];
+                $itemIndex++;
+            }
+
+            DB::transaction(function () use ($request, $itemsData, $total) {
+                $month = date('n');
+                $year = date('Y');
+                $romans = ['I', 'II', 'III', 'IV', 'V', 'VI', 'VII', 'VIII', 'IX', 'X', 'XI', 'XII'];
+                $romanMonth = $romans[$month - 1];
+
+                $lastInvoice = Invoice::whereYear('tanggal', $year)
+                    ->whereMonth('tanggal', $month)
+                    ->orderBy('id', 'desc')
+                    ->first();
+
+                $nextNumber = 1;
+                if ($lastInvoice) {
+                    $parts = explode('/', $lastInvoice->nomor_invoice);
+                    $nextNumber = intval($parts[0]) + 1;
+                }
+
+                $nomorInvoice = sprintf('%03d/INV/PIB-JMB/%s/%s', $nextNumber, $romanMonth, $year);
+
+                $invoice = Invoice::create([
+                    'nomor_invoice' => $nomorInvoice,
+                    'tanggal' => now()->format('Y-m-d'),
+                    'customer_id' => $request->customer_id,
+                    'perihal' => $request->perihal,
+                    'catatan' => $request->filled('catatan') ? trim($request->catatan) : null,
+                    'status' => 'draft',
+                    'total' => 0,
+                ]);
+
+                foreach ($itemsData as $item) {
+                    $invoice->items()->create($item);
+                }
+
+                $invoice->update(['total' => $total]);
+            });
+
+            return response()->json(['success' => true, 'redirect' => route('invoices.index')]);
+        } catch (\Exception $e) {
+            return response()->json(['error' => 'Gagal menyimpan: ' . $e->getMessage()], 500);
         }
-
-        DB::transaction(function () use ($request, $itemsData, $total) {
-            $month = date('n');
-            $year = date('Y');
-            $romans = ['I', 'II', 'III', 'IV', 'V', 'VI', 'VII', 'VIII', 'IX', 'X', 'XI', 'XII'];
-            $romanMonth = $romans[$month - 1];
-
-            $lastInvoice = Invoice::whereYear('tanggal', $year)
-                ->whereMonth('tanggal', $month)
-                ->orderBy('id', 'desc')
-                ->first();
-
-            $nextNumber = 1;
-            if ($lastInvoice) {
-                $parts = explode('/', $lastInvoice->nomor_invoice);
-                $nextNumber = intval($parts[0]) + 1;
-            }
-
-            $nomorInvoice = sprintf('%03d/INV/PIB-JMB/%s/%s', $nextNumber, $romanMonth, $year);
-
-            $invoice = Invoice::create([
-                'nomor_invoice' => $nomorInvoice,
-                'tanggal' => now()->format('Y-m-d'),
-                'customer_id' => $request->customer_id,
-                'perihal' => $request->perihal,
-                'catatan' => $request->filled('catatan') ? trim($request->catatan) : null,
-                'status' => 'draft',
-                'total' => 0,
-            ]);
-
-            foreach ($itemsData as $item) {
-                $invoice->items()->create($item);
-            }
-
-            $invoice->update(['total' => $total]);
-        });
-
-        return response()->json(['success' => true, 'redirect' => route('invoices.index')]);
     }
 
     public function destroy(string $id)
@@ -437,5 +461,37 @@ PROMPT;
         ]);
 
         return redirect()->route('invoices.index')->with('success', 'Invoice berhasil ditandai sebagai Lunas.');
+    }
+
+    private function convertIndonesianDate($value)
+    {
+        if (empty($value)) return null;
+
+        $value = trim($value);
+
+        // Already Y-m-d
+        if (preg_match('/^\d{4}-\d{2}-\d{2}$/', $value)) return $value;
+
+        // Already Y-m-d from Carbon
+        if (preg_match('/^\d{4}-\d{2}-\d{2} /', $value)) return substr($value, 0, 10);
+
+        $months = [
+            'januari' => '01', 'februari' => '02', 'maret' => '03', 'april' => '04',
+            'mei' => '05', 'juni' => '06', 'juli' => '07', 'agustus' => '08',
+            'september' => '09', 'oktober' => '10', 'november' => '11', 'desember' => '12',
+        ];
+
+        // "1 Juni 2026" or "Juni 2026"
+        if (preg_match('/^(\d+)\s+(\S+)\s+(\d{4})$/', $value, $m)) {
+            $day = str_pad($m[1], 2, '0', STR_PAD_LEFT);
+            $month = $months[strtolower($m[2])] ?? null;
+            return $month ? "{$m[3]}-{$month}-{$day}" : null;
+        }
+        if (preg_match('/^(\S+)\s+(\d{4})$/', $value, $m)) {
+            $month = $months[strtolower($m[1])] ?? null;
+            return $month ? "{$m[2]}-{$month}-01" : null;
+        }
+
+        return null;
     }
 }

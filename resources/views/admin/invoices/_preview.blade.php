@@ -77,6 +77,9 @@
                         <strong>{{ $item['nama_item'] }}</strong><br>
                     @endif
                     {{ $item['deskripsi'] ?? '' }}
+                    @if(!empty($item['tanggal_kegiatan']))
+                        <br><small class="text-muted">Tanggal: {{ \Carbon\Carbon::parse($item['tanggal_kegiatan'])->locale('id')->isoFormat('D MMMM YYYY') }}</small>
+                    @endif
                 </td>
                 <td class="text-center">{{ $item['volume'] ?? 1 }}</td>
                 <td class="text-end">{{ number_format((float) ($item['harga_satuan'] ?? 0), 0, ',', '.') }}</td>

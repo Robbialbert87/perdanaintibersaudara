@@ -218,7 +218,14 @@ function generateWithAI() {
         headers: { 'Content-Type': 'application/json', 'X-CSRF-TOKEN': '{{ csrf_token() }}' },
         body: JSON.stringify({ prompt })
     })
-    .then(r => r.json())
+    .then(async r => {
+        if (!r.ok) {
+            let msg = 'Gagal memproses (kode ' + r.status + '). Coba lagi.';
+            try { const d = await r.json(); if (d.error) msg = d.error; } catch(_) {}
+            throw new Error(msg);
+        }
+        return r.json();
+    })
     .then(data => {
         if (data.error) { alert(data.error); return; }
         aiGeneratedData = data.data;
@@ -227,7 +234,7 @@ function generateWithAI() {
         modal.hide();
         new bootstrap.Modal(document.getElementById('previewModal')).show();
     })
-    .catch(err => { alert('Terjadi kesalahan: ' + err.message); })
+    .catch(err => { alert('Gagal terhubung ke server. Periksa koneksi internet dan coba lagi.'); })
     .finally(() => {
         btn.disabled = false;
         btn.innerHTML = '<i class="bi bi-magic me-1"></i> Generate';
@@ -249,12 +256,19 @@ function saveFromAI() {
         headers: { 'Content-Type': 'application/json', 'X-CSRF-TOKEN': '{{ csrf_token() }}' },
         body: JSON.stringify(aiGeneratedData)
     })
-    .then(r => r.json())
+    .then(async r => {
+        if (!r.ok) {
+            let msg = 'Gagal menyimpan (kode ' + r.status + '). Coba lagi.';
+            try { const d = await r.json(); if (d.error) msg = d.error; } catch(_) {}
+            throw new Error(msg);
+        }
+        return r.json();
+    })
     .then(data => {
         if (data.error) { alert(data.error); return; }
         if (data.redirect) { window.location.href = data.redirect; }
     })
-    .catch(err => { alert('Gagal menyimpan: ' + err.message); })
+    .catch(err => { alert(err.message || 'Gagal menyimpan invoice. Coba lagi.'); })
     .finally(() => {
         btn.disabled = false;
         btn.innerHTML = '<i class="bi bi-check-lg me-1"></i> Simpan Invoice';
