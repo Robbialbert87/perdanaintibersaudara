@@ -137,6 +137,8 @@ function requestMicPermission() {
         : Promise.resolve(false);
 }
 
+let aiRecognition = null;
+
 function startRecording() {
     const SpeechRecognition = window.SpeechRecognition || window.webkitSpeechRecognition;
     if (!SpeechRecognition) {
@@ -159,34 +161,40 @@ function startRecording() {
         btn.innerHTML = '<span class="spinner-border spinner-border-sm me-1"></span>Dengar...';
         isRecording = true;
         
-        const recognition = new SpeechRecognition();
-        recognition.lang = 'id-ID';
-        recognition.continuous = true;
-        recognition.interimResults = true;
+        function startRec() {
+            aiRecognition = new SpeechRecognition();
+            aiRecognition.lang = 'id-ID';
+            aiRecognition.continuous = true;
+            aiRecognition.interimResults = true;
+            
+            aiRecognition.onresult = function(event) {
+                let transcript = '';
+                for (let i = event.resultIndex; i < event.results.length; i++) {
+                    transcript += event.results[i][0].transcript;
+                }
+                document.getElementById('aiPrompt').value = transcript;
+            };
+            
+            aiRecognition.onerror = function(event) {
+                if (event.error === 'not-allowed' || event.error === 'permission-denied') {
+                    stopRecording();
+                    document.getElementById('aiPrompt').value = 'Izin mic ditolak. Silakan ketik manual.';
+                } else if (event.error === 'no-speech' && isRecording) {
+                    // silent restart on no-speech
+                    setTimeout(() => { if (isRecording) startRec(); }, 300);
+                } else if (isRecording) {
+                    document.getElementById('aiPrompt').value = 'Gagal mendeteksi suara: ' + event.error + '. Silakan ketik manual.';
+                }
+            };
+            
+            aiRecognition.onend = function() {
+                if (isRecording) startRec();
+            };
+            
+            try { aiRecognition.start(); } catch(e) {}
+        }
         
-        recognition.onresult = function(event) {
-            let transcript = '';
-            for (let i = event.resultIndex; i < event.results.length; i++) {
-                transcript += event.results[i][0].transcript;
-            }
-            document.getElementById('aiPrompt').value = transcript;
-        };
-        
-        recognition.onerror = function(event) {
-            stopRecording();
-            if (event.error === 'not-allowed' || event.error === 'permission-denied') {
-                document.getElementById('aiPrompt').value = 'Izin mic ditolak. Silakan ketik manual.';
-            } else if (event.error === 'no-speech') {
-                // silent, user can still type
-            } else {
-                document.getElementById('aiPrompt').value = 'Gagal mendeteksi suara: ' + event.error + '. Silakan ketik manual.';
-            }
-        };
-        
-        recognition.onend = function() { if (isRecording) stopRecording(); };
-        recognition.start();
-        
-        setTimeout(() => { try { recognition.stop(); } catch(e) {} }, 10000);
+        startRec();
     }).catch(() => {
         stopRecording();
         document.getElementById('aiPrompt').value = 'Izin mic ditolak. Silakan ketik manual.';
@@ -194,6 +202,7 @@ function startRecording() {
 }
 
 function stopRecording() {
+    if (aiRecognition) { try { aiRecognition.stop(); } catch(e) {} aiRecognition = null; }
     const btn = document.getElementById('micBtn');
     btn.innerHTML = '<i class="bi bi-mic"></i>';
     btn.classList.replace('btn-danger', 'btn-outline-danger');
