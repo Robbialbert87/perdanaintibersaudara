@@ -203,13 +203,12 @@ class InvoiceController extends Controller
 
     public function aiGenerate(Request $request)
     {
-        $request->validate(['prompt' => 'required|string']);
+        $request->validate([
+            'prompt' => 'required|string',
+            'provider' => 'nullable|string|in:gemini,openrouter',
+        ]);
 
-        $apiKey = config('services.gemini.api_key');
-        if (!$apiKey) {
-            return response()->json(['error' => 'Fitur AI belum aktif. Hubungi admin untuk mengatur API Key AI.'], 500);
-        }
-
+        $provider = $request->provider ?? config('services.ai.provider', 'gemini');
         $systemPrompt = <<<PROMPT
 Anda adalah asisten yang membantu mengisi form invoice.
 Dari teks berikut, ekstrak informasi customer, perihal, item (nama_item, deskripsi, tanggal_kegiatan, volume, satuan, harga_satuan), dan catatan.
@@ -243,39 +242,14 @@ Input: "Service X-Ray 1 unit @5.000.000 untuk RSUD Ahmad, tanggal 20 Juni 2026, 
 Output: {"customer_name":"RSUD Ahmad","perihal":["Service"],"items":[{"nama_item":"Service X-Ray","deskripsi":"Service X-Ray 1 unit","tanggal_kegiatan":"20 Juni 2026","volume":"1","satuan":"Unit","harga_satuan":5000000}],"catatan":"Harga sudah termasuk transport"}
 PROMPT;
 
-        try {
-            $response = Http::timeout(30)->post(
-                "https://generativelanguage.googleapis.com/v1beta/models/gemini-2.5-flash-lite:generateContent?key={$apiKey}",
-                [
-                    'contents' => [
-                        [
-                            'parts' => [
-                                ['text' => $systemPrompt . "\nInput: " . $request->prompt . "\nOutput:"]
-                            ]
-                        ]
-                    ]
-                ]
-            );
-        } catch (\Exception $e) {
-            return response()->json(['error' => 'Gagal terhubung ke server AI. Periksa koneksi internet.'], 500);
-        }
+        $text = match ($provider) {
+            'openrouter' => $this->callOpenRouter($systemPrompt, $request->prompt),
+            default => $this->callGemini($systemPrompt, $request->prompt),
+        };
 
-        if (!$response->successful()) {
-            $status = $response->status();
-            $msg = match ($status) {
-                429 => 'AI sedang sibuk. Tunggu 1-2 menit, lalu coba lagi.',
-                503 => 'Server AI sedang sibuk. Coba lagi nanti.',
-                400 => 'Prompt tidak dikenali. Coba tulis ulang dengan lebih jelas.',
-                403 => 'Akses AI ditolak. Periksa API Key atau hubungi admin.',
-                default => 'Gagal memproses AI (kode ' . $status . '). Coba lagi.',
-            };
-            return response()->json(['error' => $msg], 500);
-        }
+        if ($text instanceof \Illuminate\Http\JsonResponse) return $text;
 
-        $body = $response->json();
-        $text = $body['candidates'][0]['content']['parts'][0]['text'] ?? '{}';
         $text = trim(preg_replace('/^```(?:json)?\s*|\s*```$/', '', $text));
-
         $data = json_decode($text, true);
         if (!$data || !isset($data['items'])) {
             return response()->json(['error' => 'AI tidak dapat memahami prompt. Coba lebih detail.'], 422);
@@ -461,6 +435,85 @@ PROMPT;
         ]);
 
         return redirect()->route('invoices.index')->with('success', 'Invoice berhasil ditandai sebagai Lunas.');
+    }
+
+    private function callGemini($systemPrompt, $userPrompt)
+    {
+        $apiKey = config('services.gemini.api_key');
+        if (!$apiKey) {
+            return response()->json(['error' => 'Fitur AI (Gemini) belum aktif. Hubungi admin untuk mengatur GEMINI_API_KEY.'], 500);
+        }
+
+        try {
+            $response = Http::timeout(30)->post(
+                "https://generativelanguage.googleapis.com/v1beta/models/gemini-2.5-flash-lite:generateContent?key={$apiKey}",
+                [
+                    'contents' => [
+                        ['parts' => [['text' => $systemPrompt . "\nInput: " . $userPrompt . "\nOutput:"]],
+                    ]]
+                ]
+            );
+        } catch (\Exception $e) {
+            return response()->json(['error' => 'Gagal terhubung ke server AI Gemini. Periksa koneksi internet.'], 500);
+        }
+
+        if (!$response->successful()) {
+            $status = $response->status();
+            $msg = match ($status) {
+                429 => 'AI Gemini sedang sibuk. Tunggu 1-2 menit, lalu coba lagi.',
+                503 => 'Server AI Gemini sedang sibuk. Coba lagi nanti.',
+                400 => 'Prompt tidak dikenali. Coba tulis ulang dengan lebih jelas.',
+                403 => 'Akses AI Gemini ditolak. Periksa GEMINI_API_KEY atau hubungi admin.',
+                default => 'Gagal memproses AI Gemini (kode ' . $status . '). Coba lagi.',
+            };
+            return response()->json(['error' => $msg], 500);
+        }
+
+        $body = $response->json();
+        return $body['candidates'][0]['content']['parts'][0]['text'] ?? '{}';
+    }
+
+    private function callOpenRouter($systemPrompt, $userPrompt)
+    {
+        $apiKey = config('services.openrouter.api_key');
+        if (!$apiKey) {
+            return response()->json(['error' => 'Fitur AI (OpenRouter) belum aktif. Atur OPENROUTER_API_KEY di .env.'], 500);
+        }
+
+        $model = config('services.openrouter.model', 'google/gemini-2.5-flash-lite');
+
+        try {
+            $response = Http::timeout(30)->withHeaders([
+                'Authorization' => 'Bearer ' . $apiKey,
+                'Content-Type' => 'application/json',
+            ])->post('https://openrouter.ai/api/v1/chat/completions', [
+                'model' => $model,
+                'messages' => [
+                    ['role' => 'system', 'content' => $systemPrompt],
+                    ['role' => 'user', 'content' => $userPrompt],
+                ],
+                'response_format' => ['type' => 'json_object'],
+            ]);
+        } catch (\Exception $e) {
+            return response()->json(['error' => 'Gagal terhubung ke server AI OpenRouter. Periksa koneksi internet.'], 500);
+        }
+
+        if (!$response->successful()) {
+            $status = $response->status();
+            $body = $response->json();
+            $errMsg = $body['error']['message'] ?? '';
+            $msg = match (true) {
+                $status === 401 || $status === 403 => 'Akses AI OpenRouter ditolak. Periksa OPENROUTER_API_KEY.',
+                $status === 429 => 'AI OpenRouter sedang sibuk. Tunggu 1-2 menit, lalu coba lagi.',
+                $status === 402 => 'Saldo OpenRouter habis. Isi ulang akun OpenRouter Anda.',
+                !empty($errMsg) => 'OpenRouter error: ' . $errMsg,
+                default => 'Gagal memproses AI OpenRouter (kode ' . $status . '). Coba lagi.',
+            };
+            return response()->json(['error' => $msg], 500);
+        }
+
+        $body = $response->json();
+        return $body['choices'][0]['message']['content'] ?? '{}';
     }
 
     private function convertIndonesianDate($value)

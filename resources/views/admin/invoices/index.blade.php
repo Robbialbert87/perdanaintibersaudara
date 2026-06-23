@@ -203,7 +203,20 @@ function stopRecording() {
 document.getElementById('aiModal').addEventListener('shown.bs.modal', function() {
     document.getElementById('aiPrompt').focus();
     document.getElementById('voiceNotSupported').classList.toggle('d-none', !voiceSupported());
+    // restore saved provider
+    const saved = localStorage.getItem('aiProvider') || '{{ config('services.ai.provider', 'gemini') }}';
+    document.querySelector(`input[name="aiProvider"][value="${saved}"]`).checked = true;
 });
+
+document.querySelectorAll('input[name="aiProvider"]').forEach(el => {
+    el.addEventListener('change', function() {
+        if (this.checked) localStorage.setItem('aiProvider', this.value);
+    });
+});
+
+function getSelectedProvider() {
+    return document.querySelector('input[name="aiProvider"]:checked')?.value || '{{ config('services.ai.provider', 'gemini') }}';
+}
 
 function generateWithAI() {
     const prompt = document.getElementById('aiPrompt').value.trim();
@@ -216,7 +229,7 @@ function generateWithAI() {
     fetch('{{ route("invoices.ai_generate") }}', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json', 'X-CSRF-TOKEN': '{{ csrf_token() }}' },
-        body: JSON.stringify({ prompt })
+        body: JSON.stringify({ prompt, provider: getSelectedProvider() })
     })
     .then(async r => {
         if (!r.ok) {
@@ -303,6 +316,19 @@ document.addEventListener('click', function (e) {
                 <div class="mb-3">
                     <label class="form-label">Prompt <span class="text-danger">*</span></label>
                     <textarea id="aiPrompt" class="form-control" rows="4" placeholder="Contoh: MCU 50 orang @100.000 untuk RSUD Sultan Thaha"></textarea>
+                </div>
+                <div class="mb-3">
+                    <label class="form-label">AI Provider</label>
+                    <div class="btn-group w-100" role="group">
+                        <input type="radio" class="btn-check" name="aiProvider" id="providerGemini" value="gemini" autocomplete="off">
+                        <label class="btn btn-outline-success" for="providerGemini">
+                            <i class="bi bi-google me-1"></i> Gemini
+                        </label>
+                        <input type="radio" class="btn-check" name="aiProvider" id="providerOpenRouter" value="openrouter" autocomplete="off">
+                        <label class="btn btn-outline-primary" for="providerOpenRouter">
+                            <i class="bi bi-box-arrow-up-right me-1"></i> OpenRouter
+                        </label>
+                    </div>
                 </div>
                 <div class="d-flex gap-2">
                     <button type="button" id="micBtn" class="btn btn-outline-danger" onclick="startRecording()" title="Voice Input">
