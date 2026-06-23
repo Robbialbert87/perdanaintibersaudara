@@ -141,10 +141,7 @@ let aiRecognition = null;
 
 function startRecording() {
     const SpeechRecognition = window.SpeechRecognition || window.webkitSpeechRecognition;
-    if (!SpeechRecognition) {
-        document.getElementById('voiceNotSupported').classList.remove('d-none');
-        return;
-    }
+    if (!SpeechRecognition) { return; }
     
     if (isRecording) { stopRecording(); return; }
     
@@ -211,7 +208,6 @@ function stopRecording() {
 
 document.getElementById('aiModal').addEventListener('shown.bs.modal', function() {
     document.getElementById('aiPrompt').focus();
-    document.getElementById('voiceNotSupported').classList.toggle('d-none', !voiceSupported());
     // restore saved provider
     const saved = localStorage.getItem('aiProvider') || '{{ config('services.ai.provider', 'gemini') }}';
     document.querySelector(`input[name="aiProvider"][value="${saved}"]`).checked = true;
@@ -347,9 +343,7 @@ document.addEventListener('click', function (e) {
                         <i class="bi bi-magic me-1"></i> Generate
                     </button>
                 </div>
-                <div id="voiceNotSupported" class="d-none mt-2">
-                    <small class="text-warning"><i class="bi bi-exclamation-triangle me-1"></i>Browser tidak mendukung voice. Silakan ketik prompt manual lalu klik Generate.</small>
-                </div>
+
                 <div class="mt-1">
                     <small class="text-muted">Klik mic 🎤 untuk voice input (Chrome/Edge). Cukup bicara natural.</small>
                 </div>
