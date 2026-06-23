@@ -247,7 +247,7 @@
                 <td class="text-center">{{ $index + 1 }}</td>
                 @endif
                 <td>
-                    @if(!empty($item->nama_item))
+                    @if(!empty($item->nama_item) && $item->tampilkan_label)
                         <strong>{{ $item->nama_item }}</strong><br>
                     @endif
                     <div class="item-desc">{!! nl2br(e($item->deskripsi)) !!}</div>

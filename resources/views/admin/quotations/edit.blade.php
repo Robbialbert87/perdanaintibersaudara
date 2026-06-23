@@ -88,62 +88,69 @@
             <h6 class="mb-3">Item Penawaran</h6>
             
             <div class="table-responsive mb-3">
-                <table class="table table-bordered align-middle" id="itemsTable">
-                    <thead class="table-light">
-                        <tr>
-                            <th width="20%">Produk/Jasa (Opsional)</th>
-                            <th width="25%">Deskripsi Detail <span class="text-danger">*</span></th>
-                            <th width="8%">Volume</th>
-                            <th width="10%">Satuan</th>
-                            <th width="15%">Harga Satuan</th>
-                            <th width="15%">Jumlah Harga</th>
-                            <th width="7%" class="text-center">Aksi</th>
-                        </tr>
-                    </thead>
-                    <tbody id="itemsBody">
-                        @foreach($quotation->items as $index => $item)
-                        <tr class="item-row">
-                            <td>
-                                <small class="text-primary fw-semibold perihal-badge d-block mb-1">{!! $item->nama_item ? '<i class="bi bi-tag-fill me-1"></i>'.e($item->nama_item) : '' !!}</small>
-                                <input type="text" name="items[{{ $index }}][nama_item]" class="form-control nama-item-input" value="{{ $item->nama_item }}" placeholder="Nama Barang/Pekerjaan (opsional jika ada label)" data-autofilled="false">
-                            </td>
-                            <td>
-                                <textarea name="items[{{ $index }}][deskripsi]" class="form-control deskripsi-input" rows="2" required>{{ $item->deskripsi }}</textarea>
-                            </td>
-                            <td>
-                                <input type="text" name="items[{{ $index }}][volume]" class="form-control volume-input" value="{{ $item->volume }}" required>
-                            </td>
-                            <td>
-                                <select name="items[{{ $index }}][satuan]" class="form-select satuan-input">
-                                    <option value="">--</option>
-                                    <option value="Unit" {{ ($item->satuan ?? 'Unit') == 'Unit' ? 'selected' : '' }}>Unit</option>
-                                    <option value="Paket" {{ ($item->satuan ?? '') == 'Paket' ? 'selected' : '' }}>Paket</option>
-                                    <option value="Pcs" {{ ($item->satuan ?? '') == 'Pcs' ? 'selected' : '' }}>Pcs</option>
-                                    <option value="Cm" {{ ($item->satuan ?? '') == 'Cm' ? 'selected' : '' }}>Cm</option>
-                                    <option value="Set" {{ ($item->satuan ?? '') == 'Set' ? 'selected' : '' }}>Set</option>
-                                    <option value="Box" {{ ($item->satuan ?? '') == 'Box' ? 'selected' : '' }}>Box</option>
-                                    <option value="Rim" {{ ($item->satuan ?? '') == 'Rim' ? 'selected' : '' }}>Rim</option>
-                                    <option value="Lembar" {{ ($item->satuan ?? '') == 'Lembar' ? 'selected' : '' }}>Lembar</option>
-                                    <option value="Buah" {{ ($item->satuan ?? '') == 'Buah' ? 'selected' : '' }}>Buah</option>
-                                    <option value="Bulan" {{ ($item->satuan ?? '') == 'Bulan' ? 'selected' : '' }}>Bulan</option>
-                                    <option value="Tahun" {{ ($item->satuan ?? '') == 'Tahun' ? 'selected' : '' }}>Tahun</option>
-                                </select>
-                            </td>
-                            <td>
-                                <input type="text" name="items[{{ $index }}][harga_satuan]" class="form-control harga-input currency-format" value="{{ floatval($item->harga_satuan) }}" required>
-                            </td>
-                            <td>
-                                <input type="text" name="items[{{ $index }}][subtotal]" class="form-control subtotal-input currency-format" value="{{ $item->subtotal }}" readonly>
-                            </td>
-                            <td class="text-center">
-                                <button type="button" class="btn btn-danger btn-sm remove-row"><i class="bi bi-trash"></i></button>
-                            </td>
-                        </tr>
-                        @endforeach
-                    </tbody>
+                    <table class="table table-bordered align-middle" id="itemsTable">
+                        <thead class="table-light">
+                            <tr>
+                                <th width="20%">Produk/Jasa (Opsional)</th>
+                                <th width="25%">Deskripsi Detail <span class="text-danger">*</span></th>
+                                <th width="8%">Volume</th>
+                                <th width="10%">Satuan</th>
+                                <th width="12%">Harga Satuan</th>
+                                <th width="12%">Jumlah Harga</th>
+                                <th width="6%" class="text-center">Label<br><small class="text-muted">PDF</small></th>
+                                <th width="7%" class="text-center">Aksi</th>
+                            </tr>
+                        </thead>
+                        <tbody id="itemsBody">
+                            @foreach($quotation->items as $index => $item)
+                            <tr class="item-row">
+                                <td>
+                                    <small class="text-primary fw-semibold perihal-badge d-block mb-1">{!! $item->nama_item ? '<i class="bi bi-tag-fill me-1"></i>'.e($item->nama_item) : '' !!}</small>
+                                    <input type="text" name="items[{{ $index }}][nama_item]" class="form-control nama-item-input" value="{{ $item->nama_item }}" placeholder="Nama Barang/Pekerjaan (opsional jika ada label)" data-autofilled="false">
+                                </td>
+                                <td>
+                                    <textarea name="items[{{ $index }}][deskripsi]" class="form-control deskripsi-input" rows="2" required>{{ $item->deskripsi }}</textarea>
+                                </td>
+                                <td>
+                                    <input type="text" name="items[{{ $index }}][volume]" class="form-control volume-input" value="{{ $item->volume }}" required>
+                                </td>
+                                <td>
+                                    <select name="items[{{ $index }}][satuan]" class="form-select satuan-input">
+                                        <option value="">--</option>
+                                        <option value="Unit" {{ ($item->satuan ?? 'Unit') == 'Unit' ? 'selected' : '' }}>Unit</option>
+                                        <option value="Paket" {{ ($item->satuan ?? '') == 'Paket' ? 'selected' : '' }}>Paket</option>
+                                        <option value="Pcs" {{ ($item->satuan ?? '') == 'Pcs' ? 'selected' : '' }}>Pcs</option>
+                                        <option value="Cm" {{ ($item->satuan ?? '') == 'Cm' ? 'selected' : '' }}>Cm</option>
+                                        <option value="Set" {{ ($item->satuan ?? '') == 'Set' ? 'selected' : '' }}>Set</option>
+                                        <option value="Box" {{ ($item->satuan ?? '') == 'Box' ? 'selected' : '' }}>Box</option>
+                                        <option value="Rim" {{ ($item->satuan ?? '') == 'Rim' ? 'selected' : '' }}>Rim</option>
+                                        <option value="Lembar" {{ ($item->satuan ?? '') == 'Lembar' ? 'selected' : '' }}>Lembar</option>
+                                        <option value="Buah" {{ ($item->satuan ?? '') == 'Buah' ? 'selected' : '' }}>Buah</option>
+                                        <option value="Bulan" {{ ($item->satuan ?? '') == 'Bulan' ? 'selected' : '' }}>Bulan</option>
+                                        <option value="Tahun" {{ ($item->satuan ?? '') == 'Tahun' ? 'selected' : '' }}>Tahun</option>
+                                    </select>
+                                </td>
+                                <td>
+                                    <input type="text" name="items[{{ $index }}][harga_satuan]" class="form-control harga-input currency-format" value="Rp {{ number_format($item->harga_satuan, 0, ',', '.') }}" required>
+                                </td>
+                                <td>
+                                    <input type="text" name="items[{{ $index }}][subtotal]" class="form-control subtotal-input currency-format" value="Rp {{ number_format((float) $item->volume * $item->harga_satuan, 0, ',', '.') }}" readonly>
+                                </td>
+                                <td class="text-center">
+                                    <div class="form-check form-switch d-inline-block m-0">
+                                        <input type="hidden" name="items[{{ $index }}][tampilkan_label]" value="0">
+                                        <input type="checkbox" class="form-check-input" name="items[{{ $index }}][tampilkan_label]" value="1" {{ $item->tampilkan_label ? 'checked' : '' }} style="cursor:pointer;">
+                                    </div>
+                                </td>
+                                <td class="text-center">
+                                    <button type="button" class="btn btn-danger btn-sm remove-row" {{ $quotation->items->count() == 1 ? 'disabled' : '' }}><i class="bi bi-trash"></i></button>
+                                </td>
+                            </tr>
+                            @endforeach
+                        </tbody>
                     <tfoot class="table-light">
                         <tr>
-                            <td colspan="4" class="text-end font-weight-bold align-middle"><strong>TOTAL KESELURUHAN</strong></td>
+                            <td colspan="5" class="text-end font-weight-bold align-middle"><strong>TOTAL KESELURUHAN</strong></td>
                             <td colspan="2">
                                 <div class="input-group">
                                     <span class="input-group-text">Rp</span>

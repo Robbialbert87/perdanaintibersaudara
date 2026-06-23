@@ -18,6 +18,7 @@ class QuotationItem extends Model
         'satuan',
         'harga_satuan',
         'subtotal',
+        'tampilkan_label',
     ];
 
     public function quotation()

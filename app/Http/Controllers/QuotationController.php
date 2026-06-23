@@ -87,6 +87,7 @@ class QuotationController extends Controller
                 'satuan' => $item['satuan'] ?? null,
                 'harga_satuan' => $harga,
                 'subtotal' => $subtotal,
+                'tampilkan_label' => $item['tampilkan_label'] === '1',
             ];
             $itemIndex++;
         }
@@ -280,6 +281,7 @@ class QuotationController extends Controller
                 'satuan' => $item['satuan'] ?? null,
                 'harga_satuan' => $harga,
                 'subtotal' => $subtotal,
+                'tampilkan_label' => $item['tampilkan_label'] === '1',
             ];
             $itemIndex++;
         }

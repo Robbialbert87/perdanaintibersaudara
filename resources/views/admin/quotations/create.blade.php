@@ -75,61 +75,68 @@
             <h6 class="mb-3">Item Penawaran</h6>
             
             <div class="table-responsive mb-3">
-                <table class="table table-bordered align-middle" id="itemsTable">
-                    <thead class="table-light">
-                        <tr>
-                            <th width="20%">Produk/Jasa (Opsional)</th>
-                            <th width="25%">Deskripsi Detail <span class="text-danger">*</span></th>
-                            <th width="8%">Volume</th>
-                            <th width="10%">Satuan</th>
-                            <th width="15%">Harga Satuan</th>
-                            <th width="15%">Jumlah Harga</th>
-                            <th width="7%" class="text-center">Aksi</th>
-                        </tr>
-                    </thead>
-                    <tbody id="itemsBody">
-                        <!-- Baris (jika Kegiatan Optional) pertama (default) -->
-                        <tr class="item-row">
-                            <td>
-                                <small class="text-primary fw-semibold perihal-badge d-block mb-1"></small>
-                                <input type="text" name="items[0][nama_item]" class="form-control nama-item-input" placeholder="Nama Barang/Pekerjaan (opsional jika ada label)" data-autofilled="false">
-                            </td>
-                            <td>
-                                <textarea name="items[0][deskripsi]" class="form-control deskripsi-input" rows="2" required placeholder="Deskripsi pekerjaan/barang..."></textarea>
-                            </td>
-                            <td>
-                                <input type="text" name="items[0][volume]" class="form-control volume-input" value="1" required>
-                            </td>
-                            <td>
-                                <select name="items[0][satuan]" class="form-select satuan-input">
-                                    <option value="" selected>--</option>
-                                    <option value="Unit">Unit</option>
-                                    <option value="Paket">Paket</option>
-                                    <option value="Pcs">Pcs</option>
-                                    <option value="Cm">Cm</option>
-                                    <option value="Set">Set</option>
-                                    <option value="Box">Box</option>
-                                    <option value="Rim">Rim</option>
-                                    <option value="Lembar">Lembar</option>
-                                    <option value="Buah">Buah</option>
-                                    <option value="Bulan">Bulan</option>
-                                    <option value="Tahun">Tahun</option>
-                                </select>
-                            </td>
-                            <td>
-                                <input type="text" name="items[0][harga_satuan]" class="form-control harga-input currency-format" value="" required>
-                            </td>
-                            <td>
-                                <input type="text" name="items[0][subtotal]" class="form-control subtotal-input currency-format" value="0" readonly>
-                            </td>
-                            <td class="text-center">
-                                <button type="button" class="btn btn-danger btn-sm remove-row" disabled><i class="bi bi-trash"></i></button>
-                            </td>
-                        </tr>
+                    <table class="table table-bordered align-middle" id="itemsTable">
+                        <thead class="table-light">
+                            <tr>
+                                <th width="20%">Produk/Jasa (Opsional)</th>
+                                <th width="25%">Deskripsi Detail <span class="text-danger">*</span></th>
+                                <th width="8%">Volume</th>
+                                <th width="10%">Satuan</th>
+                                <th width="12%">Harga Satuan</th>
+                                <th width="12%">Jumlah Harga</th>
+                                <th width="6%" class="text-center">Label<br><small class="text-muted">PDF</small></th>
+                                <th width="7%" class="text-center">Aksi</th>
+                            </tr>
+                        </thead>
+                        <tbody id="itemsBody">
+                            <!-- Baris (jika Kegiatan Optional) pertama (default) -->
+                            <tr class="item-row">
+                                <td>
+                                    <small class="text-primary fw-semibold perihal-badge d-block mb-1"></small>
+                                    <input type="text" name="items[0][nama_item]" class="form-control nama-item-input" placeholder="Nama Barang/Pekerjaan (opsional jika ada label)" data-autofilled="false">
+                                </td>
+                                <td>
+                                    <textarea name="items[0][deskripsi]" class="form-control deskripsi-input" rows="2" required placeholder="Deskripsi pekerjaan/barang..."></textarea>
+                                </td>
+                                <td>
+                                    <input type="text" name="items[0][volume]" class="form-control volume-input" value="1" required>
+                                </td>
+                                <td>
+                                    <select name="items[0][satuan]" class="form-select satuan-input">
+                                        <option value="" selected>--</option>
+                                        <option value="Unit">Unit</option>
+                                        <option value="Paket">Paket</option>
+                                        <option value="Pcs">Pcs</option>
+                                        <option value="Cm">Cm</option>
+                                        <option value="Set">Set</option>
+                                        <option value="Box">Box</option>
+                                        <option value="Rim">Rim</option>
+                                        <option value="Lembar">Lembar</option>
+                                        <option value="Buah">Buah</option>
+                                        <option value="Bulan">Bulan</option>
+                                        <option value="Tahun">Tahun</option>
+                                    </select>
+                                </td>
+                                <td>
+                                    <input type="text" name="items[0][harga_satuan]" class="form-control harga-input currency-format" value="" required>
+                                </td>
+                                <td>
+                                    <input type="text" name="items[0][subtotal]" class="form-control subtotal-input currency-format" value="0" readonly>
+                                </td>
+                                <td class="text-center">
+                                    <div class="form-check form-switch d-inline-block m-0">
+                                        <input type="hidden" name="items[0][tampilkan_label]" value="0">
+                                        <input type="checkbox" class="form-check-input" name="items[0][tampilkan_label]" value="1" checked style="cursor:pointer;">
+                                    </div>
+                                </td>
+                                <td class="text-center">
+                                    <button type="button" class="btn btn-danger btn-sm remove-row" disabled><i class="bi bi-trash"></i></button>
+                                </td>
+                            </tr>
                     </tbody>
                     <tfoot class="table-dark">
                         <tr>
-                            <td colspan="4" class="text-end font-weight-bold align-middle"><strong>TOTAL KESELURUHAN</strong></td>
+                            <td colspan="5" class="text-end font-weight-bold align-middle"><strong>TOTAL KESELURUHAN</strong></td>
                             <td colspan="2">
                                 <div class="input-group">
                                     <span class="input-group-text">Rp</span>
@@ -376,7 +383,7 @@ document.addEventListener('DOMContentLoaded', function() {
                     <option value="Pcs">Pcs</option>
                     <option value="Cm">Cm</option>
                     <option value="Set">Set</option>
-                                    <option value="Box">Box</option>
+                    <option value="Box">Box</option>
                     <option value="Rim">Rim</option>
                     <option value="Lembar">Lembar</option>
                     <option value="Buah">Buah</option>
@@ -389,6 +396,12 @@ document.addEventListener('DOMContentLoaded', function() {
             </td>
             <td>
                 <input type="text" name="items[${index}][subtotal]" class="form-control subtotal-input currency-format" value="0" readonly>
+            </td>
+            <td class="text-center">
+                <div class="form-check form-switch d-inline-block m-0">
+                    <input type="hidden" name="items[${index}][tampilkan_label]" value="0">
+                    <input type="checkbox" class="form-check-input" name="items[${index}][tampilkan_label]" value="1" checked style="cursor:pointer;">
+                </div>
             </td>
             <td class="text-center">
                 <button type="button" class="btn btn-danger btn-sm remove-row"><i class="bi bi-trash"></i></button>
