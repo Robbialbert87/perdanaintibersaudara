@@ -219,11 +219,14 @@
         </div>
     @endif
 
+    @php $itemCount = $quotation->items->count(); @endphp
     <table class="table-items">
         <thead>
             <tr>
+                @if($itemCount > 1)
                 <th width="5%">No</th>
-                <th width="35%">Jenis Kegiatan</th>
+                @endif
+                <th width="{{ $itemCount > 1 ? '35%' : '40%' }}">Jenis Kegiatan</th>
                 <th width="20%" class="text-center">Volume</th>
                 <th width="20%" class="text-center">Harga Satuan</th>
                 <th width="20%" class="text-center">Jumlah Harga</th>
@@ -232,7 +235,9 @@
         <tbody>
             @foreach($quotation->items as $index => $item)
             <tr>
+                @if($itemCount > 1)
                 <td class="text-center">{{ $index + 1 }}</td>
+                @endif
                 <td>
                     @if(!empty($item->nama_item))
                         <strong>{{ $item->nama_item }}</strong><br>
@@ -247,7 +252,7 @@
         </tbody>
         <tfoot>
             <tr>
-                <td colspan="4" class="text-right" style="font-weight: bold; border: 1px solid black; padding: 6px 8px;"><strong>TOTAL</strong></td>
+                <td colspan="{{ $itemCount > 1 ? 4 : 3 }}" class="text-right" style="font-weight: bold; border: 1px solid black; padding: 6px 8px;"><strong>TOTAL</strong></td>
                 <td class="text-center" style="font-weight: bold; border: 1px solid black; padding: 6px 8px;"><strong>Rp {{ number_format($quotation->items->sum(fn($item) => (float) $item->volume * $item->harga_satuan), 0, ',', '.') }}</strong></td>
             </tr>
         </tfoot>
