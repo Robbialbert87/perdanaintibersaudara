@@ -33,7 +33,7 @@
     <div class="card-body">
         <form action="{{ route('invoices.index') }}" method="GET" class="mb-3">
             <div class="input-group">
-                <input type="text" name="search" class="form-control" placeholder="Cari nomor invoice, perihal, atau nama customer..." value="{{ request('search') }}">
+                <input type="text" name="search" class="form-control" placeholder="Cari nomor invoice atau nama customer..." value="{{ request('search') }}">
                 <button class="btn btn-outline-secondary" type="submit"><i class="bi bi-search"></i> Cari</button>
             </div>
         </form>
@@ -46,7 +46,7 @@
                         <th>Nomor Invoice</th>
                         <th class="">Tanggal</th>
                         <th>Customer</th>
-                        <th class="">Perihal</th>
+                        <th class="">Item</th>
                         <th class="">Total</th>
                         <th>Status</th>
                         <th width="15%" class="text-center">Aksi</th>

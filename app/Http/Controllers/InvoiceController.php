@@ -21,7 +21,10 @@ class InvoiceController extends Controller
         if ($request->has('search')) {
             $search = str_replace(['%', '_'], ['\\%', '\\_'], $request->get('search'));
             $query->where('nomor_invoice', 'like', "%{$search}%")
-                ->orWhere('perihal', 'like', "%{$search}%")
+                ->orWhereHas('items', function ($q) use ($search) {
+                    $q->where('deskripsi', 'like', "%{$search}%")
+                      ->orWhere('nama_item', 'like', "%{$search}%");
+                })
                 ->orWhereHas('customer', function ($q) use ($search) {
                     $q->where('nama_instansi', 'like', "%{$search}%");
                 });
@@ -41,13 +44,54 @@ class InvoiceController extends Controller
         return view('admin.invoices.create', compact('customers', 'products', 'services'));
     }
 
+    public function preview(Request $request)
+    {
+        $request->validate([
+            'tanggal' => 'required|date',
+            'customer_id' => 'required|exists:customers,id',
+            'catatan' => 'nullable|string',
+            'items' => 'required|array|min:1',
+            'items.*.group_no' => 'nullable|integer',
+            'items.*.nama_item' => 'nullable|string|max:255',
+            'items.*.deskripsi' => 'required|string',
+            'items.*.tanggal_kegiatan' => 'nullable|date',
+            'items.*.volume' => 'required|string|max:255',
+            'items.*.satuan' => 'nullable|string|max:50',
+            'items.*.harga_satuan' => 'required',
+            'items.*.subtotal' => 'required',
+        ]);
+
+        $customer = Customer::find($request->customer_id);
+        $items = $request->items;
+        $total = 0;
+        foreach ($items as &$item) {
+            $harga = (float) str_replace(['.', ','], ['', '.'], $item['harga_satuan']);
+            $volume = (float) $item['volume'];
+            $subtotal = $volume * $harga;
+            $item['harga_satuan'] = $harga;
+            $item['subtotal'] = $subtotal;
+            $total += $subtotal;
+        }
+
+        $html = view('admin.invoices._preview', [
+            'tanggal' => $request->tanggal,
+            'customer' => $customer,
+            'customer_name' => $customer->nama_instansi ?? '',
+            'items' => $items,
+            'total' => $total,
+            'catatan' => $request->catatan ?? '',
+        ])->render();
+
+        return response()->json([
+            'html' => $html,
+        ]);
+    }
+
     public function store(Request $request)
     {
         $request->validate([
             'tanggal' => 'required|date',
             'customer_id' => 'required|exists:customers,id',
-            'perihal' => 'required|array|min:1',
-            'perihal.*' => 'required|string|max:255',
             'catatan' => 'nullable|string',
             'items' => 'required|array|min:1',
             'items.*.group_no' => 'nullable|integer',
@@ -81,7 +125,7 @@ class InvoiceController extends Controller
             ];
         }
 
-        DB::transaction(function () use ($request, $itemsData, $total) {
+        $invoice = DB::transaction(function () use ($request, $itemsData, $total) {
             $month = date('n', strtotime($request->tanggal));
             $year = date('Y', strtotime($request->tanggal));
             $romans = ['I', 'II', 'III', 'IV', 'V', 'VI', 'VII', 'VIII', 'IX', 'X', 'XI', 'XII'];
@@ -104,7 +148,6 @@ class InvoiceController extends Controller
                 'nomor_invoice' => $nomorInvoice,
                 'tanggal' => $request->tanggal,
                 'customer_id' => $request->customer_id,
-                'perihal' => $request->perihal,
                 'catatan' => $request->filled('catatan') ? trim($request->catatan) : null,
                 'status' => 'draft',
                 'total' => 0,
@@ -115,9 +158,11 @@ class InvoiceController extends Controller
             }
 
             $invoice->update(['total' => $total]);
+
+            return $invoice;
         });
 
-        return redirect()->route('invoices.index')->with('success', 'Invoice berhasil dibuat.');
+        return redirect()->route('invoices.show', $invoice->id)->with('success', 'Invoice berhasil dibuat');
     }
 
     public function show(string $id)
@@ -142,8 +187,6 @@ class InvoiceController extends Controller
         $request->validate([
             'tanggal' => 'required|date',
             'customer_id' => 'required|exists:customers,id',
-            'perihal' => 'required|array|min:1',
-            'perihal.*' => 'required|string|max:255',
             'catatan' => 'nullable|string',
             'items' => 'required|array|min:1',
             'items.*.group_no' => 'nullable|integer',
@@ -183,7 +226,6 @@ class InvoiceController extends Controller
             $invoice->update([
                 'tanggal' => $request->tanggal,
                 'customer_id' => $request->customer_id,
-                'perihal' => $request->perihal,
                 'catatan' => $request->filled('catatan') ? trim($request->catatan) : null,
             ]);
 
@@ -196,7 +238,7 @@ class InvoiceController extends Controller
             $invoice->update(['total' => $total]);
         });
 
-        return redirect()->route('invoices.index')->with('success', 'Invoice berhasil diperbarui.');
+        return response()->json(['success' => true, 'redirect' => route('invoices.show', $invoice->id)]);
     }
 
     public function aiGenerate(Request $request)
@@ -209,7 +251,7 @@ class InvoiceController extends Controller
         $provider = $request->provider ?? config('services.ai.provider', 'gemini');
         $systemPrompt = <<<PROMPT
 Anda adalah asisten yang membantu mengisi form invoice.
-Dari teks berikut, ekstrak informasi customer, perihal, item (nama_item, deskripsi, tanggal_kegiatan, volume, satuan, harga_satuan), dan catatan.
+Dari teks berikut, ekstrak informasi customer, item (nama_item, deskripsi, tanggal_kegiatan, volume, satuan, harga_satuan), dan catatan.
 catatan hanya diisi jika user secara eksplisit menyebutkan catatan atau keterangan tambahan.
 Tanggal kegiatan dimasukkan ke tanggal_kegiatan, BUKAN ke catatan.
 Kembalikan HANYA JSON tanpa markdown atau teks lain.
@@ -217,7 +259,6 @@ Kembalikan HANYA JSON tanpa markdown atau teks lain.
 Format JSON:
 {
   "customer_name": "nama instansi atau kosong",
-  "perihal": ["nama produk/jasa"],
   "items": [
     {
       "nama_item": "nama item",
@@ -233,11 +274,11 @@ Format JSON:
 
 Contoh 1:
 Input: "MCU 50 orang harga 100.000 untuk RSUD Sultan Thaha"
-Output: {"customer_name":"RSUD Sultan Thaha","perihal":["MCU"],"items":[{"nama_item":"","deskripsi":"Medical Check Up 50 orang","tanggal_kegiatan":"","volume":"50","satuan":"Orang","harga_satuan":100000}],"catatan":""}
+Output: {"customer_name":"RSUD Sultan Thaha","items":[{"nama_item":"","deskripsi":"Medical Check Up 50 orang","tanggal_kegiatan":"","volume":"50","satuan":"Orang","harga_satuan":100000}],"catatan":""}
 
 Contoh 2:
 Input: "Service X-Ray 1 unit @5.000.000 untuk RSUD Ahmad, tanggal 20 Juni 2026, catatan Harga sudah termasuk transport"
-Output: {"customer_name":"RSUD Ahmad","perihal":["Service"],"items":[{"nama_item":"Service X-Ray","deskripsi":"Service X-Ray 1 unit","tanggal_kegiatan":"20 Juni 2026","volume":"1","satuan":"Unit","harga_satuan":5000000}],"catatan":"Harga sudah termasuk transport"}
+Output: {"customer_name":"RSUD Ahmad","items":[{"nama_item":"Service X-Ray","deskripsi":"Service X-Ray 1 unit","tanggal_kegiatan":"20 Juni 2026","volume":"1","satuan":"Unit","harga_satuan":5000000}],"catatan":"Harga sudah termasuk transport"}
 PROMPT;
 
         $text = match ($provider) {
@@ -272,15 +313,11 @@ PROMPT;
             $item['tanggal_kegiatan'] = $this->convertIndonesianDate($item['tanggal_kegiatan'] ?? '');
         }
 
-        // Format perihal
-        $perihal = $data['perihal'] ?? [];
-
         $previewData = [
             'tanggal' => now()->format('Y-m-d'),
             'customer' => $customer,
             'customer_name' => $data['customer_name'] ?? '',
             'foundCustomers' => $foundCustomers,
-            'perihal' => $perihal,
             'items' => $data['items'],
             'total' => $total,
             'catatan' => $data['catatan'] ?? '',
@@ -293,7 +330,6 @@ PROMPT;
             'data' => [
                 'customer_id' => $customer?->id,
                 'customer_name' => $data['customer_name'] ?? '',
-                'perihal' => $perihal,
                 'items' => $data['items'],
                 'total' => $total,
                 'catatan' => $data['catatan'] ?? '',
@@ -306,8 +342,6 @@ PROMPT;
         try {
             $request->validate([
                 'customer_id' => 'required|exists:customers,id',
-                'perihal' => 'required|array|min:1',
-                'perihal.*' => 'required|string|max:255',
                 'items' => 'required|array|min:1',
                 'items.*.group_no' => 'nullable|integer',
                 'items.*.nama_item' => 'nullable|string|max:255',
@@ -340,7 +374,7 @@ PROMPT;
                 ];
             }
 
-            DB::transaction(function () use ($request, $itemsData, $total) {
+            $invoice = DB::transaction(function () use ($request, $itemsData, $total) {
                 $month = date('n');
                 $year = date('Y');
                 $romans = ['I', 'II', 'III', 'IV', 'V', 'VI', 'VII', 'VIII', 'IX', 'X', 'XI', 'XII'];
@@ -363,7 +397,6 @@ PROMPT;
                     'nomor_invoice' => $nomorInvoice,
                     'tanggal' => now()->format('Y-m-d'),
                     'customer_id' => $request->customer_id,
-                    'perihal' => $request->perihal,
                     'catatan' => $request->filled('catatan') ? trim($request->catatan) : null,
                     'status' => 'draft',
                     'total' => 0,
@@ -374,9 +407,11 @@ PROMPT;
                 }
 
                 $invoice->update(['total' => $total]);
+
+                return $invoice;
             });
 
-            return response()->json(['success' => true, 'redirect' => route('invoices.index')]);
+        return redirect()->route('invoices.show', $invoice->id)->with('success', 'Invoice berhasil dibuat');
         } catch (\Exception $e) {
             return response()->json(['error' => 'Gagal menyimpan: ' . $e->getMessage()], 500);
         }

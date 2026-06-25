@@ -79,47 +79,29 @@
                     @error('customer_id')<div class="invalid-feedback">{{ $message }}</div>@enderror
                 </div>
                 <div class="col-md-4">
-                    <label class="form-label">Perihal (Produk/Jasa) <span class="text-danger">*</span></label>
-                    <div id="perihalContainer">
-                        <div class="input-group mb-2 perihal-row" data-id="0">
-                            <span class="input-group-text perihal-number">1.</span>
-                            <select name="perihal[]" class="form-select perihal-select" required>
-                                <option value="">-- Pilih Produk/Jasa --</option>
-                                <optgroup label="Produk">
-                                    @foreach($products as $p)
-                                        @php $firstImg = $p->active_images[0] ?? $p->images[0] ?? null; @endphp
-                                        <option value="{{ $p->name }}" data-image="{{ $firstImg ? Storage::url($firstImg) : '' }}">{{ $p->name }}</option>
-                                    @endforeach
-                                </optgroup>
-                                <optgroup label="Layanan">
-                                    @foreach($services as $s)
-                                        @php $firstImg = $s->active_images[0] ?? $s->images[0] ?? $s->image ?? null; @endphp
-                                        <option value="{{ $s->title }}" data-image="{{ $firstImg ? Storage::url($firstImg) : '' }}">{{ $s->title }}</option>
-                                    @endforeach
-                                </optgroup>
-                            </select>
-                            <button type="button" class="btn btn-danger remove-perihal" disabled><i class="bi bi-x"></i></button>
-                        </div>
-                    </div>
-                    <button type="button" class="btn btn-sm btn-outline-success mt-1" id="addPerihal"><i class="bi bi-plus"></i> Tambah Perihal</button>
-                    <button type="button" class="btn btn-sm btn-outline-primary mt-1 ms-2" id="addGroup"><i class="bi bi-folder-plus"></i> Tambah Grup Baru</button>
-                    <div id="perihalPreview" class="mt-2 d-flex flex-wrap gap-2"></div>
-                    @error('perihal')<div class="text-danger small mt-1">{{ $message }}</div>@enderror
-                </div>
             </div>
 
             <hr>
             <h6 class="mb-3">Item Invoice</h6>
 
+            <datalist id="itemSuggestions">
+                @foreach($products as $p)
+                    <option value="{{ $p->name }}">Produk: {{ $p->name }}</option>
+                @endforeach
+                @foreach($services as $s)
+                    <option value="{{ $s->title }}">Layanan: {{ $s->title }}</option>
+                @endforeach
+            </datalist>
+
             <div class="table-responsive mb-3">
                 <table class="table table-bordered align-middle" id="itemsTable" style="min-width:600px;">
                     <thead class="table-light">
                         <tr>
-                            <th width="5%">No</th>
+                            <th width="8%">Grup</th>
                             <th width="15%">Produk/Jasa</th>
-                            <th width="17%">Deskripsi <span class="text-danger">*</span></th>
-                            <th width="12%">Tgl Kegiatan</th>
-                            <th width="6%">Vol</th>
+                            <th width="15%">Deskripsi <span class="text-danger">*</span></th>
+                            <th width="11%">Tgl Kegiatan</th>
+                            <th width="8%">Vol</th>
                             <th width="9%">Satuan</th>
                             <th width="15%">Harga Satuan</th>
                             <th width="18%">Jumlah Harga</th>
@@ -127,13 +109,12 @@
                         </tr>
                     </thead>
                     <tbody id="itemsBody">
-                        <tr class="item-row" data-perihal-id="0">
-                            <td data-label="No">
+                        <tr class="item-row">
+                            <td data-label="Grup">
                                 <input type="number" name="items[0][group_no]" class="form-control group-no-input text-center fw-bold" value="1" min="1">
                             </td>
                             <td data-label="Produk/Jasa">
-                                <small class="text-primary fw-semibold perihal-badge d-block mb-1"></small>
-                                <input type="text" name="items[0][nama_item]" class="form-control nama-item-input" placeholder="Nama Barang/Pekerjaan (opsional jika ada label)" data-autofilled="false">
+                                <input type="text" name="items[0][nama_item]" class="form-control nama-item-input" list="itemSuggestions" placeholder="Nama Barang/Pekerjaan">
                             </td>
                             <td data-label="Deskripsi">
                                 <textarea name="items[0][deskripsi]" class="form-control deskripsi-input" rows="2" required placeholder="Deskripsi pekerjaan/barang..."></textarea>
@@ -186,7 +167,10 @@
                 </table>
             </div>
 
-            <button type="button" id="addRow" class="btn btn-success btn-sm mb-4"><i class="bi bi-plus-lg"></i> Baris (jika Kegiatan Optional)</button>
+            <div class="d-flex gap-2 mb-4">
+                <button type="button" id="addRow" class="btn btn-success btn-sm"><i class="bi bi-plus-lg"></i> Tambah Baris</button>
+                <button type="button" id="addGroup" class="btn btn-outline-primary btn-sm"><i class="bi bi-folder-plus"></i> Tambah Grup Baru</button>
+            </div>
 
             <div class="mb-4">
                 <label class="form-label">Catatan Tambahan (Opsional)</label>
@@ -200,14 +184,13 @@
         </form>
     </div>
 </div>
+@endsection
 
-
+@push('scripts')
 <script>
 document.addEventListener('DOMContentLoaded', function() {
     let itemIndex = 1;
-    let perihalCounter = 1;
     const tbody = document.getElementById('itemsBody');
-    const perihalContainer = document.getElementById('perihalContainer');
 
     const formatIDR = (num) => new Intl.NumberFormat('id-ID').format(num);
 
@@ -261,19 +244,17 @@ document.addEventListener('DOMContentLoaded', function() {
         return max;
     };
 
-    const buildRowHTML = (index, namaItem = '', groupNo = 1, perihalId = null) => {
-        const perihalAttr = perihalId !== null ? `data-perihal-id="${perihalId}"` : '';
-        const badgeHTML = namaItem ? `<small class="text-primary fw-semibold perihal-badge d-block mb-1"><i class="bi bi-tag-fill me-1"></i>${namaItem}</small>` : `<small class="text-primary fw-semibold perihal-badge d-block mb-1"></small>`;
+    const buildRowHTML = (index, namaItem = '', groupNo = 1) => {
+        const badgeHTML = namaItem ? `<small class="text-primary fw-semibold perihal-badge d-block mb-1"><i class="bi bi-tag-fill me-1"></i>${namaItem}</small>` : '';
         return `
-        <tr class="item-row" ${perihalAttr}>
-            <td data-label="No">
+        <tr class="item-row">
+            <td data-label="Grup">
                 <input type="number" name="items[${index}][group_no]" class="form-control group-no-input text-center fw-bold" value="${groupNo}" min="1">
             </td>
             <td data-label="Produk/Jasa">
                 ${badgeHTML}
-                <input type="text" name="items[${index}][nama_item]" class="form-control nama-item-input"
-                    value="${namaItem}" placeholder="Nama Barang/Pekerjaan (opsional jika ada label)"
-                    data-autofilled="${namaItem !== '' ? 'true' : 'false'}">
+                <input type="text" name="items[${index}][nama_item]" class="form-control nama-item-input" list="itemSuggestions"
+                    value="${namaItem}" placeholder="Nama Barang/Pekerjaan">
             </td>
             <td data-label="Deskripsi">
                 <textarea name="items[${index}][deskripsi]" class="form-control deskripsi-input" rows="2" required placeholder="Deskripsi pekerjaan/barang..."></textarea>
@@ -293,7 +274,7 @@ document.addEventListener('DOMContentLoaded', function() {
                     <option value="Pcs">Pcs</option>
                     <option value="Cm">Cm</option>
                     <option value="Set">Set</option>
-                                    <option value="Box">Box</option>
+                    <option value="Box">Box</option>
                     <option value="Rim">Rim</option>
                     <option value="Lembar">Lembar</option>
                     <option value="Buah">Buah</option>
@@ -330,107 +311,16 @@ document.addEventListener('DOMContentLoaded', function() {
         });
     };
 
-    const addPerihalRow = (namaItem = '', groupNo = 1) => {
-        const perihalId = perihalCounter++;
-        const rowCount = perihalContainer.querySelectorAll('.perihal-row').length;
-        const optionsHTML = `<option value="">-- Pilih Produk/Jasa --</option>` +
-            Array.from(perihalContainer.querySelectorAll('.perihal-select')[0].options).slice(1).map(o =>
-                `<option value="${o.value}"${o.dataset.image ? ` data-image="${o.dataset.image}"` : ''}>${o.textContent}</option>`
-            ).join('');
-        const newPerihal = `
-            <div class="input-group mb-2 perihal-row" data-id="${perihalId}">
-                <span class="input-group-text perihal-number">${rowCount + 1}.</span>
-                <select name="perihal[]" class="form-select perihal-select" required>${optionsHTML}</select>
-                <button type="button" class="btn btn-danger remove-perihal"><i class="bi bi-x"></i></button>
-            </div>`;
-        perihalContainer.insertAdjacentHTML('beforeend', newPerihal);
-        updatePerihalNumbers();
-        updatePerihalPreview();
-
-        tbody.insertAdjacentHTML('beforeend', buildRowHTML(itemIndex++, '', groupNo, perihalId));
+    document.getElementById('addRow').addEventListener('click', function() {
+        const currentMax = getMaxGroupNo();
+        tbody.insertAdjacentHTML('beforeend', buildRowHTML(itemIndex++, '', currentMax));
         reindexRows();
         updateRemoveButtons();
-    };
-
-    perihalContainer.addEventListener('change', function(e) {
-        if (e.target.matches('.perihal-select')) {
-            updatePerihalPreview();
-            const perihalRow = e.target.closest('.perihal-row');
-            const perihalId = perihalRow.dataset.id;
-            const matchingRow = tbody.querySelector(`.item-row[data-perihal-id="${perihalId}"]`);
-            if (matchingRow) {
-                const namaInput = matchingRow.querySelector('.nama-item-input');
-                const badge = matchingRow.querySelector('.perihal-badge');
-                if (namaInput && namaInput.dataset.autofilled !== 'false') {
-                    namaInput.value = e.target.value;
-                    namaInput.dataset.autofilled = 'true';
-                }
-                if (badge) badge.innerHTML = e.target.value ? `<i class="bi bi-tag-fill me-1"></i>${e.target.value}` : '';
-            }
-        }
-    });
-
-    tbody.addEventListener('input', function(e) {
-        if (e.target.classList.contains('nama-item-input')) {
-            e.target.dataset.autofilled = 'false';
-        }
-    });
-
-    const updatePerihalPreview = () => {
-        const container = document.getElementById('perihalPreview');
-        container.innerHTML = '';
-        document.querySelectorAll('.perihal-select').forEach(select => {
-            const option = select.options[select.selectedIndex];
-            if (option && option.dataset.image) {
-                const img = document.createElement('img');
-                img.src = option.dataset.image;
-                img.alt = option.value;
-                img.className = 'img-thumbnail';
-                img.style = 'max-height: 80px; width: auto;';
-                container.appendChild(img);
-            }
-        });
-    };
-
-    document.getElementById('addPerihal').addEventListener('click', function() {
-        const currentMax = getMaxGroupNo();
-        addPerihalRow('', currentMax);
     });
 
     document.getElementById('addGroup').addEventListener('click', function() {
         const nextGroup = getMaxGroupNo() + 1;
-        addPerihalRow('', nextGroup);
-    });
-
-    perihalContainer.addEventListener('click', function(e) {
-        if (e.target.closest('.remove-perihal')) {
-            const btn = e.target.closest('.remove-perihal');
-            if (!btn.disabled) {
-                const perihalRow = btn.closest('.perihal-row');
-                const perihalId = perihalRow.dataset.id;
-                perihalRow.remove();
-                updatePerihalNumbers();
-                updatePerihalPreview();
-                const matchingRow = tbody.querySelector(`.item-row[data-perihal-id="${perihalId}"]`);
-                if (matchingRow) matchingRow.remove();
-                reindexRows();
-                updateRemoveButtons();
-                calculateTotal();
-            }
-        }
-    });
-
-    const updatePerihalNumbers = () => {
-        perihalContainer.querySelectorAll('.perihal-row').forEach((row, i) => {
-            row.querySelector('.perihal-number').textContent = (i + 1) + '.';
-            const btn = row.querySelector('.remove-perihal');
-            if (btn) btn.disabled = (perihalContainer.querySelectorAll('.perihal-row').length === 1);
-        });
-    };
-
-    document.getElementById('addRow').addEventListener('click', function() {
-        const currentMax = getMaxGroupNo();
-        tbody.insertAdjacentHTML('beforeend', buildRowHTML(itemIndex++, '', currentMax, null));
+        tbody.insertAdjacentHTML('beforeend', buildRowHTML(itemIndex++, '', nextGroup));
         reindexRows();
         updateRemoveButtons();
     });
@@ -448,8 +338,6 @@ document.addEventListener('DOMContentLoaded', function() {
     });
 
     updateRemoveButtons();
-    updatePerihalNumbers();
-    updatePerihalPreview();
     document.querySelectorAll('.currency-format').forEach(input => {
         if(input.value) formatCurrencyInput(input);
     });
@@ -459,4 +347,4 @@ document.addEventListener('DOMContentLoaded', function() {
     calculateTotal();
 });
 </script>
-@endsection
+@endpush
