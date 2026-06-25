@@ -50,6 +50,7 @@ class InvoiceController extends Controller
             'perihal.*' => 'required|string|max:255',
             'catatan' => 'nullable|string',
             'items' => 'required|array|min:1',
+            'items.*.group_no' => 'nullable|integer',
             'items.*.nama_item' => 'nullable|string|max:255',
             'items.*.deskripsi' => 'required|string',
             'items.*.tanggal_kegiatan' => 'nullable|date',
@@ -61,16 +62,15 @@ class InvoiceController extends Controller
 
         $total = 0;
         $itemsData = [];
-        $perihalArray = $request->perihal ?? [];
-        $itemIndex = 0;
         foreach ($request->items as $item) {
             $harga = (float) str_replace(['.', ','], ['', '.'], $item['harga_satuan']);
             $subtotal = (float) str_replace(['.', ','], ['', '.'], $item['subtotal']);
             $total += $subtotal;
 
-            $namaItem = ! empty($item['nama_item']) ? $item['nama_item'] : ($perihalArray[$itemIndex] ?? null);
+            $namaItem = ! empty($item['nama_item']) ? $item['nama_item'] : null;
 
             $itemsData[] = [
+                'group_no' => !empty($item['group_no']) ? intval($item['group_no']) : 1,
                 'nama_item' => $namaItem,
                 'deskripsi' => $item['deskripsi'],
                 'tanggal_kegiatan' => $item['tanggal_kegiatan'] ?? null,
@@ -79,7 +79,6 @@ class InvoiceController extends Controller
                 'harga_satuan' => $harga,
                 'subtotal' => $subtotal,
             ];
-            $itemIndex++;
         }
 
         DB::transaction(function () use ($request, $itemsData, $total) {
@@ -147,6 +146,7 @@ class InvoiceController extends Controller
             'perihal.*' => 'required|string|max:255',
             'catatan' => 'nullable|string',
             'items' => 'required|array|min:1',
+            'items.*.group_no' => 'nullable|integer',
             'items.*.nama_item' => 'nullable|string|max:255',
             'items.*.deskripsi' => 'required|string',
             'items.*.tanggal_kegiatan' => 'nullable|date',
@@ -158,16 +158,15 @@ class InvoiceController extends Controller
 
         $total = 0;
         $itemsData = [];
-        $perihalArray = $request->perihal ?? [];
-        $itemIndex = 0;
         foreach ($request->items as $item) {
             $harga = (float) str_replace(['.', ','], ['', '.'], $item['harga_satuan']);
             $subtotal = (float) str_replace(['.', ','], ['', '.'], $item['subtotal']);
             $total += $subtotal;
 
-            $namaItem = ! empty($item['nama_item']) ? $item['nama_item'] : ($perihalArray[$itemIndex] ?? null);
+            $namaItem = ! empty($item['nama_item']) ? $item['nama_item'] : null;
 
             $itemsData[] = [
+                'group_no' => !empty($item['group_no']) ? intval($item['group_no']) : 1,
                 'nama_item' => $namaItem,
                 'deskripsi' => $item['deskripsi'],
                 'tanggal_kegiatan' => $item['tanggal_kegiatan'] ?? null,
@@ -176,7 +175,6 @@ class InvoiceController extends Controller
                 'harga_satuan' => $harga,
                 'subtotal' => $subtotal,
             ];
-            $itemIndex++;
         }
 
         $invoice = Invoice::findOrFail($id);
@@ -311,6 +309,7 @@ PROMPT;
                 'perihal' => 'required|array|min:1',
                 'perihal.*' => 'required|string|max:255',
                 'items' => 'required|array|min:1',
+                'items.*.group_no' => 'nullable|integer',
                 'items.*.nama_item' => 'nullable|string|max:255',
                 'items.*.deskripsi' => 'required|string',
                 'items.*.volume' => 'required|string|max:255',
@@ -322,25 +321,23 @@ PROMPT;
 
             $total = 0;
             $itemsData = [];
-            $perihalArray = $request->perihal ?? [];
-            $itemIndex = 0;
             foreach ($request->items as $item) {
                 $harga = (float) str_replace(['.', ','], ['', '.'], $item['harga_satuan']);
                 $subtotal = (float) str_replace(['.', ','], ['', '.'], $item['subtotal']);
                 $total += $subtotal;
 
-                $namaItem = !empty($item['nama_item']) ? $item['nama_item'] : ($perihalArray[$itemIndex] ?? null);
+                $namaItem = !empty($item['nama_item']) ? $item['nama_item'] : null;
 
-            $itemsData[] = [
-                'nama_item' => $namaItem,
-                'deskripsi' => $item['deskripsi'],
-                'tanggal_kegiatan' => $this->convertIndonesianDate($item['tanggal_kegiatan'] ?? ''),
+                $itemsData[] = [
+                    'group_no' => !empty($item['group_no']) ? intval($item['group_no']) : 1,
+                    'nama_item' => $namaItem,
+                    'deskripsi' => $item['deskripsi'],
+                    'tanggal_kegiatan' => $this->convertIndonesianDate($item['tanggal_kegiatan'] ?? ''),
                     'volume' => $item['volume'],
                     'satuan' => $item['satuan'] ?? null,
                     'harga_satuan' => $harga,
                     'subtotal' => $subtotal,
                 ];
-                $itemIndex++;
             }
 
             DB::transaction(function () use ($request, $itemsData, $total) {

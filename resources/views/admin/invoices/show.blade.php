@@ -148,19 +148,28 @@
                     </tr>
                 </thead>
                 <tbody>
-                    @foreach($invoice->items as $index => $item)
-                    <tr>
-                        <td class="text-center ">{{ $index + 1 }}</td>
-                        <td>
-                            @if($item->nama_item)
-                                <strong>{{ $item->nama_item }}</strong><br>
+                    @php
+                        $groupedItems = $invoice->items->sortBy('group_no')->groupBy('group_no');
+                        $groupSeq = 1;
+                    @endphp
+                    @foreach($groupedItems as $groupNo => $items)
+                        @foreach($items as $itemIndex => $item)
+                        <tr>
+                            @if($itemIndex === 0)
+                                <td class="text-center align-middle" rowspan="{{ count($items) }}">{{ $groupSeq++ }}</td>
                             @endif
-                        </td>
-                        <td class="">{{ $item->tanggal_kegiatan ? date('d/m/Y', strtotime($item->tanggal_kegiatan)) : '-' }}</td>
-                        <td class="text-center">{{ $item->volume }}</td>
-                        <td class="text-end ">{{ number_format($item->harga_satuan, 0, ',', '.') }}</td>
-                        <td class="text-end">{{ number_format($item->subtotal, 0, ',', '.') }}</td>
-                    </tr>
+                            <td>
+                                @if($item->nama_item)
+                                    <strong>{{ $item->nama_item }}</strong><br>
+                                @endif
+                                <div class="text-muted small mt-1" style="white-space: pre-line;">{!! nl2br(e($item->deskripsi)) !!}</div>
+                            </td>
+                            <td class="">{{ $item->tanggal_kegiatan ? date('d/m/Y', strtotime($item->tanggal_kegiatan)) : '-' }}</td>
+                            <td class="text-center">{{ $item->volume }} {{ $item->satuan ?? '' }}</td>
+                            <td class="text-end ">{{ number_format($item->harga_satuan, 0, ',', '.') }}</td>
+                            <td class="text-end">{{ number_format($item->subtotal, 0, ',', '.') }}</td>
+                        </tr>
+                        @endforeach
                     @endforeach
                 </tbody>
                 <tfoot class="table-dark">

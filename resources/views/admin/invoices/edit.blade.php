@@ -84,7 +84,7 @@
                     <div id="perihalContainer">
                         @php $perihalArray = $invoice->perihal ?? []; @endphp
                         @foreach($perihalArray as $index => $perihal)
-                        <div class="input-group mb-2 perihal-row">
+                        <div class="input-group mb-2 perihal-row" data-id="{{ $index }}">
                             <span class="input-group-text perihal-number">{{ $index + 1 }}.</span>
                             <select name="perihal[]" class="form-select perihal-select" required>
                                 <option value="">-- Pilih Produk/Jasa --</option>
@@ -106,6 +106,7 @@
                         @endforeach
                     </div>
                     <button type="button" class="btn btn-sm btn-outline-success mt-1" id="addPerihal"><i class="bi bi-plus"></i> Tambah Perihal</button>
+                    <button type="button" class="btn btn-sm btn-outline-primary mt-1 ms-2" id="addGroup"><i class="bi bi-folder-plus"></i> Tambah Grup Baru</button>
                     <div id="perihalPreview" class="mt-2 d-flex flex-wrap gap-2"></div>
                     @error('perihal')<div class="text-danger small mt-1">{{ $message }}</div>@enderror
                 </div>
@@ -119,23 +120,36 @@
                 <table class="table table-bordered align-middle" id="itemsTable" style="min-width:600px;">
                     <thead class="table-light">
                         <tr>
-                            <th width="16%">Produk/Jasa</th>
+                            <th width="5%">No</th>
+                            <th width="15%">Produk/Jasa</th>
                             <th width="17%">Deskripsi <span class="text-danger">*</span></th>
                             <th width="12%">Tgl Kegiatan</th>
-                            <th width="7%">Vol</th>
+                            <th width="6%">Vol</th>
                             <th width="9%">Satuan</th>
-                            <th width="13%">Harga Satuan</th>
-                            <th width="13%">Jumlah Harga</th>
+                            <th width="15%">Harga Satuan</th>
+                            <th width="18%">Jumlah Harga</th>
                             <th width="3%" class="text-center">#</th>
                         </tr>
                     </thead>
                     <tbody id="itemsBody">
+                        @php
+                            $perihalIndex = 0;
+                        @endphp
                         @foreach($invoice->items as $index => $item)
-                        <tr class="item-row">
+                        @php
+                            $perihalId = null;
+                            if (!empty($item->nama_item)) {
+                                $perihalId = $perihalIndex;
+                                $perihalIndex++;
+                            }
+                        @endphp
+                        <tr class="item-row" {!! $perihalId !== null ? 'data-perihal-id="'.$perihalId.'"' : '' !!}>
+                            <td data-label="No">
+                                <input type="number" name="items[{{ $index }}][group_no]" class="form-control group-no-input text-center fw-bold" value="{{ $item->group_no ?? 1 }}" min="1">
+                            </td>
                             <td data-label="Produk/Jasa">
                                 @php
-                                    $perihalArray = $invoice->perihal ?? [];
-                                    $matchedPerihal = $perihalArray[$index] ?? $item->nama_item;
+                                    $matchedPerihal = $perihalArray[$perihalId] ?? $item->nama_item;
                                 @endphp
                                 <small class="text-primary fw-semibold perihal-badge d-block mb-1">{!! $item->nama_item ? '<i class="bi bi-tag-fill me-1"></i>'.e($item->nama_item) : '' !!}</small>
                                 <input type="text" name="items[{{ $index }}][nama_item]" class="form-control nama-item-input" value="{{ $item->nama_item }}" placeholder="Nama Barang/Pekerjaan (opsional jika ada label)" data-autofilled="{{ $item->nama_item && $matchedPerihal == $item->nama_item ? 'true' : 'false' }}">
@@ -180,7 +194,7 @@
                     </tbody>
                     <tfoot class="table-light">
                         <tr>
-                            <td colspan="6" class="text-end fw-bold align-middle"><strong>TOTAL</strong></td>
+                            <td colspan="7" class="text-end fw-bold align-middle"><strong>TOTAL</strong></td>
                             <td colspan="2">
                                 <div class="input-group">
                                     <span class="input-group-text">Rp</span>
@@ -211,6 +225,7 @@
 <script>
 document.addEventListener('DOMContentLoaded', function() {
     let itemIndex = {{ count($invoice->items) }};
+    let perihalCounter = {{ count($perihalArray) }};
     const tbody = document.getElementById('itemsBody');
     const perihalContainer = document.getElementById('perihalContainer');
 
@@ -257,10 +272,23 @@ document.addEventListener('DOMContentLoaded', function() {
         }
     });
 
-    const buildRowHTML = (index, namaItem = '') => {
+    const getMaxGroupNo = () => {
+        let max = 1;
+        document.querySelectorAll('.group-no-input').forEach(input => {
+            const val = parseInt(input.value) || 1;
+            if (val > max) max = val;
+        });
+        return max;
+    };
+
+    const buildRowHTML = (index, namaItem = '', groupNo = 1, perihalId = null) => {
+        const perihalAttr = perihalId !== null ? `data-perihal-id="${perihalId}"` : '';
         const badgeHTML = namaItem ? `<small class="text-primary fw-semibold perihal-badge d-block mb-1"><i class="bi bi-tag-fill me-1"></i>${namaItem}</small>` : `<small class="text-primary fw-semibold perihal-badge d-block mb-1"></small>`;
         return `
-        <tr class="item-row">
+        <tr class="item-row" ${perihalAttr}>
+            <td data-label="No">
+                <input type="number" name="items[${index}][group_no]" class="form-control group-no-input text-center fw-bold" value="${groupNo}" min="1">
+            </td>
             <td data-label="Produk/Jasa">
                 ${badgeHTML}
                 <input type="text" name="items[${index}][nama_item]" class="form-control nama-item-input"
@@ -278,8 +306,8 @@ document.addEventListener('DOMContentLoaded', function() {
             </td>
             <td data-label="Satuan">
                 <select name="items[${index}][satuan]" class="form-select satuan-input">
-                    <option value="">--</option>
-                    <option value="Unit" selected>Unit</option>
+                    <option value="" selected>--</option>
+                    <option value="Unit">Unit</option>
                     <option value="Orang">Orang</option>
                     <option value="Paket">Paket</option>
                     <option value="Pcs">Pcs</option>
@@ -322,23 +350,42 @@ document.addEventListener('DOMContentLoaded', function() {
         });
     };
 
+    const addPerihalRow = (namaItem = '', groupNo = 1) => {
+        const perihalId = perihalCounter++;
+        const rowCount = perihalContainer.querySelectorAll('.perihal-row').length;
+        const optionsHTML = `<option value="">-- Pilih Produk/Jasa --</option>` +
+            Array.from(perihalContainer.querySelectorAll('.perihal-select')[0].options).slice(1).map(o =>
+                `<option value="${o.value}"${o.dataset.image ? ` data-image="${o.dataset.image}"` : ''}>${o.textContent}</option>`
+            ).join('');
+        const newPerihal = `
+            <div class="input-group mb-2 perihal-row" data-id="${perihalId}">
+                <span class="input-group-text perihal-number">${rowCount + 1}.</span>
+                <select name="perihal[]" class="form-select perihal-select" required>${optionsHTML}</select>
+                <button type="button" class="btn btn-danger remove-perihal"><i class="bi bi-x"></i></button>
+            </div>`;
+        perihalContainer.insertAdjacentHTML('beforeend', newPerihal);
+        updatePerihalNumbers();
+        updatePerihalPreview();
+
+        tbody.insertAdjacentHTML('beforeend', buildRowHTML(itemIndex++, '', groupNo, perihalId));
+        reindexRows();
+        updateRemoveButtons();
+    };
+
     perihalContainer.addEventListener('change', function(e) {
         if (e.target.matches('.perihal-select')) {
             updatePerihalPreview();
-            const idx = Array.from(perihalContainer.querySelectorAll('.perihal-row')).indexOf(e.target.closest('.perihal-row'));
-            const rows = tbody.querySelectorAll('.item-row');
-            if (rows[idx]) {
-                const namaInput = rows[idx].querySelector('.nama-item-input');
-                const badge = rows[idx].querySelector('.perihal-badge');
+            const perihalRow = e.target.closest('.perihal-row');
+            const perihalId = perihalRow.dataset.id;
+            const matchingRow = tbody.querySelector(`.item-row[data-perihal-id="${perihalId}"]`);
+            if (matchingRow) {
+                const namaInput = matchingRow.querySelector('.nama-item-input');
+                const badge = matchingRow.querySelector('.perihal-badge');
                 if (namaInput && namaInput.dataset.autofilled !== 'false') {
                     namaInput.value = e.target.value;
                     namaInput.dataset.autofilled = 'true';
                 }
                 if (badge) badge.innerHTML = e.target.value ? `<i class="bi bi-tag-fill me-1"></i>${e.target.value}` : '';
-            } else {
-                tbody.insertAdjacentHTML('beforeend', buildRowHTML(itemIndex++, e.target.value));
-                reindexRows();
-                updateRemoveButtons();
             }
         }
     });
@@ -366,23 +413,13 @@ document.addEventListener('DOMContentLoaded', function() {
     };
 
     document.getElementById('addPerihal').addEventListener('click', function() {
-        const rowCount = perihalContainer.querySelectorAll('.perihal-row').length;
-        const optionsHTML = `<option value="">-- Pilih Produk/Jasa --</option>` +
-            Array.from(perihalContainer.querySelectorAll('.perihal-select')[0].options).slice(1).map(o =>
-                `<option value="${o.value}"${o.dataset.image ? ` data-image="${o.dataset.image}"` : ''}>${o.textContent}</option>`
-            ).join('');
-        const newPerihal = `
-            <div class="input-group mb-2 perihal-row">
-                <span class="input-group-text perihal-number">${rowCount + 1}.</span>
-                <select name="perihal[]" class="form-select perihal-select" required>${optionsHTML}</select>
-                <button type="button" class="btn btn-danger remove-perihal"><i class="bi bi-x"></i></button>
-            </div>`;
-        perihalContainer.insertAdjacentHTML('beforeend', newPerihal);
-        updatePerihalNumbers();
-        updatePerihalPreview();
-        tbody.insertAdjacentHTML('beforeend', buildRowHTML(itemIndex++));
-        reindexRows();
-        updateRemoveButtons();
+        const currentMax = getMaxGroupNo();
+        addPerihalRow('', currentMax);
+    });
+
+    document.getElementById('addGroup').addEventListener('click', function() {
+        const nextGroup = getMaxGroupNo() + 1;
+        addPerihalRow('', nextGroup);
     });
 
     perihalContainer.addEventListener('click', function(e) {
@@ -390,12 +427,12 @@ document.addEventListener('DOMContentLoaded', function() {
             const btn = e.target.closest('.remove-perihal');
             if (!btn.disabled) {
                 const perihalRow = btn.closest('.perihal-row');
-                const perihalIndex = Array.from(perihalContainer.querySelectorAll('.perihal-row')).indexOf(perihalRow);
+                const perihalId = perihalRow.dataset.id;
                 perihalRow.remove();
                 updatePerihalNumbers();
                 updatePerihalPreview();
-                const itemRows = tbody.querySelectorAll('.item-row');
-                if (itemRows[perihalIndex]) itemRows[perihalIndex].remove();
+                const matchingRow = tbody.querySelector(`.item-row[data-perihal-id="${perihalId}"]`);
+                if (matchingRow) matchingRow.remove();
                 reindexRows();
                 updateRemoveButtons();
                 calculateTotal();
@@ -412,7 +449,8 @@ document.addEventListener('DOMContentLoaded', function() {
     };
 
     document.getElementById('addRow').addEventListener('click', function() {
-        tbody.insertAdjacentHTML('beforeend', buildRowHTML(itemIndex++));
+        const currentMax = getMaxGroupNo();
+        tbody.insertAdjacentHTML('beforeend', buildRowHTML(itemIndex++, '', currentMax, null));
         reindexRows();
         updateRemoveButtons();
     });

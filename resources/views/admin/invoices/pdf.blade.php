@@ -243,20 +243,28 @@
             </tr>
         </thead>
         <tbody>
-            @foreach($invoice->items as $index => $item)
-            <tr>
-                <td class="text-center">{{ $index + 1 }}</td>
-                <td>
-                    @if(!empty($item->nama_item))
-                        <strong>{{ $item->nama_item }}</strong><br>
+            @php
+                $groupedItems = $invoice->items->sortBy('group_no')->groupBy('group_no');
+                $groupSeq = 1;
+            @endphp
+            @foreach($groupedItems as $groupNo => $items)
+                @foreach($items as $itemIndex => $item)
+                <tr>
+                    @if($itemIndex === 0)
+                        <td class="text-center" rowspan="{{ count($items) }}" style="vertical-align: middle;">{{ $groupSeq++ }}</td>
                     @endif
-                    <div class="item-desc">{!! nl2br(e($item->deskripsi)) !!}</div>
-                </td>
-                <td class="text-center">{{ $item->tanggal_kegiatan ? \Carbon\Carbon::parse($item->tanggal_kegiatan)->locale('id')->translatedFormat('d F Y') : '-' }}</td>
-                <td class="text-center">{{ $item->volume }} {{ $item->satuan ?? '' }}</td>
-                <td class="text-right">Rp {{ number_format($item->harga_satuan, 0, ',', '.') }}</td>
-                <td class="text-right">Rp {{ number_format($item->subtotal, 0, ',', '.') }}</td>
-            </tr>
+                    <td>
+                        @if(!empty($item->nama_item))
+                            <strong>{{ $item->nama_item }}</strong><br>
+                        @endif
+                        <div class="item-desc">{!! nl2br(e($item->deskripsi)) !!}</div>
+                    </td>
+                    <td class="text-center">{{ $item->tanggal_kegiatan ? \Carbon\Carbon::parse($item->tanggal_kegiatan)->locale('id')->translatedFormat('d F Y') : '-' }}</td>
+                    <td class="text-center">{{ $item->volume }} {{ $item->satuan ?? '' }}</td>
+                    <td class="text-right">Rp {{ number_format($item->harga_satuan, 0, ',', '.') }}</td>
+                    <td class="text-right">Rp {{ number_format($item->subtotal, 0, ',', '.') }}</td>
+                </tr>
+                @endforeach
             @endforeach
         </tbody>
         <tfoot>
