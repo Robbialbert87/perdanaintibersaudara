@@ -243,28 +243,15 @@
             </tr>
         </thead>
         <tbody>
-            @php
-                $perihalCount = count($invoice->perihal ?? []);
-                $rowNumber = 0;
-            @endphp
             @foreach($invoice->items as $index => $item)
-            @php $isSub = $perihalCount > 0 && $index >= $perihalCount; @endphp
-            @if(!$isSub) @php $rowNumber++; @endphp @endif
             <tr>
-                @if($isSub)
-                <td class="text-center" style="border: none;">&nbsp;</td>
-                <td style="border-top: none; border-left: none; padding-left: 25px;">
-                    <div class="item-desc">{!! nl2br(e($item->deskripsi)) !!}</div>
-                </td>
-                @else
-                <td class="text-center">{{ $rowNumber }}</td>
+                <td class="text-center">{{ $index + 1 }}</td>
                 <td>
                     @if(!empty($item->nama_item))
                         <strong>{{ $item->nama_item }}</strong><br>
                     @endif
                     <div class="item-desc">{!! nl2br(e($item->deskripsi)) !!}</div>
                 </td>
-                @endif
                 <td class="text-center">{{ $item->tanggal_kegiatan ? \Carbon\Carbon::parse($item->tanggal_kegiatan)->locale('id')->translatedFormat('d F Y') : '-' }}</td>
                 <td class="text-center">{{ $item->volume }} {{ $item->satuan ?? '' }}</td>
                 <td class="text-right">Rp {{ number_format($item->harga_satuan, 0, ',', '.') }}</td>
