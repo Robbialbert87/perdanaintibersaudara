@@ -251,7 +251,7 @@
                 @foreach($items as $itemIndex => $item)
                 <tr>
                     @if($itemIndex === 0)
-                        <td class="text-center" rowspan="{{ count($items) }}" style="vertical-align: middle;">{{ $groupSeq++ }}</td>
+                        <td rowspan="{{ count($items) }}" style="text-align: center; vertical-align: middle;">{{ $groupSeq++ }}</td>
                     @endif
                     <td>
                         @if(!empty($item->nama_item))
@@ -259,10 +259,10 @@
                         @endif
                         <div class="item-desc">{!! nl2br(e($item->deskripsi)) !!}</div>
                     </td>
-                    <td class="text-center">{{ $item->tanggal_kegiatan ? \Carbon\Carbon::parse($item->tanggal_kegiatan)->locale('id')->translatedFormat('d F Y') : '-' }}</td>
-                    <td class="text-center">{{ $item->volume }} {{ $item->satuan ?? '' }}</td>
-                    <td class="text-right">Rp {{ number_format($item->harga_satuan, 0, ',', '.') }}</td>
-                    <td class="text-right">Rp {{ number_format($item->subtotal, 0, ',', '.') }}</td>
+                    <td style="text-align: center; vertical-align: middle;">{{ $item->tanggal_kegiatan ? \Carbon\Carbon::parse($item->tanggal_kegiatan)->locale('id')->translatedFormat('d F Y') : '-' }}</td>
+                    <td style="text-align: center; vertical-align: middle;">{{ $item->volume }} {{ $item->satuan ?? '' }}</td>
+                    <td style="text-align: center; vertical-align: middle;">Rp {{ number_format($item->harga_satuan, 0, ',', '.') }}</td>
+                    <td style="text-align: center; vertical-align: middle;">Rp {{ number_format($item->subtotal, 0, ',', '.') }}</td>
                 </tr>
                 @endforeach
             @endforeach
