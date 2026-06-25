@@ -380,7 +380,12 @@ document.addEventListener('DOMContentLoaded', function() {
         perihalContainer.insertAdjacentHTML('beforeend', newPerihal);
         updatePerihalNumbers();
         updatePerihalPreview();
-        tbody.insertAdjacentHTML('beforeend', buildRowHTML(itemIndex++));
+        const rows = tbody.querySelectorAll('.item-row');
+        if (rowCount < rows.length) {
+            rows[rowCount].insertAdjacentHTML('beforebegin', buildRowHTML(itemIndex++));
+        } else {
+            tbody.insertAdjacentHTML('beforeend', buildRowHTML(itemIndex++));
+        }
         reindexRows();
         updateRemoveButtons();
     });
