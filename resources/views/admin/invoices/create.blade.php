@@ -264,6 +264,11 @@ document.addEventListener('DOMContentLoaded', function() {
             }
         });
 
+        const currentRows = tbody.querySelectorAll('.item-row');
+        for (let i = perihalSelects.length; i < currentRows.length; i++) {
+            currentRows[i].remove();
+        }
+
         reindexRows();
         updateRemoveButtons();
         calculateTotal();
@@ -390,12 +395,7 @@ document.addEventListener('DOMContentLoaded', function() {
         perihalContainer.insertAdjacentHTML('beforeend', newPerihal);
         updatePerihalNumbers();
         updatePerihalPreview();
-        const rows = tbody.querySelectorAll('.item-row');
-        if (rowCount < rows.length) {
-            rows[rowCount].insertAdjacentHTML('beforebegin', buildRowHTML(itemIndex++));
-        } else {
-            tbody.insertAdjacentHTML('beforeend', buildRowHTML(itemIndex++));
-        }
+        tbody.insertAdjacentHTML('beforeend', buildRowHTML(itemIndex++));
         reindexRows();
         updateRemoveButtons();
     });
