@@ -153,6 +153,7 @@
                                 <select name="items[{{ $index }}][satuan]" class="form-select satuan-input">
                                     <option value="">--</option>
                                     <option value="Unit" {{ ($item->satuan ?? 'Unit') == 'Unit' ? 'selected' : '' }}>Unit</option>
+                                    <option value="Orang" {{ ($item->satuan ?? '') == 'Orang' ? 'selected' : '' }}>Orang</option>
                                     <option value="Paket" {{ ($item->satuan ?? '') == 'Paket' ? 'selected' : '' }}>Paket</option>
                                     <option value="Pcs" {{ ($item->satuan ?? '') == 'Pcs' ? 'selected' : '' }}>Pcs</option>
                                     <option value="Cm" {{ ($item->satuan ?? '') == 'Cm' ? 'selected' : '' }}>Cm</option>
@@ -279,6 +280,7 @@ document.addEventListener('DOMContentLoaded', function() {
                 <select name="items[${index}][satuan]" class="form-select satuan-input">
                     <option value="">--</option>
                     <option value="Unit" selected>Unit</option>
+                    <option value="Orang">Orang</option>
                     <option value="Paket">Paket</option>
                     <option value="Pcs">Pcs</option>
                     <option value="Cm">Cm</option>
