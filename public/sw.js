@@ -1,11 +1,21 @@
-const CACHE = 'pib-cache-v1';
+const CACHE = 'pib-cache-v3';
 const STATIC_ASSETS = [
   '/',
   '/login',
+  '/dashboard',
   '/icon-192x192.png',
   '/icon-512x512.png',
   '/logo1.png',
-  '/apple-touch-icon.png'
+  '/apple-touch-icon.png',
+  '/favicon.ico',
+  '/favicon.svg',
+  '/style/assets/css/main.css',
+  '/style/assets/vendor/bootstrap/css/bootstrap.min.css',
+  '/style/assets/vendor/bootstrap-icons/bootstrap-icons.css',
+  '/style/assets/vendor/bootstrap/js/bootstrap.bundle.min.js',
+  '/style/assets/js/main.js',
+  '/style/assets/img/pib-logo.png',
+  '/style/assets/img/logo.webp'
 ];
 
 self.addEventListener('install', event => {

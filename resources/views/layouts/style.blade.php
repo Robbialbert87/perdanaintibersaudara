@@ -10,7 +10,14 @@
 
     <!-- Favicons -->
     <link href="{{ asset('logo1.png') }}" rel="icon">
-    <link href="{{ asset('logo1.png') }}" rel="apple-touch-icon">
+    <link href="{{ asset('icon-192x192.png') }}" rel="apple-touch-icon">
+
+    <!-- PWA -->
+    <meta name="theme-color" content="#141a21">
+    <meta name="apple-mobile-web-app-capable" content="yes">
+    <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+    <meta name="apple-mobile-web-app-title" content="PIB">
+    <link rel="manifest" href="{{ asset('manifest.json') }}">
 
     <!-- Fonts -->
     <link href="https://fonts.googleapis.com" rel="preconnect">
@@ -115,6 +122,12 @@
     <script src="{{ asset('style/assets/js/main.js') }}"></script>
 
     @stack('scripts')
+
+    <script>
+        if ('serviceWorker' in navigator) {
+            navigator.serviceWorker.register('/sw.js');
+        }
+    </script>
 
 </body>
 

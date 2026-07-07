@@ -1,13 +1,16 @@
 {
-  "name": "PIB Admin - Perdana Inti Bersaudara",
-  "short_name": "PIB Admin",
-  "description": "Panel administrasi (PIB) Perdana Inti Bersaudara",
-  "start_url": "/login",
+  "name": "Perdana Inti Bersaudara",
+  "short_name": "PIB",
+  "description": "Perusahaan jasa kepabeanan, pengiriman, dan pengurusan dokumen ekspor-impor",
+  "start_url": "/",
   "display": "standalone",
   "orientation": "portrait",
   "background_color": "#141a21",
   "theme_color": "#141a21",
   "scope": "/",
+  "categories": ["business", "logistics"],
+  "lang": "id-ID",
+  "dir": "ltr",
   "icons": [
     {
       "src": "/icon-192x192.png",
