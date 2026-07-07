@@ -9,7 +9,7 @@
 <meta name="apple-mobile-web-app-capable" content="yes">
 <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
 <meta name="apple-mobile-web-app-title" content="PIB Admin">
-<link rel="manifest" href="{{ asset('manifest.json') }}">
+<link rel="manifest" href="{{ route('manifest') }}">
 <title>@yield('title', 'Dashboard') - (PIB) Perdana Inti Bersaudara</title>
 @stack('styles')
 <link href="{{ asset('logo1.png') }}" rel="icon">
@@ -958,8 +958,13 @@
 
     <script>
         if ('serviceWorker' in navigator) {
-            navigator.serviceWorker.register('/sw.js');
+            navigator.serviceWorker.register('{{ route('sw') }}');
         }
+        let installPrompt = null;
+        window.addEventListener('beforeinstallprompt', e => {
+            e.preventDefault();
+            installPrompt = e;
+        });
         function shareAdmin() {
             if (navigator.share) {
                 navigator.share({

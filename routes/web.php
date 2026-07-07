@@ -91,4 +91,16 @@ Route::middleware(['auth', 'verified', 'throttle:60,1'])->group(function () {
     Route::resource('users', UserController::class)->except(['show']);
 });
 
+Route::get('/manifest.json', function () {
+    return response(file_get_contents(public_path('manifest-content.json')))
+        ->header('Content-Type', 'application/manifest+json')
+        ->header('Cache-Control', 'no-cache');
+})->name('manifest');
+
+Route::get('/sw.js', function () {
+    return response(file_get_contents(public_path('sw-content.js')))
+        ->header('Content-Type', 'application/javascript')
+        ->header('Cache-Control', 'no-cache');
+})->name('sw');
+
 // require __DIR__.'/settings.php';

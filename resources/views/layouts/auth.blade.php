@@ -8,7 +8,7 @@
 <meta name="apple-mobile-web-app-capable" content="yes">
 <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
 <meta name="apple-mobile-web-app-title" content="PIB Admin">
-<link rel="manifest" href="{{ asset('manifest.json') }}">
+<link rel="manifest" href="{{ route('manifest') }}">
 <title>Login - (PIB) Perdana Inti Bersaudara</title>
 <link href="{{ asset('logo1.png') }}" rel="icon">
 <link href="{{ asset('icon-192x192.png') }}" rel="apple-touch-icon">
@@ -62,8 +62,13 @@ a:hover{color:#00c884}
 <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"></script>
 <script>
 if ('serviceWorker' in navigator) {
-    navigator.serviceWorker.register('/sw.js');
+    navigator.serviceWorker.register('{{ route('sw') }}');
 }
+let installPrompt = null;
+window.addEventListener('beforeinstallprompt', e => {
+    e.preventDefault();
+    installPrompt = e;
+});
 </script>
 </body>
 </html>
