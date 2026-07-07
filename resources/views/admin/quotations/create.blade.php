@@ -2,6 +2,54 @@
 
 @section('title', 'Buat Penawaran')
 
+@push('styles')
+<style>
+@media (max-width: 768px) {
+    #itemsTable, #itemsTable thead, #itemsTable tbody,
+    #itemsTable tr, #itemsTable td { display: block; }
+    #itemsTable { min-width: auto !important; }
+    #itemsTable thead { display: none; }
+    #itemsTable tr.item-row {
+        background: #1c252e;
+        border: 1px solid #454f5b;
+        border-radius: 10px;
+        padding: 16px;
+        margin-bottom: 16px;
+    }
+    #itemsTable td {
+        border: none !important;
+        padding: 6px 0 !important;
+        width: 100% !important;
+    }
+    #itemsTable td:before {
+        content: attr(data-label);
+        display: block;
+        font-weight: 600;
+        font-size: 11px;
+        color: #637381;
+        text-transform: uppercase;
+        letter-spacing: .5px;
+        margin-bottom: 4px;
+    }
+    #itemsTable td:last-child {
+        text-align: right;
+        padding-top: 12px !important;
+    }
+    #itemsTable td textarea { min-height: 54px; }
+    #itemsTable tfoot tr {
+        display: flex;
+        align-items: center;
+        gap: 8px;
+    }
+    #itemsTable tfoot td { border: none !important; }
+    #itemsTable tfoot td:first-child { flex: 1; text-align: right; padding: 0 !important; }
+    #itemsTable tfoot td:last-child { flex: 1; padding: 0 !important; }
+    #itemsTable tfoot td:last-child .input-group { margin-bottom: 0; }
+    #itemsTable tfoot td:before { display: none; }
+}
+</style>
+@endpush
+
 @section('content')
 <div class="card shadow-sm border-0 mb-4">
     <div class="card-header bg-white py-3">
@@ -10,8 +58,8 @@
     <div class="card-body">
         <form action="{{ route('quotations.store') }}" method="POST" id="quotationForm">
             @csrf
-            
-            <div class="row mb-4">
+
+            <div class="row g-3 mb-4">
                 <div class="col-md-4">
                     <label class="form-label">Tanggal <span class="text-danger">*</span></label>
                     <input type="date" name="tanggal" class="form-control @error('tanggal') is-invalid @enderror" value="{{ old('tanggal', date('Y-m-d')) }}" required>
@@ -73,9 +121,9 @@
 
             <hr>
             <h6 class="mb-3">Item Penawaran</h6>
-            
+
             <div class="table-responsive mb-3">
-                    <table class="table table-bordered align-middle" id="itemsTable">
+                    <table class="table table-bordered align-middle" id="itemsTable" style="min-width:600px;">
                         <thead class="table-light">
                             <tr>
                                 <th width="20%">Produk/Jasa (Opsional)</th>
@@ -91,17 +139,17 @@
                         <tbody id="itemsBody">
                             <!-- Baris (jika Kegiatan Optional) pertama (default) -->
                             <tr class="item-row">
-                                <td>
+                                <td data-label="Produk/Jasa">
                                     <small class="text-primary fw-semibold perihal-badge d-block mb-1"></small>
                                     <input type="text" name="items[0][nama_item]" class="form-control nama-item-input" placeholder="Nama Barang/Pekerjaan (opsional jika ada label)" data-autofilled="false">
                                 </td>
-                                <td>
+                                <td data-label="Deskripsi">
                                     <textarea name="items[0][deskripsi]" class="form-control deskripsi-input" rows="2" required placeholder="Deskripsi pekerjaan/barang..."></textarea>
                                 </td>
-                                <td>
+                                <td data-label="Volume">
                                     <input type="text" name="items[0][volume]" class="form-control volume-input" value="1" required>
                                 </td>
-                                <td>
+                                <td data-label="Satuan">
                                     <select name="items[0][satuan]" class="form-select satuan-input">
                                         <option value="" selected>--</option>
                                         <option value="Unit">Unit</option>
@@ -117,38 +165,40 @@
                                         <option value="Tahun">Tahun</option>
                                     </select>
                                 </td>
-                                <td>
+                                <td data-label="Harga Satuan">
                                     <input type="text" name="items[0][harga_satuan]" class="form-control harga-input currency-format" value="" required>
                                 </td>
-                                <td>
+                                <td data-label="Jumlah Harga">
                                     <input type="text" name="items[0][subtotal]" class="form-control subtotal-input currency-format" value="0" readonly>
                                 </td>
-                                <td class="text-center">
+                                <td data-label="Label PDF" class="text-center">
                                     <div class="form-check form-switch d-inline-block m-0">
                                         <input type="hidden" name="items[0][tampilkan_label]" value="0">
                                         <input type="checkbox" class="form-check-input" name="items[0][tampilkan_label]" value="1" checked style="cursor:pointer;">
                                     </div>
                                 </td>
-                                <td class="text-center">
+                                <td data-label="Aksi" class="text-center">
                                     <button type="button" class="btn btn-danger btn-sm remove-row" disabled><i class="bi bi-trash"></i></button>
                                 </td>
                             </tr>
                     </tbody>
                     <tfoot class="table-dark">
                         <tr>
-                            <td colspan="5" class="text-end font-weight-bold align-middle"><strong>TOTAL KESELURUHAN</strong></td>
-                            <td colspan="2">
+                            <td colspan="5" class="text-end fw-bold align-middle text-white"><strong>TOTAL KESELURUHAN</strong></td>
+                            <td colspan="3">
                                 <div class="input-group">
                                     <span class="input-group-text">Rp</span>
-                                    <input type="text" id="totalKeseluruhan" class="form-control font-weight-bold" value="0" readonly>
+                                    <input type="text" id="totalKeseluruhan" class="form-control fw-bold" value="0" readonly>
                                 </div>
                             </td>
                         </tr>
                     </tfoot>
                 </table>
             </div>
-            
-            <button type="button" id="addRow" class="btn btn-success btn-sm mb-4"><i class="bi bi-plus-lg"></i> Baris (jika Kegiatan Optional)</button>
+
+            <div class="d-flex gap-2 mb-4">
+                <button type="button" id="addRow" class="btn btn-success btn-sm"><i class="bi bi-plus-lg"></i> Tambah Baris</button>
+            </div>
 
             <div class="mb-4">
                 <label class="form-label">Kata Pengantar (Opsional)</label>
@@ -177,8 +227,9 @@
         </form>
     </div>
 </div>
+@endsection
 
-
+@push('scripts')
 <script>
 const STORAGE_URL = '{{ Storage::url('') }}';
 document.addEventListener('DOMContentLoaded', function() {
@@ -198,12 +249,12 @@ document.addEventListener('DOMContentLoaded', function() {
         let val = input.value.replace(/[^,\d]/g, '');
         let parts = val.split(',');
         let integerPart = parts[0].replace(/\B(?=(\d{3})+(?!\d))/g, ".");
-        
+
         // Prevent typing multiple commas
         if (parts.length > 2) {
             parts = [parts[0], parts[1]];
         }
-        
+
         input.value = parts.length > 1 ? integerPart + ',' + parts[1] : integerPart;
     };
 
@@ -363,19 +414,19 @@ document.addEventListener('DOMContentLoaded', function() {
         const badgeHTML = namaItem ? `<small class="text-primary fw-semibold perihal-badge d-block mb-1"><i class="bi bi-tag-fill me-1"></i>${namaItem}</small>` : `<small class="text-primary fw-semibold perihal-badge d-block mb-1"></small>`;
         return `
         <tr class="item-row">
-            <td>
+            <td data-label="Produk/Jasa">
                 ${badgeHTML}
                 <input type="text" name="items[${index}][nama_item]" class="form-control nama-item-input"
                     value="${namaItem}" placeholder="Nama Barang/Pekerjaan (opsional jika ada label)"
                     data-autofilled="${namaItem !== '' ? 'true' : 'false'}">
             </td>
-            <td>
+            <td data-label="Deskripsi">
                 <textarea name="items[${index}][deskripsi]" class="form-control deskripsi-input" rows="2" required placeholder="Deskripsi pekerjaan/barang..."></textarea>
             </td>
-            <td>
+            <td data-label="Volume">
                 <input type="text" name="items[${index}][volume]" class="form-control volume-input" value="1" required>
             </td>
-            <td>
+            <td data-label="Satuan">
                 <select name="items[${index}][satuan]" class="form-select satuan-input">
                     <option value="" selected>--</option>
                     <option value="Unit">Unit</option>
@@ -391,19 +442,19 @@ document.addEventListener('DOMContentLoaded', function() {
                     <option value="Tahun">Tahun</option>
                 </select>
             </td>
-            <td>
+            <td data-label="Harga Satuan">
                 <input type="text" name="items[${index}][harga_satuan]" class="form-control harga-input currency-format" value="" required>
             </td>
-            <td>
+            <td data-label="Jumlah Harga">
                 <input type="text" name="items[${index}][subtotal]" class="form-control subtotal-input currency-format" value="0" readonly>
             </td>
-            <td class="text-center">
+            <td data-label="Label PDF" class="text-center">
                 <div class="form-check form-switch d-inline-block m-0">
                     <input type="hidden" name="items[${index}][tampilkan_label]" value="0">
                     <input type="checkbox" class="form-check-input" name="items[${index}][tampilkan_label]" value="1" checked style="cursor:pointer;">
                 </div>
             </td>
-            <td class="text-center">
+            <td data-label="Aksi" class="text-center">
                 <button type="button" class="btn btn-danger btn-sm remove-row"><i class="bi bi-trash"></i></button>
             </td>
         </tr>`;
@@ -542,7 +593,7 @@ document.addEventListener('DOMContentLoaded', function() {
     updateRemoveButtons();
     updatePerihalNumbers();
     renderAllGalleries();
-    
+
     document.querySelectorAll('.currency-format').forEach(input => {
         if(input.value) formatCurrencyInput(input);
     });
@@ -551,4 +602,4 @@ document.addEventListener('DOMContentLoaded', function() {
     calculateTotal();
     });
 </script>
-@endsection
+@endpush

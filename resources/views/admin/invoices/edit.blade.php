@@ -158,9 +158,9 @@
                         </tr>
                         @endforeach
                     </tbody>
-                    <tfoot class="table-light">
+                    <tfoot class="table-dark">
                         <tr>
-                            <td colspan="7" class="text-end fw-bold align-middle"><strong>TOTAL</strong></td>
+                            <td colspan="7" class="text-end fw-bold align-middle text-white"><strong>TOTAL</strong></td>
                             <td colspan="2">
                                 <div class="input-group">
                                     <span class="input-group-text">Rp</span>

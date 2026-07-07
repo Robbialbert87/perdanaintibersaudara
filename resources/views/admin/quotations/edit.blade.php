@@ -148,9 +148,9 @@
                             </tr>
                             @endforeach
                         </tbody>
-                    <tfoot class="table-light">
+                    <tfoot class="table-dark">
                         <tr>
-                            <td colspan="5" class="text-end font-weight-bold align-middle"><strong>TOTAL KESELURUHAN</strong></td>
+                            <td colspan="5" class="text-end fw-bold align-middle text-white"><strong>TOTAL KESELURUHAN</strong></td>
                             <td colspan="2">
                                 <div class="input-group">
                                     <span class="input-group-text">Rp</span>
