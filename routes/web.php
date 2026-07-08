@@ -21,6 +21,14 @@ Route::get('/', function () {
     return view('style.index', compact('products', 'activities', 'services'));
 })->name('home');
 
+Route::get('/home', function () {
+    $products = Product::latest()->take(15)->get();
+    $activities = Activity::latest()->take(15)->get();
+    $services = Service::latest()->get();
+
+    return view('style.index', compact('products', 'activities', 'services'));
+})->name('home.page');
+
 Route::get('/about', function () {
     return view('style.about');
 })->name('about');

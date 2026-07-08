@@ -7,7 +7,7 @@
         <nav class="navmenu">
             <ul>
                 <li>
-                    <a href="{{ Request::is('/') ? '#hero' : url('/#hero') }}" class="{{ Request::is('/') ? 'active' : '' }}">
+                    <a href="{{ route('home.page') }}" class="{{ Request::is('/') || Request::is('home') ? 'active' : '' }}">
                         Home
                     </a>
                 </li>
