@@ -50,6 +50,7 @@ class InvoiceController extends Controller
             'tanggal' => 'required|date',
             'customer_id' => 'required|exists:customers,id',
             'catatan' => 'nullable|string',
+            'kata_penutup' => 'nullable|string',
             'items' => 'required|array|min:1',
             'items.*.group_no' => 'nullable|integer',
             'items.*.nama_item' => 'nullable|string|max:255',
@@ -80,6 +81,7 @@ class InvoiceController extends Controller
             'items' => $items,
             'total' => $total,
             'catatan' => $request->catatan ?? '',
+            'kata_penutup' => $request->kata_penutup ?? '',
         ])->render();
 
         return response()->json([
@@ -93,6 +95,7 @@ class InvoiceController extends Controller
             'tanggal' => 'required|date',
             'customer_id' => 'required|exists:customers,id',
             'catatan' => 'nullable|string',
+            'kata_penutup' => 'nullable|string',
             'items' => 'required|array|min:1',
             'items.*.group_no' => 'nullable|integer',
             'items.*.nama_item' => 'nullable|string|max:255',
@@ -149,6 +152,7 @@ class InvoiceController extends Controller
                 'tanggal' => $request->tanggal,
                 'customer_id' => $request->customer_id,
                 'catatan' => $request->filled('catatan') ? trim($request->catatan) : null,
+                'kata_penutup' => $request->kata_penutup,
                 'status' => 'draft',
                 'total' => 0,
             ]);
@@ -188,6 +192,7 @@ class InvoiceController extends Controller
             'tanggal' => 'required|date',
             'customer_id' => 'required|exists:customers,id',
             'catatan' => 'nullable|string',
+            'kata_penutup' => 'nullable|string',
             'items' => 'required|array|min:1',
             'items.*.group_no' => 'nullable|integer',
             'items.*.nama_item' => 'nullable|string|max:255',
@@ -227,6 +232,7 @@ class InvoiceController extends Controller
                 'tanggal' => $request->tanggal,
                 'customer_id' => $request->customer_id,
                 'catatan' => $request->filled('catatan') ? trim($request->catatan) : null,
+                'kata_penutup' => $request->kata_penutup,
             ]);
 
             $invoice->items()->delete();
@@ -351,6 +357,7 @@ PROMPT;
                 'items.*.harga_satuan' => 'required',
                 'items.*.subtotal' => 'required',
                 'catatan' => 'nullable|string',
+                'kata_penutup' => 'nullable|string',
             ]);
 
             $total = 0;
@@ -397,13 +404,14 @@ PROMPT;
                     'nomor_invoice' => $nomorInvoice,
                     'tanggal' => now()->format('Y-m-d'),
                     'customer_id' => $request->customer_id,
-                    'catatan' => $request->filled('catatan') ? trim($request->catatan) : null,
-                    'status' => 'draft',
-                    'total' => 0,
-                ]);
+                'catatan' => $request->filled('catatan') ? trim($request->catatan) : null,
+                'kata_penutup' => $request->kata_penutup,
+                'status' => 'draft',
+                'total' => 0,
+            ]);
 
-                foreach ($itemsData as $item) {
-                    $invoice->items()->create($item);
+            foreach ($itemsData as $item) {
+                $invoice->items()->create($item);
                 }
 
                 $invoice->update(['total' => $total]);

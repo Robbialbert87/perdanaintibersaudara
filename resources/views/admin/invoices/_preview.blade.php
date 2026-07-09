@@ -104,3 +104,12 @@
     </div>
 </div>
 @endif
+
+@if(!empty($kata_penutup))
+<div class="mt-4">
+    <h6 class="text-muted mb-1">Kata Penutup:</h6>
+    <div class="p-3 bg-light rounded">
+        {{ $kata_penutup }}
+    </div>
+</div>
+@endif

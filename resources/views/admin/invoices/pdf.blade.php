@@ -287,6 +287,12 @@
     </div>
     @endif
 
+    @if(!empty($invoice->kata_penutup))
+    <div class="footer-info">
+        <div style="padding-left: 20px;">{!! nl2br(e($invoice->kata_penutup)) !!}</div>
+    </div>
+    @endif
+
     <div class="bank-info">
         <p style="text-decoration: underline; font-weight: bold;">Pembayaran Melalui</p>
         <p>Bank BCA No Rekening 619-801-2191</p>

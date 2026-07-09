@@ -20,6 +20,7 @@ class Invoice extends Model
         'total',
         'status',
         'catatan',
+        'kata_penutup',
         'bukti_bayar',
         'verify_token',
     ];

@@ -276,6 +276,10 @@
             <div style="padding-left: 20px;">{!! nl2br(e($quotation->catatan)) !!}</div>
         @endif
 
+        @if(!empty($quotation->kata_penutup))
+            <div style="padding-top: 10px; padding-left: 20px;">{!! nl2br(e($quotation->kata_penutup)) !!}</div>
+        @endif
+
         <div class="bank-info">
             <p style="text-decoration: underline;">Pembayaran dapat dilakukan melalui:</p>
             <p>Bank BCA</p>

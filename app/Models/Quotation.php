@@ -20,6 +20,7 @@ class Quotation extends Model
         'verify_token',
         'catatan',
         'kata_pengantar',
+        'kata_penutup',
         'tampilkan_gambar',
         'selected_images',
     ];

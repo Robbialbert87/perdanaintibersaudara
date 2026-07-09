@@ -178,6 +178,12 @@
             </div>
 
             <div class="mb-4">
+                <label class="form-label">Kata Penutup (Opsional)</label>
+                <p class="text-muted small mb-2">Sunting kata atau paragraf penutup yang akan muncul di PDF.</p>
+                <textarea name="kata_penutup" class="form-control" rows="3">{{ old('kata_penutup', $quotation->kata_penutup) }}</textarea>
+            </div>
+
+            <div class="mb-4">
                 <div class="d-flex align-items-center gap-2 mb-1">
                     <i class="bi bi-image text-primary fs-5"></i>
                     <span class="fw-semibold">Lampiran Gambar PDF</span>

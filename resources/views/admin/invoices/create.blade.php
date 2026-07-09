@@ -179,6 +179,12 @@
                 <textarea name="catatan" class="form-control" rows="3" placeholder="Contoh: Pembayaran via transfer Bank BCA, tempo 30 hari, dll.">{{ trim(old('catatan')) }}</textarea>
             </div>
 
+            <div class="mb-4">
+                <label class="form-label">Kata Penutup (Opsional)</label>
+                <p class="text-muted small mb-2">Sunting kata atau paragraf penutup yang akan muncul di PDF.</p>
+                <textarea name="kata_penutup" class="form-control" rows="3" placeholder="Demikian invoice ini kami sampaikan. Atas perhatian dan kerjasamanya, kami ucapkan terima kasih.">{{ old('kata_penutup') }}</textarea>
+            </div>
+
             <div class="d-flex justify-content-between">
                 <a href="{{ route('invoices.index') }}" class="btn btn-secondary"><i class="bi bi-arrow-left"></i> Kembali</a>
                 <button type="submit" class="btn btn-primary"><i class="bi bi-save"></i> Buat Invoice</button>

@@ -60,6 +60,7 @@ class QuotationController extends Controller
             'perihal_surat' => 'nullable|string|max:255',
             'catatan' => 'nullable|string',
             'kata_pengantar' => 'nullable|string',
+            'kata_penutup' => 'nullable|string',
             'items' => 'required|array|min:1',
             'items.*.nama_item' => 'nullable|string|max:255',
             'items.*.deskripsi' => 'required|string',
@@ -125,6 +126,7 @@ class QuotationController extends Controller
                 'perihal_surat' => $request->perihal_surat,
                 'catatan' => $request->filled('catatan') ? trim($request->catatan) : null,
                 'kata_pengantar' => $request->kata_pengantar,
+                'kata_penutup' => $request->kata_penutup,
                 'tampilkan_gambar' => !empty($selectedImages),
                 'selected_images' => $selectedImages,
                 'status' => 'draft',
@@ -254,6 +256,7 @@ class QuotationController extends Controller
             'perihal_surat' => 'nullable|string|max:255',
             'catatan' => 'nullable|string',
             'kata_pengantar' => 'nullable|string',
+            'kata_penutup' => 'nullable|string',
             'items' => 'required|array|min:1',
             'items.*.nama_item' => 'nullable|string|max:255',
             'items.*.deskripsi' => 'required|string',
@@ -300,13 +303,14 @@ class QuotationController extends Controller
                 'perihal' => json_encode($request->perihal),
                 'perihal_surat' => $request->perihal_surat,
                 'status' => $request->status,
-                'catatan' => $request->filled('catatan') ? trim($request->catatan) : null,
-                'kata_pengantar' => $request->kata_pengantar,
-                'tampilkan_gambar' => !empty($selectedImages),
-                'selected_images' => $selectedImages,
-            ]);
+            'catatan' => $request->filled('catatan') ? trim($request->catatan) : null,
+            'kata_pengantar' => $request->kata_pengantar,
+            'kata_penutup' => $request->kata_penutup,
+            'tampilkan_gambar' => !empty($selectedImages),
+            'selected_images' => $selectedImages,
+        ]);
 
-            // Hapus items lama
+        // Hapus items lama
             $quotation->items()->delete();
 
             foreach ($itemsData as $item) {
