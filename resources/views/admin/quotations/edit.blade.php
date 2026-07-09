@@ -121,6 +121,8 @@
                                         <option value="Paket" {{ ($item->satuan ?? '') == 'Paket' ? 'selected' : '' }}>Paket</option>
                                         <option value="Pcs" {{ ($item->satuan ?? '') == 'Pcs' ? 'selected' : '' }}>Pcs</option>
                                         <option value="Cm" {{ ($item->satuan ?? '') == 'Cm' ? 'selected' : '' }}>Cm</option>
+                                        <option value="mm" {{ ($item->satuan ?? '') == 'mm' ? 'selected' : '' }}>mm</option>
+                                        <option value="Meter" {{ ($item->satuan ?? '') == 'Meter' ? 'selected' : '' }}>Meter</option>
                                         <option value="Set" {{ ($item->satuan ?? '') == 'Set' ? 'selected' : '' }}>Set</option>
                                         <option value="Box" {{ ($item->satuan ?? '') == 'Box' ? 'selected' : '' }}>Box</option>
                                         <option value="Rim" {{ ($item->satuan ?? '') == 'Rim' ? 'selected' : '' }}>Rim</option>
@@ -363,6 +365,8 @@ document.addEventListener('DOMContentLoaded', function() {
                     <option value="Paket">Paket</option>
                     <option value="Pcs">Pcs</option>
                     <option value="Cm">Cm</option>
+                    <option value="mm">mm</option>
+                    <option value="Meter">Meter</option>
                     <option value="Set">Set</option>
                                     <option value="Box">Box</option>
                     <option value="Rim">Rim</option>

@@ -156,6 +156,8 @@
                                         <option value="Paket">Paket</option>
                                         <option value="Pcs">Pcs</option>
                                         <option value="Cm">Cm</option>
+                                        <option value="mm">mm</option>
+                                        <option value="Meter">Meter</option>
                                         <option value="Set">Set</option>
                                         <option value="Box">Box</option>
                                         <option value="Rim">Rim</option>
@@ -433,6 +435,8 @@ document.addEventListener('DOMContentLoaded', function() {
                     <option value="Paket">Paket</option>
                     <option value="Pcs">Pcs</option>
                     <option value="Cm">Cm</option>
+                    <option value="mm">mm</option>
+                    <option value="Meter">Meter</option>
                     <option value="Set">Set</option>
                     <option value="Box">Box</option>
                     <option value="Rim">Rim</option>
