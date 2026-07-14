@@ -376,12 +376,11 @@
         <thead>
             <tr>
                 <th width="5%">No</th>
-                <th width="8%">Jumlah</th>
-                <th width="8%">Satuan</th>
-                <th width="25%">Jenis Barang</th>
-                <th width="22%">Deskripsi</th>
-                <th width="16%" class="text-right">Harga Satuan</th>
-                <th width="16%" class="text-right">Total Harga</th>
+                <th width="10%">Jumlah</th>
+                <th width="10%">Satuan</th>
+                <th width="45%">Jenis Barang</th>
+                <th width="15%" class="text-right">Harga Satuan</th>
+                <th width="15%" class="text-right">Total Harga</th>
             </tr>
         </thead>
         <tbody>
@@ -390,7 +389,6 @@
                 <td class="text-center">{{ $index + 1 }}</td>
                 <td class="text-center">{{ $item->volume }}</td>
                 <td class="text-center">{{ $item->satuan ?? '-' }}</td>
-                <td>{{ $item->product_name ?? $item->nama_item ?? '-' }}</td>
                 <td>{{ $item->deskripsi }}</td>
                 <td class="text-right">Rp {{ number_format($item->harga_satuan, 0, ',', '.') }}</td>
                 <td class="text-right">Rp {{ number_format($item->subtotal, 0, ',', '.') }}</td>

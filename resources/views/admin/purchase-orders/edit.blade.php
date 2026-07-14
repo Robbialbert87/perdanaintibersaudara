@@ -75,8 +75,18 @@
         width: 120px;
         background: #f9fafb;
     }
-    .po-info-table .value {
-        color: #1a2332;
+    .po-info-table .value .form-control {
+        border: 1px solid #d1d5db;
+        border-radius: 4px;
+        padding: 6px 10px;
+        font-size: 0.9rem;
+        background: #fff;
+        width: 100%;
+    }
+    .po-info-table .value .form-control:focus {
+        outline: none;
+        border-color: #3b82f6;
+        box-shadow: 0 0 0 2px rgba(59,130,246,0.2);
     }
     .po-section-title {
         font-size: 0.9rem;
@@ -122,6 +132,19 @@
     }
     .po-col .po-col-body .field-input {
         flex: 1;
+    }
+    .po-col .po-col-body .field-input .form-control {
+        border: 1px solid #d1d5db;
+        border-radius: 4px;
+        padding: 6px 10px;
+        font-size: 0.85rem;
+        background: #fff;
+        width: 100%;
+    }
+    .po-col .po-col-body .field-input .form-control:focus {
+        outline: none;
+        border-color: #3b82f6;
+        box-shadow: 0 0 0 2px rgba(59,130,246,0.2);
     }
     .po-items-table {
         width: 100%;
@@ -306,25 +329,25 @@
                 <tr>
                     <td class="label">Nama Vendor</td>
                     <td class="value">
-                        <input type="text" name="vendor" class="form-control" style="border: none; padding: 0;" placeholder="Nama Perusahaan Vendor" value="{{ old('vendor', $purchaseOrder->vendor) }}" required>
+                        <input type="text" name="vendor" class="form-control" placeholder="Nama Perusahaan Vendor" value="{{ old('vendor', $purchaseOrder->vendor) }}" required>
                     </td>
                 </tr>
                 <tr>
                     <td class="label">Alamat</td>
                     <td class="value">
-                        <input type="text" name="vendor_address" class="form-control" style="border: none; padding: 0;" placeholder="Alamat Vendor" value="{{ old('vendor_address', $purchaseOrder->vendor_address) }}">
+                        <input type="text" name="vendor_address" class="form-control" placeholder="Alamat Vendor" value="{{ old('vendor_address', $purchaseOrder->vendor_address) }}">
                     </td>
                 </tr>
                 <tr>
                     <td class="label">CP</td>
                     <td class="value">
-                        <input type="text" name="vendor_cp" class="form-control" style="border: none; padding: 0;" placeholder="Contact Person" value="{{ old('vendor_cp', $purchaseOrder->vendor_cp) }}">
+                        <input type="text" name="vendor_cp" class="form-control" placeholder="Contact Person" value="{{ old('vendor_cp', $purchaseOrder->vendor_cp) }}">
                     </td>
                 </tr>
                 <tr>
                     <td class="label">Telepon</td>
                     <td class="value">
-                        <input type="text" name="vendor_phone" class="form-control" style="border: none; padding: 0;" placeholder="No. Telepon" value="{{ old('vendor_phone', $purchaseOrder->vendor_phone) }}">
+                        <input type="text" name="vendor_phone" class="form-control" placeholder="No. Telepon" value="{{ old('vendor_phone', $purchaseOrder->vendor_phone) }}">
                     </td>
                 </tr>
             </table>
@@ -385,12 +408,11 @@
                 <thead>
                     <tr>
                         <th width="5%">No</th>
-                        <th width="8%">Jumlah</th>
-                        <th width="10%">Satuan</th>
-                        <th width="25%">Jenis Barang</th>
-                        <th width="20%">Deskripsi</th>
-                        <th width="15%">Harga Satuan</th>
-                        <th width="15%">Total Harga</th>
+                        <th width="10%">Jumlah</th>
+                        <th width="12%">Satuan</th>
+                        <th width="40%">Jenis Barang</th>
+                        <th width="18%">Harga Satuan</th>
+                        <th width="18%">Total Harga</th>
                         <th width="7%" class="text-center">Aksi</th>
                     </tr>
                 </thead>
@@ -411,8 +433,7 @@
                                 <option value="Lembar" {{ ($item->satuan ?? '') == 'Lembar' ? 'selected' : '' }}>Lembar</option>
                             </select>
                         </td>
-                        <td><input type="text" name="items[{{ $index }}][product_name]" class="product-name-input" placeholder="Nama Barang" value="{{ $item->product_name ?? $item->nama_item ?? '' }}"></td>
-                        <td><input type="text" name="items[{{ $index }}][deskripsi]" class="deskripsi-input" placeholder="Deskripsi Barang" value="{{ $item->deskripsi }}" required></td>
+                        <td><input type="text" name="items[{{ $index }}][deskripsi]" class="deskripsi-input" placeholder="Jenis Barang" value="{{ $item->deskripsi }}" required></td>
                         <td><input type="text" name="items[{{ $index }}][price]" class="price-input currency-format" value="{{ number_format($item->harga_satuan, 0, ',', '.') }}" required></td>
                         <td><input type="text" name="items[{{ $index }}][subtotal]" class="subtotal-input" value="{{ number_format($item->subtotal, 0, ',', '.') }}" readonly></td>
                         <td class="text-center"><button type="button" class="btn-remove-item remove-row" {{ $purchaseOrder->items->count() == 1 ? 'disabled' : '' }}><i class="bi bi-trash"></i></button></td>
@@ -549,8 +570,7 @@ document.addEventListener('DOMContentLoaded', function() {
                     <option value="Lembar">Lembar</option>
                 </select>
             </td>
-            <td><input type="text" name="items[${index}][product_name]" class="product-name-input" placeholder="Nama Barang" value=""></td>
-            <td><input type="text" name="items[${index}][deskripsi]" class="deskripsi-input" placeholder="Deskripsi Barang" value=""></td>
+            <td><input type="text" name="items[${index}][deskripsi]" class="deskripsi-input" placeholder="Jenis Barang" value=""></td>
             <td><input type="text" name="items[${index}][price]" class="price-input currency-format" value="" required></td>
             <td><input type="text" name="items[${index}][subtotal]" class="subtotal-input" value="0" readonly></td>
             <td class="text-center"><button type="button" class="btn-remove-item remove-row"><i class="bi bi-trash"></i></button></td>
