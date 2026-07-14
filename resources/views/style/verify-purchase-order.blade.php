@@ -121,8 +121,8 @@
                         <td class="value">: {{ \Carbon\Carbon::parse($purchaseOrder->tanggal)->locale('id')->translatedFormat('d F Y') }}</td>
                     </tr>
                     <tr>
-                        <td class="label">Customer</td>
-                        <td class="value">: {{ $purchaseOrder->customer->nama_instansi }}</td>
+                        <td class="label">Vendor</td>
+                        <td class="value">: {{ $purchaseOrder->vendor ?? $purchaseOrder->customer->nama_instansi ?? '-' }}</td>
                     </tr>
 
                     @if($purchaseOrder->status !== 'draft')
