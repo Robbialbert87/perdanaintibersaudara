@@ -88,6 +88,7 @@
         font-size: 0.9rem;
         background: #fff;
         width: 100%;
+        color: #1a2332;
     }
     .po-info-table .value .form-control:focus {
         outline: none;
@@ -146,6 +147,7 @@
         font-size: 0.85rem;
         background: #fff;
         width: 100%;
+        color: #1a2332;
     }
     .po-col .po-col-body .field-input .form-control:focus {
         outline: none;
@@ -184,6 +186,7 @@
         border-radius: 4px;
         width: 100%;
         background: #fff;
+        color: #1a2332;
     }
     .po-items-table input:focus,
     .po-items-table select:focus,
