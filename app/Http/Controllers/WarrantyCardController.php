@@ -2,10 +2,12 @@
 
 namespace App\Http\Controllers;
 
+use App\Helpers\QRCodeHelper;
 use App\Models\Customer;
 use App\Models\WarrantyCard;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
+use Illuminate\Support\Facades\Storage;
 use Illuminate\Support\Str;
 
 class WarrantyCardController extends Controller
@@ -94,7 +96,15 @@ class WarrantyCardController extends Controller
     {
         $warrantyCard = WarrantyCard::with('customer')->findOrFail($id);
 
-        $pdf = app('dompdf.wrapper')->loadView('admin.warranty-cards.pdf', compact('warrantyCard'))
+        if (empty($warrantyCard->verify_token)) {
+            $warrantyCard->update(['verify_token' => (string) Str::uuid()]);
+            $warrantyCard->refresh();
+        }
+
+        $verifyUrl = route('verify.warranty_card', $warrantyCard->verify_token);
+        $qrCode = QRCodeHelper::generate($verifyUrl, 150);
+
+        $pdf = app('dompdf.wrapper')->loadView('admin.warranty-cards.pdf', compact('warrantyCard', 'qrCode'))
             ->setPaper([0, 0, 595.28, 841.89], 'portrait');
 
         $filename = 'Kartu_Garansi_'.str_replace('/', '_', $warrantyCard->nomor_kartu).'.pdf';

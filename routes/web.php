@@ -60,6 +60,7 @@ Route::get('/contact', function () {
 Route::get('/verify/{token}', [VerifyController::class, 'show'])->name('verify.invoice');
 Route::get('/verify-quotation/{token}', [VerifyController::class, 'showQuotation'])->name('verify.quotation');
 Route::get('/verify-purchase-order/{token}', [VerifyController::class, 'showPurchaseOrder'])->name('verify.purchase_order');
+Route::get('/verify-warranty-card/{token}', [VerifyController::class, 'showWarrantyCard'])->name('verify.warranty_card');
 Route::get('/produk/{id}', function ($id) {
     $product = Product::findOrFail($id);
 

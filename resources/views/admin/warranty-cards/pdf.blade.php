@@ -237,18 +237,36 @@
         @endif
 
         <!-- Signature Section -->
-        <table class="signature-table">
+        <table style="width: 100%; margin-top: 40px;">
             <tr>
-                <td>
-                    <div class="signature-label">Tanda Tangan Pembeli</div>
-                    <div class="signature-line"></div>
-                    <div class="signature-sublabel">( &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; )</div>
+                <!-- TTD Pembeli -->
+                <td style="width: 50%; vertical-align: top; text-align: center; padding: 0 15px;">
+                    <p style="font-size: 10pt; font-weight: bold; margin-bottom: 5px;">Tanda Tangan Pembeli</p>
+                    <div style="width: 180px; border-bottom: 1px solid #000; margin: 70px auto 8px auto;"></div>
+                    <p style="font-size: 8pt; color: #666; font-style: italic; margin: 0;">( &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; )</p>
                 </td>
-                <td>
-                    <div class="signature-label">CV. PERDANA INTI BERSAUDARA</div>
-                    <div class="signature-line"></div>
-                    <div class="signature-name"><strong>{{ $warrantyCard->verifikator ?: 'Erwin Darmawan' }}</strong></div>
-                    <div class="signature-sublabel">Direktur</div>
+                <!-- TTD CV dengan QR Code -->
+                <td style="width: 50%; vertical-align: top; text-align: center; padding: 0 15px;">
+                    <p style="font-size: 10pt; font-weight: bold; margin-bottom: 5px;">CV. PERDANA INTI BERSAUDARA</p>
+                    @if(isset($qrCode))
+                    <table cellpadding="0" cellspacing="0" style="width: auto; border-collapse: collapse; margin: 0 auto;">
+                        <tr>
+                            <td style="padding: 0; padding-right: 12px; vertical-align: middle; text-align: center;">
+                                <img src="{{ $qrCode }}" alt="QR Code" style="width: 80px; height: 80px; display: block;">
+                            </td>
+                            <td style="padding: 0; vertical-align: middle; text-align: left;">
+                                <p style="margin: 0; font-size: 9pt;">Hormat Kami,</p>
+                                <br>
+                                <p style="margin: 0; font-size: 10pt;"><strong>{{ $warrantyCard->verifikator ?: 'Erwin Darmawan' }}</strong></p>
+                                <p style="margin: 0; font-size: 9pt; color: #666;">Direktur</p>
+                            </td>
+                        </tr>
+                    </table>
+                    @else
+                    <div style="width: 180px; border-bottom: 1px solid #000; margin: 70px auto 8px auto;"></div>
+                    <p style="font-size: 10pt;"><strong>{{ $warrantyCard->verifikator ?: 'Erwin Darmawan' }}</strong></p>
+                    <p style="font-size: 9pt; color: #666;">Direktur</p>
+                    @endif
                 </td>
             </tr>
         </table>

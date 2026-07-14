@@ -20,6 +20,7 @@ class WarrantyCard extends Model
         'catatan',
         'verifikator',
         'ttd_pembeli',
+        'verify_token',
     ];
 
     protected $casts = [

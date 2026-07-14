@@ -5,6 +5,7 @@ namespace App\Http\Controllers;
 use App\Models\Invoice;
 use App\Models\PurchaseOrder;
 use App\Models\Quotation;
+use App\Models\WarrantyCard;
 use Carbon\Carbon;
 
 class VerifyController extends Controller
@@ -46,5 +47,18 @@ class VerifyController extends Controller
         $tanggalGenerate = Carbon::now('Asia/Jakarta')->locale('id')->translatedFormat('d F Y H:i').' WIB';
 
         return view('style.verify-purchase-order', compact('purchaseOrder', 'tanggalGenerate'));
+    }
+
+    public function showWarrantyCard(string $token)
+    {
+        $warrantyCard = WarrantyCard::with('customer')->where('verify_token', $token)->first();
+
+        if (! $warrantyCard) {
+            return view('style.verify-not-found');
+        }
+
+        $tanggalGenerate = Carbon::now('Asia/Jakarta')->locale('id')->translatedFormat('d F Y H:i').' WIB';
+
+        return view('style.verify-warranty-card', compact('warrantyCard', 'tanggalGenerate'));
     }
 }
