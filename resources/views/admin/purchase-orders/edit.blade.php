@@ -4,258 +4,476 @@
 
 @push('styles')
 <style>
-@media (max-width: 768px) {
-    #itemsTable, #itemsTable thead, #itemsTable tbody,
-    #itemsTable tr, #itemsTable td { display: block; }
-    #itemsTable { min-width: auto !important; }
-    #itemsTable thead { display: none; }
-    #itemsTable tr.item-row {
-        background: #1c252e;
-        border: 1px solid #454f5b;
-        border-radius: 10px;
-        padding: 16px;
-        margin-bottom: 16px;
+    .po-container {
+        max-width: 900px;
+        margin: 0 auto;
+        background: #fff;
+        border: 1px solid #d1d5db;
+        box-shadow: 0 4px 6px -1px rgba(0,0,0,0.1);
     }
-    #itemsTable td {
-        border: none !important;
-        padding: 6px 0 !important;
-        width: 100% !important;
+    .po-header {
+        padding: 20px 30px;
+        border-bottom: 3px double #000;
     }
-    #itemsTable td:before {
-        content: attr(data-label);
-        display: block;
-        font-weight: 600;
-        font-size: 11px;
-        color: #637381;
-        text-transform: uppercase;
-        letter-spacing: .5px;
-        margin-bottom: 4px;
-    }
-    #itemsTable td:last-child {
-        text-align: right;
-        padding-top: 12px !important;
-    }
-    #itemsTable td textarea { min-height: 54px; }
-    #itemsTable tfoot tr {
+    .po-header-top {
         display: flex;
         align-items: center;
-        gap: 8px;
+        gap: 15px;
     }
-    #itemsTable tfoot td { border: none !important; }
-    #itemsTable tfoot td:first-child { flex: 1; text-align: right; padding: 0 !important; }
-    #itemsTable tfoot td:last-child { flex: 1; padding: 0 !important; }
-    #itemsTable tfoot td:last-child .input-group { margin-bottom: 0; }
-    #itemsTable tfoot td:before { display: none; }
-}
+    .po-header .logo {
+        width: 80px;
+    }
+    .po-header .company-name {
+        font-size: 1.5rem;
+        font-weight: 800;
+        color: #1a2332;
+        margin: 0;
+        font-family: 'Arial', sans-serif;
+    }
+    .po-header .subtitle {
+        font-size: 0.85rem;
+        font-weight: 600;
+        color: #374151;
+        letter-spacing: 1px;
+        margin: 2px 0;
+    }
+    .po-header .address-line {
+        font-size: 0.75rem;
+        color: #6b7280;
+        margin: 1px 0;
+    }
+    .po-title-section {
+        text-align: center;
+        padding: 20px 30px 15px;
+    }
+    .po-title-section h2 {
+        font-size: 1.6rem;
+        font-weight: 800;
+        color: #1a2332;
+        margin: 0;
+        letter-spacing: 2px;
+    }
+    .po-date {
+        text-align: right;
+        padding: 10px 30px;
+        font-size: 0.95rem;
+    }
+    .po-info-table {
+        width: 100%;
+        border-collapse: collapse;
+        border: 1px solid #000;
+        font-size: 0.9rem;
+    }
+    .po-info-table td {
+        border: 1px solid #000;
+        padding: 8px 12px;
+        vertical-align: top;
+    }
+    .po-info-table .label {
+        font-weight: 600;
+        color: #374151;
+        width: 120px;
+        background: #f9fafb;
+    }
+    .po-info-table .value {
+        color: #1a2332;
+    }
+    .po-section-title {
+        font-size: 0.9rem;
+        font-weight: 700;
+        color: #1a2332;
+        background: #e5e7eb;
+        padding: 6px 12px;
+        border: 1px solid #000;
+        margin: 0;
+    }
+    .po-two-col {
+        display: grid;
+        grid-template-columns: 1fr 1fr;
+        gap: 0;
+    }
+    .po-col {
+        border: 1px solid #000;
+        padding: 0;
+    }
+    .po-col-title {
+        font-size: 0.85rem;
+        font-weight: 700;
+        color: #1a2332;
+        background: #e5e7eb;
+        padding: 6px 12px;
+        border-bottom: 1px solid #000;
+        text-align: center;
+    }
+    .po-col .po-col-body {
+        padding: 10px 12px;
+    }
+    .po-col .po-col-body .field-row {
+        display: flex;
+        gap: 8px;
+        margin-bottom: 6px;
+        align-items: center;
+    }
+    .po-col .po-col-body .field-label {
+        font-weight: 600;
+        color: #6b7280;
+        min-width: 80px;
+        font-size: 0.8rem;
+    }
+    .po-col .po-col-body .field-input {
+        flex: 1;
+    }
+    .po-items-table {
+        width: 100%;
+        border-collapse: collapse;
+        border: 1px solid #000;
+        font-size: 0.9rem;
+        margin-top: 0;
+    }
+    .po-items-table th {
+        background: #e5e7eb;
+        border: 1px solid #000;
+        padding: 8px 10px;
+        font-weight: 700;
+        color: #1a2332;
+        text-align: center;
+        font-size: 0.85rem;
+    }
+    .po-items-table td {
+        border: 1px solid #000;
+        padding: 8px 10px;
+        vertical-align: middle;
+    }
+    .po-items-table .text-center { text-align: center; }
+    .po-items-table .text-right { text-align: right; }
+    .po-items-table input,
+    .po-items-table select,
+    .po-items-table textarea {
+        font-size: 0.85rem;
+        padding: 4px 6px;
+        border: 1px solid #d1d5db;
+        border-radius: 4px;
+        width: 100%;
+        background: #fff;
+    }
+    .po-items-table input:focus,
+    .po-items-table select:focus,
+    .po-items-table textarea:focus {
+        outline: none;
+        border-color: #3b82f6;
+        box-shadow: 0 0 0 2px rgba(59,130,246,0.2);
+    }
+    .po-summary {
+        display: flex;
+        justify-content: flex-end;
+        padding: 15px 30px;
+        border: 1px solid #000;
+        border-top: none;
+    }
+    .po-summary-table {
+        width: 300px;
+    }
+    .po-summary-table td {
+        padding: 5px 10px;
+        font-size: 0.9rem;
+    }
+    .po-summary-table .label {
+        text-align: right;
+        font-weight: 600;
+        color: #6b7280;
+    }
+    .po-summary-table .value {
+        text-align: right;
+        font-weight: 600;
+        color: #1a2332;
+    }
+    .po-summary-table .grand-total {
+        font-size: 1.1rem;
+        font-weight: 800;
+        color: #1a2332;
+        border-top: 2px solid #000;
+        padding-top: 8px;
+    }
+    .po-signature {
+        display: flex;
+        justify-content: flex-end;
+        padding: 30px 30px 20px;
+    }
+    .po-signature-box {
+        text-align: center;
+        min-width: 200px;
+    }
+    .po-signature-box .title {
+        font-weight: 700;
+        color: #1a2332;
+        margin-bottom: 60px;
+    }
+    .po-signature-box .name {
+        font-weight: 700;
+        color: #1a2332;
+    }
+    .po-signature-box .position {
+        color: #6b7280;
+        font-size: 0.85rem;
+    }
+    .po-actions {
+        padding: 15px 30px;
+        background: #f9fafb;
+        border-top: 1px solid #e5e7eb;
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+    }
+    .btn-remove-item {
+        background: #ef4444;
+        color: #fff;
+        border: none;
+        border-radius: 4px;
+        padding: 4px 8px;
+        cursor: pointer;
+        font-size: 0.8rem;
+    }
+    .btn-remove-item:hover { background: #dc2626; }
+    .btn-add-item {
+        background: #10b981;
+        color: #fff;
+        border: none;
+        border-radius: 4px;
+        padding: 6px 14px;
+        cursor: pointer;
+        font-size: 0.85rem;
+        font-weight: 600;
+    }
+    .btn-add-item:hover { background: #059669; }
 </style>
 @endpush
 
 @section('content')
-<div class="card shadow-sm border-0 mb-4">
-    <div class="card-header bg-white py-3">
-        <h5 class="mb-0 text-primary"><i class="bi bi-pencil-square me-2"></i>Edit Purchase Order: {{ $purchaseOrder->nomor_surat }}</h5>
-    </div>
-    <div class="card-body">
-        <form action="{{ route('purchase-orders.update', $purchaseOrder->id) }}" method="POST" id="poForm">
-            @csrf
-            @method('PUT')
-            
-            <div class="row mb-4">
-                <div class="col-md-3">
-                    <label class="form-label">Tanggal <span class="text-danger">*</span></label>
-                    <input type="date" name="tanggal" class="form-control @error('tanggal') is-invalid @enderror" value="{{ old('tanggal', $purchaseOrder->tanggal->format('Y-m-d')) }}" required>
-                    @error('tanggal')<div class="invalid-feedback">{{ $message }}</div>@enderror
+<div class="po-container">
+    <form action="{{ route('purchase-orders.update', $purchaseOrder->id) }}" method="POST" id="poForm">
+        @csrf
+        @method('PUT')
+
+        <!-- Header -->
+        <div class="po-header">
+            <div class="po-header-top">
+                @php
+                    $path = public_path('style/assets/img/pib-logo.png');
+                    if(!file_exists($path)) $path = public_path('style/assets/img/PIBnew.png');
+                    $type = pathinfo($path, PATHINFO_EXTENSION);
+                    $data = file_exists($path) ? file_get_contents($path) : '';
+                    $base64 = 'data:image/' . $type . ';base64,' . base64_encode($data);
+                @endphp
+                @if(file_exists($path))
+                    <img src="{{ $base64 }}" alt="Logo" class="logo">
+                @endif
+                <div>
+                    <h1 class="company-name">CV. PERDANA INTI BERSAUDARA</h1>
+                    <p class="subtitle">RADIOLOGI - SERVICE - SPAREPART - TIMBAL - ACCESORIES</p>
+                    <p class="address-line">Jl. Kepodang 1 N0. 205 RT 24 Kel. Andil Jaya Jambi</p>
+                    <p class="address-line">HP. 0852 6305 6505 &nbsp;&nbsp; E-mail : perdanaintibersaudara@gmail.com</p>
                 </div>
-                <div class="col-md-3">
-                    <label class="form-label">Pilih Customer <span class="text-danger">*</span></label>
-                    <select name="customer_id" class="form-select @error('customer_id') is-invalid @enderror" required onchange="if(this.value==='__add__'){ window.open('{{ route('customers.create') }}','_blank'); this.value=''; }">
-                        <option value="">-- Pilih Customer --</option>
-                        <option value="__add__">+ Tambah Customer Baru</option>
-                        @foreach($customers as $c)
-                            <option value="{{ $c->id }}" {{ (old('customer_id') ?? $purchaseOrder->customer_id) == $c->id ? 'selected' : '' }}>
-                                {{ $c->nama_instansi }}
-                            </option>
-                        @endforeach
-                    </select>
-                    @error('customer_id')<div class="invalid-feedback">{{ $message }}</div>@enderror
-                </div>
-                <div class="col-md-4">
-                    <label class="form-label">Perihal (Produk/Jasa) <span class="text-danger">*</span></label>
-                    <div id="perihalContainer">
-                        @php $perihalArray = is_array($purchaseOrder->perihal) ? $purchaseOrder->perihal : (json_decode($purchaseOrder->perihal, true) ?? [$purchaseOrder->perihal]); @endphp
-                        @foreach($perihalArray as $index => $perihal)
-                        <div class="input-group mb-2 perihal-row">
-                            <span class="input-group-text perihal-number">{{ $index + 1 }}.</span>
-                            <select name="perihal[]" class="form-select perihal-select" required>
-                                <option value="">-- Pilih Produk/Jasa --</option>
-                                <optgroup label="Produk">
-                                    @foreach($products as $p)
-                                        @php
-                                            $allPaths = $p->active_images ?? $p->images ?? [];
-                                        @endphp
-                                        <option value="{{ $p->name }}" {{ old('perihal.'.$index, $perihal) == $p->name ? 'selected' : '' }} data-images="{{ json_encode($allPaths) }}">{{ $p->name }}</option>
-                                    @endforeach
-                                </optgroup>
-                                <optgroup label="Layanan">
-                                    @foreach($services as $s)
-                                        @php
-                                            $allPaths = $s->active_images ?? $s->images ?? ($s->image ? [$s->image] : []);
-                                        @endphp
-                                        <option value="{{ $s->title }}" {{ old('perihal.'.$index, $perihal) == $s->title ? 'selected' : '' }} data-images="{{ json_encode($allPaths) }}">{{ $s->title }}</option>
-                                    @endforeach
-                                </optgroup>
-                            </select>
-                            <button type="button" class="btn btn-danger remove-perihal" {{ count($perihalArray) == 1 ? 'disabled' : '' }}><i class="bi bi-x"></i></button>
-                        </div>
-                        <div class="perihal-images mt-2 d-flex flex-wrap gap-2"></div>
-                        @endforeach
+            </div>
+        </div>
+
+        <!-- Date -->
+        <div class="po-date">
+            <label class="form-label mb-1">Tanggal</label>
+            <input type="date" name="po_date" class="form-control" style="width: 200px; display: inline-block;" value="{{ old('po_date', $purchaseOrder->tanggal->format('Y-m-d')) }}" required>
+        </div>
+
+        <!-- Title -->
+        <div class="po-title-section">
+            <h2>PURCHASE ORDER</h2>
+            <p class="po-number" style="font-weight:600; color:#374151; margin-top:5px;">{{ $purchaseOrder->nomor_surat }}</p>
+        </div>
+
+        <!-- Status -->
+        <div style="padding: 0 30px 15px;">
+            <label class="form-label">Status PO</label>
+            <select name="status" class="form-select" style="width: 200px;" required>
+                <option value="draft" {{ $purchaseOrder->status == 'draft' ? 'selected' : '' }}>Draft</option>
+                <option value="dikirim" {{ $purchaseOrder->status == 'dikirim' ? 'selected' : '' }}>Dikirim</option>
+                <option value="dikonfirmasi" {{ $purchaseOrder->status == 'dikonfirmasi' ? 'selected' : '' }}>Dikonfirmasi</option>
+                <option value="batal" {{ $purchaseOrder->status == 'batal' ? 'selected' : '' }}>Batal</option>
+            </select>
+        </div>
+
+        <!-- Vendor Info -->
+        <div style="padding: 0 30px 15px;">
+            <p class="po-section-title">KEPADA VENDOR</p>
+            <table class="po-info-table">
+                <tr>
+                    <td class="label">Nama Vendor</td>
+                    <td class="value">
+                        <input type="text" name="vendor" class="form-control" style="border: none; padding: 0;" placeholder="Nama Perusahaan Vendor" value="{{ old('vendor', $purchaseOrder->vendor) }}" required>
+                    </td>
+                </tr>
+                <tr>
+                    <td class="label">Alamat</td>
+                    <td class="value">
+                        <input type="text" name="vendor_address" class="form-control" style="border: none; padding: 0;" placeholder="Alamat Vendor" value="{{ old('vendor_address', $purchaseOrder->vendor_address) }}">
+                    </td>
+                </tr>
+                <tr>
+                    <td class="label">CP</td>
+                    <td class="value">
+                        <input type="text" name="vendor_cp" class="form-control" style="border: none; padding: 0;" placeholder="Contact Person" value="{{ old('vendor_cp', $purchaseOrder->vendor_cp) }}">
+                    </td>
+                </tr>
+                <tr>
+                    <td class="label">Telepon</td>
+                    <td class="value">
+                        <input type="text" name="vendor_phone" class="form-control" style="border: none; padding: 0;" placeholder="No. Telepon" value="{{ old('vendor_phone', $purchaseOrder->vendor_phone) }}">
+                    </td>
+                </tr>
+            </table>
+        </div>
+
+        <!-- Two Column: Pesanan Pembelian & Alamat Pengiriman -->
+        <div class="po-two-col" style="margin: 0 30px 15px;">
+            <!-- Left: Pesanan Pembelian -->
+            <div class="po-col">
+                <div class="po-col-title">PESANAN PEMBELIAN</div>
+                <div class="po-col-body">
+                    <div class="field-row">
+                        <span class="field-label">Dipesan Oleh</span>
+                        <input type="text" name="buyer_name" class="form-control field-input" placeholder="Nama Pemesan" value="{{ old('buyer_name', $purchaseOrder->buyer_name) }}" required>
                     </div>
-                    <button type="button" class="btn btn-sm btn-outline-success" id="addPerihal"><i class="bi bi-plus"></i> Tambah Perihal</button>
-                    @error('perihal')<div class="text-danger small mt-1">{{ $message }}</div>@enderror
-                </div>
-                <div class="col-md-2">
-                    <label class="form-label">Status PO</label>
-                    <select name="status" class="form-select @error('status') is-invalid @enderror" required>
-                        <option value="draft" {{ $purchaseOrder->status == 'draft' ? 'selected' : '' }}>Draft</option>
-                        <option value="dikirim" {{ $purchaseOrder->status == 'dikirim' ? 'selected' : '' }}>Dikirim</option>
-                        <option value="dikonfirmasi" {{ $purchaseOrder->status == 'dikonfirmasi' ? 'selected' : '' }}>Dikonfirmasi</option>
-                        <option value="batal" {{ $purchaseOrder->status == 'batal' ? 'selected' : '' }}>Batal</option>
-                    </select>
-                </div>
-            </div>
-
-            <div class="row mb-4">
-                <div class="col-md-6">
-                    <label class="form-label">Perihal Surat (Opsional)</label>
-                    <p class="text-muted small mb-2">Judul/perihal yang muncul di PDF. Kosongkan untuk menggunakan default.</p>
-                    <input type="text" name="perihal_surat" class="form-control" placeholder="Contoh: Pengadaan Barang Kantor" value="{{ old('perihal_surat', $purchaseOrder->perihal_surat) }}">
+                    <div class="field-row">
+                        <span class="field-label">Alamat</span>
+                        <input type="text" name="buyer_address" class="form-control field-input" placeholder="Alamat Pemesan" value="{{ old('buyer_address', $purchaseOrder->buyer_address) }}">
+                    </div>
+                    <div class="field-row">
+                        <span class="field-label">CP</span>
+                        <input type="text" name="buyer_cp" class="form-control field-input" placeholder="Contact Person" value="{{ old('buyer_cp', $purchaseOrder->buyer_cp) }}">
+                    </div>
+                    <div class="field-row">
+                        <span class="field-label">Telepon</span>
+                        <input type="text" name="buyer_phone" class="form-control field-input" placeholder="No. Telepon" value="{{ old('buyer_phone', $purchaseOrder->buyer_phone) }}">
+                    </div>
                 </div>
             </div>
-
-            <hr>
-            <h6 class="mb-3">Item Purchase Order</h6>
-            
-            <div class="table-responsive mb-3">
-                    <table class="table table-bordered align-middle" id="itemsTable">
-                        <thead class="table-light">
-                            <tr>
-                                <th width="20%">Produk/Jasa (Opsional)</th>
-                                <th width="25%">Deskripsi Detail <span class="text-danger">*</span></th>
-                                <th width="8%">Volume</th>
-                                <th width="10%">Satuan</th>
-                                <th width="12%">Harga Satuan</th>
-                                <th width="12%">Jumlah Harga</th>
-                                <th width="6%" class="text-center">Label<br><small class="text-muted">PDF</small></th>
-                                <th width="7%" class="text-center">Aksi</th>
-                            </tr>
-                        </thead>
-                        <tbody id="itemsBody">
-                            @foreach($purchaseOrder->items as $index => $item)
-                            <tr class="item-row">
-                                <td data-label="Produk/Jasa">
-                                    <small class="text-primary fw-semibold perihal-badge d-block mb-1">{!! $item->nama_item ? '<i class="bi bi-tag-fill me-1"></i>'.e($item->nama_item) : '' !!}</small>
-                                    <input type="text" name="items[{{ $index }}][nama_item]" class="form-control nama-item-input" value="{{ $item->nama_item }}" placeholder="Nama Barang/Pekerjaan (opsional jika ada label)" data-autofilled="false">
-                                </td>
-                                <td data-label="Deskripsi">
-                                    <textarea name="items[{{ $index }}][deskripsi]" class="form-control deskripsi-input" rows="2" required>{{ $item->deskripsi }}</textarea>
-                                </td>
-                                <td data-label="Volume">
-                                    <input type="text" name="items[{{ $index }}][volume]" class="form-control volume-input" value="{{ $item->volume }}" required>
-                                </td>
-                                <td data-label="Satuan">
-                                    <select name="items[{{ $index }}][satuan]" class="form-select satuan-input">
-                                        <option value="">--</option>
-                                        <option value="Unit" {{ ($item->satuan ?? 'Unit') == 'Unit' ? 'selected' : '' }}>Unit</option>
-                                        <option value="Paket" {{ ($item->satuan ?? '') == 'Paket' ? 'selected' : '' }}>Paket</option>
-                                        <option value="Pcs" {{ ($item->satuan ?? '') == 'Pcs' ? 'selected' : '' }}>Pcs</option>
-                                        <option value="Cm" {{ ($item->satuan ?? '') == 'Cm' ? 'selected' : '' }}>Cm</option>
-                                        <option value="mm" {{ ($item->satuan ?? '') == 'mm' ? 'selected' : '' }}>mm</option>
-                                        <option value="Meter" {{ ($item->satuan ?? '') == 'Meter' ? 'selected' : '' }}>Meter</option>
-                                        <option value="Set" {{ ($item->satuan ?? '') == 'Set' ? 'selected' : '' }}>Set</option>
-                                        <option value="Box" {{ ($item->satuan ?? '') == 'Box' ? 'selected' : '' }}>Box</option>
-                                        <option value="Rim" {{ ($item->satuan ?? '') == 'Rim' ? 'selected' : '' }}>Rim</option>
-                                        <option value="Lembar" {{ ($item->satuan ?? '') == 'Lembar' ? 'selected' : '' }}>Lembar</option>
-                                        <option value="Buah" {{ ($item->satuan ?? '') == 'Buah' ? 'selected' : '' }}>Buah</option>
-                                        <option value="Bulan" {{ ($item->satuan ?? '') == 'Bulan' ? 'selected' : '' }}>Bulan</option>
-                                        <option value="Tahun" {{ ($item->satuan ?? '') == 'Tahun' ? 'selected' : '' }}>Tahun</option>
-                                    </select>
-                                </td>
-                                <td data-label="Harga Satuan">
-                                    <input type="text" name="items[{{ $index }}][harga_satuan]" class="form-control harga-input currency-format" value="{{ number_format($item->harga_satuan, 0, ',', '.') }}" required>
-                                </td>
-                                <td data-label="Jumlah Harga">
-                                    <input type="text" name="items[{{ $index }}][subtotal]" class="form-control subtotal-input currency-format" value="{{ number_format((float) $item->volume * $item->harga_satuan, 0, ',', '.') }}" readonly>
-                                </td>
-                                <td data-label="Label PDF" class="text-center">
-                                    <div class="form-check form-switch d-inline-block m-0">
-                                        <input type="hidden" name="items[{{ $index }}][tampilkan_label]" value="0">
-                                        <input type="checkbox" class="form-check-input" name="items[{{ $index }}][tampilkan_label]" value="1" {{ $item->tampilkan_label ? 'checked' : '' }} style="cursor:pointer;">
-                                    </div>
-                                </td>
-                                <td data-label="Aksi" class="text-center">
-                                    <button type="button" class="btn btn-danger btn-sm remove-row" {{ $purchaseOrder->items->count() == 1 ? 'disabled' : '' }}><i class="bi bi-trash"></i></button>
-                                </td>
-                            </tr>
-                            @endforeach
-                        </tbody>
-                    <tfoot class="table-dark">
-                        <tr>
-                            <td colspan="5" class="text-end fw-bold align-middle text-white"><strong>TOTAL KESELURUHAN</strong></td>
-                            <td colspan="3">
-                                <div class="input-group">
-                                    <span class="input-group-text">Rp</span>
-                                    <input type="text" id="totalKeseluruhan" class="form-control font-weight-bold" value="{{ number_format($purchaseOrder->total, 0, ',', '.') }}" readonly>
-                                </div>
-                            </td>
-                        </tr>
-                    </tfoot>
-                </table>
-            </div>
-            
-            <button type="button" id="addRow" class="btn btn-success btn-sm mb-4"><i class="bi bi-plus-lg"></i> Tambah Baris</button>
-
-            <div class="mb-4">
-                <label class="form-label">Kata Pengantar (Opsional)</label>
-                <p class="text-muted small mb-2">Kata pengantar yang akan muncul di PDF. Kosongkan untuk menggunakan teks default.</p>
-                <textarea name="kata_pengantar" class="form-control" rows="5">{{ old('kata_pengantar', $purchaseOrder->kata_pengantar) }}</textarea>
-            </div>
-
-            <div class="mb-4">
-                <label class="form-label">Catatan Tambahan (Opsional)</label>
-                <textarea name="catatan" class="form-control" rows="3">{{ old('catatan', $purchaseOrder->catatan) }}</textarea>
-            </div>
-
-            <div class="mb-4">
-                <label class="form-label">Kata Penutup (Opsional)</label>
-                <p class="text-muted small mb-2">Kata atau paragraf penutup yang akan muncul di PDF.</p>
-                <textarea name="kata_penutup" class="form-control" rows="3">{{ old('kata_penutup', $purchaseOrder->kata_penutup) }}</textarea>
-            </div>
-
-            <div class="mb-4">
-                <div class="d-flex align-items-center gap-2 mb-1">
-                    <i class="bi bi-image text-primary fs-5"></i>
-                    <span class="fw-semibold">Lampiran Gambar PDF</span>
+            <!-- Right: Alamat Pengiriman -->
+            <div class="po-col">
+                <div class="po-col-title">ALAMAT PENGIRIMAN</div>
+                <div class="po-col-body">
+                    <div class="field-row">
+                        <span class="field-label">Nama</span>
+                        <input type="text" name="shipping_name" class="form-control field-input" placeholder="Nama Penerima" value="{{ old('shipping_name', $purchaseOrder->shipping_name) }}">
+                    </div>
+                    <div class="field-row">
+                        <span class="field-label">Alamat</span>
+                        <input type="text" name="shipping_address" class="form-control field-input" placeholder="Alamat Pengiriman" value="{{ old('shipping_address', $purchaseOrder->shipping_address) }}">
+                    </div>
+                    <div class="field-row">
+                        <span class="field-label">CP</span>
+                        <input type="text" name="shipping_cp" class="form-control field-input" placeholder="Contact Person" value="{{ old('shipping_cp', $purchaseOrder->shipping_cp) }}">
+                    </div>
+                    <div class="field-row">
+                        <span class="field-label">Telepon</span>
+                        <input type="text" name="shipping_phone" class="form-control field-input" placeholder="No. Telepon" value="{{ old('shipping_phone', $purchaseOrder->shipping_phone) }}">
+                    </div>
                 </div>
-                <p class="text-muted small mb-2">Klik pada gambar di bawah setiap perihal untuk memilih gambar yang akan ditampilkan di PDF.</p>
-                <input type="hidden" name="selected_images" id="selectedImagesInput" value="{{ json_encode(is_array($purchaseOrder->selected_images) ? $purchaseOrder->selected_images : (json_decode($purchaseOrder->selected_images ?? '{}', true) ?: [])) }}">
             </div>
+        </div>
 
-            <div class="d-flex justify-content-between">
-                <a href="{{ route('purchase-orders.index') }}" class="btn btn-secondary"><i class="bi bi-arrow-left"></i> Kembali</a>
-                <button type="submit" class="btn btn-primary"><i class="bi bi-save"></i> Perbarui Purchase Order</button>
+        <!-- Items Table -->
+        <div style="margin: 0 30px 15px;">
+            <p class="po-section-title">DAFTAR BARANG</p>
+            <table class="po-items-table" id="itemsTable">
+                <thead>
+                    <tr>
+                        <th width="5%">No</th>
+                        <th width="8%">Jumlah</th>
+                        <th width="10%">Satuan</th>
+                        <th width="25%">Jenis Barang</th>
+                        <th width="20%">Deskripsi</th>
+                        <th width="15%">Harga Satuan</th>
+                        <th width="15%">Total Harga</th>
+                        <th width="7%" class="text-center">Aksi</th>
+                    </tr>
+                </thead>
+                <tbody id="itemsBody">
+                    @foreach($purchaseOrder->items as $index => $item)
+                    <tr class="item-row">
+                        <td class="text-center">{{ $index + 1 }}</td>
+                        <td><input type="text" name="items[{{ $index }}][qty]" class="qty-input" value="{{ $item->volume }}" required></td>
+                        <td>
+                            <select name="items[{{ $index }}][satuan]" class="satuan-input">
+                                <option value="Unit" {{ ($item->satuan ?? '') == 'Unit' ? 'selected' : '' }}>Unit</option>
+                                <option value="Pcs" {{ ($item->satuan ?? '') == 'Pcs' ? 'selected' : '' }}>Pcs</option>
+                                <option value="Set" {{ ($item->satuan ?? '') == 'Set' ? 'selected' : '' }}>Set</option>
+                                <option value="Box" {{ ($item->satuan ?? '') == 'Box' ? 'selected' : '' }}>Box</option>
+                                <option value="Meter" {{ ($item->satuan ?? '') == 'Meter' ? 'selected' : '' }}>Meter</option>
+                                <option value="Roll" {{ ($item->satuan ?? '') == 'Roll' ? 'selected' : '' }}>Roll</option>
+                                <option value="Pack" {{ ($item->satuan ?? '') == 'Pack' ? 'selected' : '' }}>Pack</option>
+                                <option value="Lembar" {{ ($item->satuan ?? '') == 'Lembar' ? 'selected' : '' }}>Lembar</option>
+                            </select>
+                        </td>
+                        <td><input type="text" name="items[{{ $index }}][product_name]" class="product-name-input" placeholder="Nama Barang" value="{{ $item->product_name ?? $item->nama_item ?? '' }}"></td>
+                        <td><input type="text" name="items[{{ $index }}][deskripsi]" class="deskripsi-input" placeholder="Deskripsi Barang" value="{{ $item->deskripsi }}" required></td>
+                        <td><input type="text" name="items[{{ $index }}][price]" class="price-input currency-format" value="{{ number_format($item->harga_satuan, 0, ',', '.') }}" required></td>
+                        <td><input type="text" name="items[{{ $index }}][subtotal]" class="subtotal-input" value="{{ number_format($item->subtotal, 0, ',', '.') }}" readonly></td>
+                        <td class="text-center"><button type="button" class="btn-remove-item remove-row" {{ $purchaseOrder->items->count() == 1 ? 'disabled' : '' }}><i class="bi bi-trash"></i></button></td>
+                    </tr>
+                    @endforeach
+                </tbody>
+            </table>
+            <div style="margin-top: 8px;">
+                <button type="button" id="addRow" class="btn-add-item"><i class="bi bi-plus-lg"></i> Tambah Baris</button>
             </div>
-        </form>
-    </div>
+        </div>
+
+        <!-- Summary -->
+        <div class="po-summary">
+            <table class="po-summary-table">
+                <tr>
+                    <td class="label">Subtotal</td>
+                    <td class="value">Rp <span id="subtotalDisplay">{{ number_format($purchaseOrder->total, 0, ',', '.') }}</span></td>
+                </tr>
+                <tr>
+                    <td class="label">Diskon</td>
+                    <td class="value">
+                        <input type="text" name="discount" id="discountInput" class="currency-format" style="width: 150px; text-align: right; border: 1px solid #d1d5db; border-radius: 4px; padding: 4px 8px;" value="{{ number_format($purchaseOrder->discount, 0, ',', '.') }}">
+                    </td>
+                </tr>
+                <tr>
+                    <td class="label">PPN (11%)</td>
+                    <td class="value">
+                        <input type="text" name="ppn" id="ppnInput" class="currency-format" style="width: 150px; text-align: right; border: 1px solid #d1d5db; border-radius: 4px; padding: 4px 8px;" value="{{ number_format($purchaseOrder->ppn, 0, ',', '.') }}">
+                    </td>
+                </tr>
+                <tr>
+                    <td class="label grand-total">GRAND TOTAL</td>
+                    <td class="value grand-total">Rp <span id="grandTotalDisplay">{{ number_format($purchaseOrder->grand_total, 0, ',', '.') }}</span></td>
+                </tr>
+            </table>
+        </div>
+
+        <!-- Signature -->
+        <div class="po-signature">
+            <div class="po-signature-box">
+                <div class="title">Hormat Saya,</div>
+                <div class="name">CV. PERDANA INTI BERSAUDARA</div>
+                <div class="position">Direktur</div>
+            </div>
+        </div>
+
+        <!-- Actions -->
+        <div class="po-actions">
+            <a href="{{ route('purchase-orders.index') }}" class="btn btn-secondary"><i class="bi bi-arrow-left"></i> Kembali</a>
+            <button type="submit" class="btn btn-primary"><i class="bi bi-save"></i> Perbarui Purchase Order</button>
+        </div>
+    </form>
 </div>
 @endsection
 
 @push('scripts')
 <script>
-const STORAGE_URL = '{{ Storage::url('') }}';
 document.addEventListener('DOMContentLoaded', function() {
-    let itemIndex = {{ count($purchaseOrder->items) }};
+    let itemIndex = {{ $purchaseOrder->items->count() }};
     const tbody = document.getElementById('itemsBody');
-    const perihalContainer = document.getElementById('perihalContainer');
 
     const formatIDR = (num) => new Intl.NumberFormat('id-ID').format(num);
 
@@ -267,190 +485,82 @@ document.addEventListener('DOMContentLoaded', function() {
         let val = input.value.replace(/[^,\d]/g, '');
         let parts = val.split(',');
         let integerPart = parts[0].replace(/\B(?=(\d{3})+(?!\d))/g, ".");
-        if (parts.length > 2) {
-            parts = [parts[0], parts[1]];
-        }
+        if (parts.length > 2) parts = [parts[0], parts[1]];
         input.value = parts.length > 1 ? integerPart + ',' + parts[1] : integerPart;
     };
 
     const calculateRowSubtotal = (row) => {
-        const volume = parseFloat(row.querySelector('.volume-input').value) || 0;
-        const harga = parseIDR(row.querySelector('.harga-input').value);
-        const subtotal = volume * harga;
-        row.querySelector('.subtotal-input').value = subtotal > 0 ? formatIDR(subtotal) : '0';
+        const qty = parseFloat(row.querySelector('.qty-input')?.value) || 0;
+        const price = parseIDR(row.querySelector('.price-input')?.value);
+        const subtotal = qty * price;
+        const subtotalInput = row.querySelector('.subtotal-input');
+        if (subtotalInput) subtotalInput.value = subtotal > 0 ? formatIDR(subtotal) : '0';
     };
 
     const calculateTotal = () => {
         let total = 0;
         document.querySelectorAll('.item-row').forEach(row => {
-            total += parseIDR(row.querySelector('.subtotal-input').value);
+            total += parseIDR(row.querySelector('.subtotal-input')?.value || '0');
         });
-        document.getElementById('totalKeseluruhan').value = total > 0 ? formatIDR(total) : '0';
+
+        const discount = parseIDR(document.getElementById('discountInput').value);
+        const ppn = parseIDR(document.getElementById('ppnInput').value);
+        const grandTotal = total - discount + ppn;
+
+        document.getElementById('subtotalDisplay').textContent = total > 0 ? formatIDR(total) : '0';
+        document.getElementById('grandTotalDisplay').textContent = grandTotal > 0 ? formatIDR(grandTotal) : '0';
     };
 
     tbody.addEventListener('input', function(e) {
         if (e.target.classList.contains('currency-format')) {
             formatCurrencyInput(e.target);
         }
-        if (e.target.classList.contains('volume-input') || e.target.classList.contains('harga-input') || e.target.classList.contains('currency-format')) {
+        if (e.target.classList.contains('qty-input') || e.target.classList.contains('price-input') || e.target.classList.contains('currency-format')) {
             const row = e.target.closest('.item-row');
             if (row) calculateRowSubtotal(row);
             calculateTotal();
         }
     });
 
-    let selectedImagesMap = {};
+    document.getElementById('discountInput').addEventListener('input', function() {
+        formatCurrencyInput(this);
+        calculateTotal();
+    });
 
-    try {
-        const saved = document.getElementById('selectedImagesInput').value;
-        if (saved) selectedImagesMap = JSON.parse(saved);
-    } catch (e) {}
+    document.getElementById('ppnInput').addEventListener('input', function() {
+        formatCurrencyInput(this);
+        calculateTotal();
+    });
 
-    const getPerihalName = (selectEl) => selectEl.value;
-
-    const getImagesContainer = (selectEl) => {
-        const row = selectEl.closest('.perihal-row');
-        return row ? row.nextElementSibling : null;
-    };
-
-    const renderImageGallery = (selectEl) => {
-        const container = getImagesContainer(selectEl);
-        if (!container) return;
-
-        const option = selectEl.options[selectEl.selectedIndex];
-        container.innerHTML = '';
-
-        if (!option || !option.value || !option.dataset.images) return;
-
-        let images;
-        try {
-            images = JSON.parse(option.dataset.images);
-        } catch (e) { return; }
-
-        if (!images.length) return;
-
-        const name = option.value;
-        if (!selectedImagesMap[name]) selectedImagesMap[name] = [];
-
-        images.forEach((rawPath, idx) => {
-            const displayUrl = STORAGE_URL + rawPath;
-            const isSelected = selectedImagesMap[name].includes(rawPath);
-            const wrapper = document.createElement('div');
-            wrapper.className = 'image-option' + (isSelected ? ' selected' : '');
-            wrapper.style.cssText = `
-                position: relative; cursor: pointer; border-radius: 8px; overflow: hidden;
-                border: 3px solid ${isSelected ? '#28a745' : '#dee2e6'};
-                transition: border-color .2s; width: 100px; height: 80px; flex-shrink: 0;
-            `;
-            wrapper.title = isSelected ? 'Klik untuk hapus pilihan' : 'Klik untuk pilih';
-
-            const img = document.createElement('img');
-            img.src = displayUrl;
-            img.alt = `Gambar ${idx + 1}`;
-            img.style.cssText = 'width: 100%; height: 100%; object-fit: cover; display: block;';
-
-            const check = document.createElement('div');
-            check.className = 'image-check';
-            check.innerHTML = '&#10003;';
-            check.style.cssText = `
-                position: absolute; top: 4px; right: 4px; width: 22px; height: 22px;
-                border-radius: 50%; background: ${isSelected ? '#28a745' : '#6c757d'};
-                color: #fff; font-size: 14px; font-weight: bold; display: flex;
-                align-items: center; justify-content: center; opacity: ${isSelected ? '1' : '0.6'};
-                transition: all .2s;
-            `;
-
-            wrapper.appendChild(img);
-            wrapper.appendChild(check);
-
-            wrapper.addEventListener('click', function(e) {
-                e.stopPropagation();
-                if (!selectedImagesMap[name]) selectedImagesMap[name] = [];
-                const idx = selectedImagesMap[name].indexOf(rawPath);
-                if (idx > -1) {
-                    selectedImagesMap[name].splice(idx, 1);
-                    wrapper.style.borderColor = '#dee2e6';
-                    check.style.background = '#6c757d';
-                    check.style.opacity = '0.6';
-                    wrapper.title = 'Klik untuk pilih';
-                } else {
-                    selectedImagesMap[name].push(rawPath);
-                    wrapper.style.borderColor = '#28a745';
-                    check.style.background = '#28a745';
-                    check.style.opacity = '1';
-                    wrapper.title = 'Klik untuk hapus pilihan';
-                }
-                if (selectedImagesMap[name].length === 0) delete selectedImagesMap[name];
-                updateSelectedImagesInput();
-            });
-
-            container.appendChild(wrapper);
-        });
-    };
-
-    const updateSelectedImagesInput = () => {
-        document.getElementById('selectedImagesInput').value = JSON.stringify(selectedImagesMap);
-    };
-
-    const renderAllGalleries = () => {
-        document.querySelectorAll('.perihal-select').forEach(renderImageGallery);
-    };
-
-    const buildRowHTML = (index, namaItem = '') => {
-        const badgeHTML = namaItem ? `<small class="text-primary fw-semibold perihal-badge d-block mb-1"><i class="bi bi-tag-fill me-1"></i>${namaItem}</small>` : `<small class="text-primary fw-semibold perihal-badge d-block mb-1"></small>`;
+    const buildRowHTML = (index) => {
         return `
         <tr class="item-row">
-            <td data-label="Produk/Jasa">
-                ${badgeHTML}
-                <input type="text" name="items[${index}][nama_item]" class="form-control nama-item-input"
-                    value="${namaItem}" placeholder="Nama Barang/Pekerjaan"
-                    data-autofilled="${namaItem !== '' ? 'true' : 'false'}" required>
-            </td>
-            <td data-label="Deskripsi">
-                <textarea name="items[${index}][deskripsi]" class="form-control deskripsi-input" rows="2" required placeholder="Deskripsi pekerjaan/barang..."></textarea>
-            </td>
-            <td data-label="Volume">
-                <input type="text" name="items[${index}][volume]" class="form-control volume-input" value="1" required>
-            </td>
-            <td data-label="Satuan">
-                <select name="items[${index}][satuan]" class="form-select satuan-input">
-                    <option value="" selected>--</option>
-                    <option value="Unit">Unit</option>
-                    <option value="Paket">Paket</option>
+            <td class="text-center">${index + 1}</td>
+            <td><input type="text" name="items[${index}][qty]" class="qty-input" value="1" required></td>
+            <td>
+                <select name="items[${index}][satuan]" class="satuan-input">
+                    <option value="Unit" selected>Unit</option>
                     <option value="Pcs">Pcs</option>
-                    <option value="Cm">Cm</option>
-                    <option value="mm">mm</option>
-                    <option value="Meter">Meter</option>
                     <option value="Set">Set</option>
                     <option value="Box">Box</option>
-                    <option value="Rim">Rim</option>
+                    <option value="Meter">Meter</option>
+                    <option value="Roll">Roll</option>
+                    <option value="Pack">Pack</option>
                     <option value="Lembar">Lembar</option>
-                    <option value="Buah">Buah</option>
-                    <option value="Bulan">Bulan</option>
-                    <option value="Tahun">Tahun</option>
                 </select>
             </td>
-            <td data-label="Harga Satuan">
-                <input type="text" name="items[${index}][harga_satuan]" class="form-control harga-input currency-format" value="" required>
-            </td>
-            <td data-label="Jumlah Harga">
-                <input type="text" name="items[${index}][subtotal]" class="form-control subtotal-input currency-format" value="0" readonly>
-            </td>
-            <td data-label="Label PDF" class="text-center">
-                <div class="form-check form-switch d-inline-block m-0">
-                    <input type="hidden" name="items[${index}][tampilkan_label]" value="0">
-                    <input type="checkbox" class="form-check-input" name="items[${index}][tampilkan_label]" value="1" checked style="cursor:pointer;">
-                </div>
-            </td>
-            <td data-label="Aksi" class="text-center">
-                <button type="button" class="btn btn-danger btn-sm remove-row"><i class="bi bi-trash"></i></button>
-            </td>
+            <td><input type="text" name="items[${index}][product_name]" class="product-name-input" placeholder="Nama Barang" value=""></td>
+            <td><input type="text" name="items[${index}][deskripsi]" class="deskripsi-input" placeholder="Deskripsi Barang" value=""></td>
+            <td><input type="text" name="items[${index}][price]" class="price-input currency-format" value="" required></td>
+            <td><input type="text" name="items[${index}][subtotal]" class="subtotal-input" value="0" readonly></td>
+            <td class="text-center"><button type="button" class="btn-remove-item remove-row"><i class="bi bi-trash"></i></button></td>
         </tr>`;
     };
 
     const reindexRows = () => {
         tbody.querySelectorAll('.item-row').forEach((row, i) => {
-            row.querySelectorAll('[name]').forEach(el => {
+            row.querySelector('td').textContent = i + 1;
+            row.querySelectorAll('input, select').forEach(el => {
                 el.name = el.name.replace(/items\[\d+\]/, `items[${i}]`);
             });
         });
@@ -465,91 +575,8 @@ document.addEventListener('DOMContentLoaded', function() {
         });
     };
 
-    perihalContainer.addEventListener('change', function(e) {
-        if (e.target.matches('.perihal-select')) {
-            const name = getPerihalName(e.target);
-            const idx = Array.from(perihalContainer.querySelectorAll('.perihal-row')).indexOf(e.target.closest('.perihal-row'));
-            const rows = tbody.querySelectorAll('.item-row');
-
-            renderImageGallery(e.target);
-
-            if (rows[idx]) {
-                const namaInput = rows[idx].querySelector('.nama-item-input');
-                const badge = rows[idx].querySelector('.perihal-badge');
-                if (namaInput && namaInput.dataset.autofilled !== 'false') {
-                    namaInput.value = name;
-                    namaInput.dataset.autofilled = 'true';
-                }
-                if (badge) badge.innerHTML = name ? `<i class="bi bi-tag-fill me-1"></i>${name}` : '';
-            } else {
-                tbody.insertAdjacentHTML('beforeend', buildRowHTML(itemIndex++, name));
-                reindexRows();
-                updateRemoveButtons();
-            }
-        }
-    });
-
-    tbody.addEventListener('input', function(e) {
-        if (e.target.classList.contains('nama-item-input')) {
-            e.target.dataset.autofilled = 'false';
-        }
-    });
-
-    document.getElementById('addPerihal').addEventListener('click', function() {
-        const rowCount = perihalContainer.querySelectorAll('.perihal-row').length;
-        const optionsHTML = perihalContainer.querySelector('.perihal-select').innerHTML.replace(/\s+selected/g, '');
-        const newPerihal = `
-            <div class="input-group mb-2 perihal-row">
-                <span class="input-group-text perihal-number">${rowCount + 1}.</span>
-                <select name="perihal[]" class="form-select perihal-select" required>${optionsHTML}</select>
-                <button type="button" class="btn btn-danger remove-perihal"><i class="bi bi-x"></i></button>
-            </div>
-            <div class="perihal-images mt-2 d-flex flex-wrap gap-2"></div>`;
-        perihalContainer.insertAdjacentHTML('beforeend', newPerihal);
-        updatePerihalNumbers();
-
-        tbody.insertAdjacentHTML('beforeend', buildRowHTML(itemIndex++, ''));
-        reindexRows();
-        updateRemoveButtons();
-    });
-
-    perihalContainer.addEventListener('click', function(e) {
-        if (e.target.closest('.remove-perihal')) {
-            const btn = e.target.closest('.remove-perihal');
-            if (!btn.disabled) {
-                const perihalRow = btn.closest('.perihal-row');
-                const perihalIndex = Array.from(perihalContainer.querySelectorAll('.perihal-row')).indexOf(perihalRow);
-                const select = perihalRow.querySelector('.perihal-select');
-                const oldName = getPerihalName(select);
-                if (oldName && selectedImagesMap[oldName]) delete selectedImagesMap[oldName];
-                updateSelectedImagesInput();
-
-                const imagesContainer = perihalRow.nextElementSibling;
-                perihalRow.remove();
-                if (imagesContainer && imagesContainer.classList.contains('perihal-images')) {
-                    imagesContainer.remove();
-                }
-                updatePerihalNumbers();
-
-                const itemRows = tbody.querySelectorAll('.item-row');
-                if (itemRows[perihalIndex]) itemRows[perihalIndex].remove();
-                reindexRows();
-                updateRemoveButtons();
-                calculateTotal();
-            }
-        }
-    });
-
-    const updatePerihalNumbers = () => {
-        perihalContainer.querySelectorAll('.perihal-row').forEach((row, i) => {
-            row.querySelector('.perihal-number').textContent = (i + 1) + '.';
-            const btn = row.querySelector('.remove-perihal');
-            if (btn) btn.disabled = (perihalContainer.querySelectorAll('.perihal-row').length === 1);
-        });
-    };
-
     document.getElementById('addRow').addEventListener('click', function() {
-        tbody.insertAdjacentHTML('beforeend', buildRowHTML(itemIndex++, ''));
+        tbody.insertAdjacentHTML('beforeend', buildRowHTML(itemIndex++));
         reindexRows();
         updateRemoveButtons();
     });
@@ -566,18 +593,7 @@ document.addEventListener('DOMContentLoaded', function() {
         }
     });
 
-    document.getElementById('poForm').addEventListener('submit', function() {
-        updateSelectedImagesInput();
-    });
-
     updateRemoveButtons();
-    updatePerihalNumbers();
-    renderAllGalleries();
-    
-    document.querySelectorAll('.currency-format').forEach(input => {
-        if(input.value) formatCurrencyInput(input);
-    });
-
     document.querySelectorAll('.item-row').forEach(row => calculateRowSubtotal(row));
     calculateTotal();
 });

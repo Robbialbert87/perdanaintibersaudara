@@ -13,6 +13,7 @@ class PurchaseOrderItem extends Model
         'purchase_order_id',
         'product_id',
         'nama_item',
+        'product_name',
         'deskripsi',
         'volume',
         'satuan',

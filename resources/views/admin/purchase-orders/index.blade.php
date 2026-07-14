@@ -13,7 +13,7 @@
     <div class="card-body">
         <form action="{{ route('purchase-orders.index') }}" method="GET" class="mb-3">
             <div class="input-group">
-                <input type="text" name="search" class="form-control" placeholder="Cari nomor surat, perihal, atau nama customer..." value="{{ request('search') }}">
+                <input type="text" name="search" class="form-control" placeholder="Cari nomor PO, vendor, atau nama pemesan..." value="{{ request('search') }}">
                 <button class="btn btn-outline-secondary" type="submit"><i class="bi bi-search"></i> Cari</button>
             </div>
         </form>
@@ -23,11 +23,11 @@
                 <thead class="table-light">
                     <tr>
                         <th width="5%" class="d-none d-sm-table-cell">No</th>
-                        <th>Nomor Surat</th>
+                        <th>Nomor PO</th>
                         <th class="d-none d-sm-table-cell">Tanggal</th>
-                        <th>Customer</th>
-                        <th class="d-none d-sm-table-cell">Perihal</th>
-                        <th class="d-none d-sm-table-cell">Total</th>
+                        <th>Vendor</th>
+                        <th>Dipesan Oleh</th>
+                        <th class="d-none d-sm-table-cell">Grand Total</th>
                         <th>Status</th>
                         <th width="15%" class="text-center">Aksi</th>
                     </tr>
@@ -38,20 +38,9 @@
                         <td class="d-none d-sm-table-cell">{{ $purchaseOrders->firstItem() + $index }}</td>
                         <td class="text-nowrap">{{ $po->nomor_surat }}</td>
                         <td class="d-none d-sm-table-cell">{{ date('d/m/Y', strtotime($po->tanggal)) }}</td>
-                        <td class="text-nowrap">{{ $po->customer->nama_instansi }}</td>
-                        <td class="d-none d-sm-table-cell">
-                            @php $perihalArray = is_array($po->perihal) ? $po->perihal : (json_decode($po->perihal, true) ?? [$po->perihal]); @endphp
-                            @if(count($perihalArray) > 1)
-                                <ul class="mb-0 ps-3 list-unstyled">
-                                    @foreach($perihalArray as $p)
-                                        <li>- {{ \Illuminate\Support\Str::limit($p, 30) }}</li>
-                                    @endforeach
-                                </ul>
-                            @else
-                                {{ \Illuminate\Support\Str::limit($perihalArray[0], 50) }}
-                            @endif
-                        </td>
-                        <td class="d-none d-sm-table-cell">Rp {{ number_format($po->total, 0, ',', '.') }}</td>
+                        <td class="text-nowrap">{{ $po->vendor ?? '-' }}</td>
+                        <td class="text-nowrap">{{ $po->buyer_name ?? '-' }}</td>
+                        <td class="d-none d-sm-table-cell">Rp {{ number_format($po->grand_total, 0, ',', '.') }}</td>
                         <td class="text-nowrap">
                             @if($po->status == 'draft')
                                 <span class="badge bg-secondary">Draft</span>

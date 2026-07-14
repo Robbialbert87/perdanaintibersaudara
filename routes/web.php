@@ -96,6 +96,8 @@ Route::middleware(['auth', 'verified', 'throttle:60,1'])->group(function () {
     Route::resource('quotations', QuotationController::class);
     Route::resource('purchase-orders', PurchaseOrderController::class);
     Route::get('purchase-orders/{purchaseOrder}/export-pdf', [PurchaseOrderController::class, 'exportPdf'])->name('purchase-orders.export_pdf');
+    Route::get('purchase-orders/{purchaseOrder}/preview-pdf', [PurchaseOrderController::class, 'previewPdf'])->name('purchase-orders.preview_pdf');
+    Route::get('purchase-orders/{purchaseOrder}/print', [PurchaseOrderController::class, 'print'])->name('purchase-orders.print');
     Route::get('warranty-cards/{warrantyCard}/export-pdf', [WarrantyCardController::class, 'exportPdf'])->name('warranty-cards.export_pdf');
     Route::resource('warranty-cards', WarrantyCardController::class);
     Route::get('invoices/{invoice}/export-pdf', [InvoiceController::class, 'exportPdf'])->name('invoices.export_pdf');

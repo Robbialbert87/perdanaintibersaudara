@@ -3,28 +3,25 @@
 namespace App\Http\Controllers;
 
 use App\Helpers\QRCodeHelper;
-use App\Models\Customer;
-use App\Models\Product;
 use App\Models\PurchaseOrder;
-use App\Models\Service;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
-use Illuminate\Support\Facades\Storage;
 use Illuminate\Support\Str;
 
 class PurchaseOrderController extends Controller
 {
     public function index(Request $request)
     {
-        $query = PurchaseOrder::with('customer');
+        $query = PurchaseOrder::query();
 
         if ($request->has('search')) {
             $search = str_replace(['%', '_'], ['\\%', '\\_'], $request->get('search'));
-            $query->where('nomor_surat', 'like', "%{$search}%")
-                ->orWhere('perihal', 'like', "%{$search}%")
-                ->orWhereHas('customer', function ($q) use ($search) {
-                    $q->where('nama_instansi', 'like', "%{$search}%");
-                });
+            $query->where(function ($q) use ($search) {
+                $q->where('nomor_surat', 'like', "%{$search}%")
+                  ->orWhere('vendor', 'like', "%{$search}%")
+                  ->orWhere('buyer_name', 'like', "%{$search}%")
+                  ->orWhere('po_number', 'like', "%{$search}%");
+            });
         }
 
         $purchaseOrders = $query->latest()->paginate(10);
@@ -34,59 +31,62 @@ class PurchaseOrderController extends Controller
 
     public function create()
     {
-        $customers = Customer::orderBy('nama_instansi')->get();
-        $products = Product::orderBy('name')->get();
-        $services = Service::orderBy('title')->get();
-
-        return view('admin.purchase-orders.create', compact('customers', 'products', 'services'));
+        return view('admin.purchase-orders.create');
     }
 
     public function store(Request $request)
     {
         $request->validate([
-            'tanggal' => 'required|date',
-            'customer_id' => 'required|exists:customers,id',
-            'perihal' => 'required|array|min:1',
-            'perihal.*' => 'required|string|max:255',
-            'perihal_surat' => 'nullable|string|max:255',
-            'catatan' => 'nullable|string',
-            'kata_pengantar' => 'nullable|string',
-            'kata_penutup' => 'nullable|string',
+            'po_date' => 'required|date',
+            'vendor' => 'required|string|max:255',
+            'vendor_address' => 'nullable|string',
+            'vendor_cp' => 'nullable|string|max:255',
+            'vendor_phone' => 'nullable|string|max:50',
+            'buyer_name' => 'required|string|max:255',
+            'buyer_address' => 'nullable|string',
+            'buyer_cp' => 'nullable|string|max:255',
+            'buyer_phone' => 'nullable|string|max:50',
+            'shipping_name' => 'nullable|string|max:255',
+            'shipping_address' => 'nullable|string',
+            'shipping_cp' => 'nullable|string|max:255',
+            'shipping_phone' => 'nullable|string|max:50',
+            'discount' => 'nullable|numeric|min:0',
+            'ppn' => 'nullable|numeric|min:0',
             'items' => 'required|array|min:1',
-            'items.*.nama_item' => 'nullable|string|max:255',
+            'items.*.product_name' => 'nullable|string|max:255',
             'items.*.deskripsi' => 'required|string',
-            'items.*.volume' => 'required|string|max:255',
+            'items.*.qty' => 'required|numeric|min:0',
             'items.*.satuan' => 'nullable|string|max:50',
-            'items.*.harga_satuan' => 'required',
+            'items.*.price' => 'required|numeric|min:0',
         ]);
 
         $total = 0;
         $itemsData = [];
-        $perihalArray = $request->perihal ?? [];
-        $itemIndex = 0;
+
         foreach ($request->items as $item) {
-            $harga = (float) str_replace(['.', ','], ['', '.'], $item['harga_satuan']);
-            $volume = (float) str_replace(['.', ','], ['', '.'], $item['volume']);
-            $subtotal = $volume * $harga;
+            $qty = (float) str_replace(['.', ','], ['', '.'], $item['qty']);
+            $harga = (float) str_replace(['.', ','], ['', '.'], $item['price']);
+            $subtotal = $qty * $harga;
             $total += $subtotal;
 
-            $namaItem = ! empty($item['nama_item']) ? $item['nama_item'] : ($perihalArray[$itemIndex] ?? null);
-
             $itemsData[] = [
-                'nama_item' => $namaItem,
+                'product_name' => $item['product_name'] ?? null,
                 'deskripsi' => $item['deskripsi'],
-                'volume' => $item['volume'],
+                'volume' => $qty,
                 'satuan' => $item['satuan'] ?? null,
                 'harga_satuan' => $harga,
                 'subtotal' => $subtotal,
-                'tampilkan_label' => $item['tampilkan_label'] === '1',
+                'tampilkan_label' => true,
             ];
-            $itemIndex++;
         }
 
-        DB::transaction(function () use ($request, $itemsData, $total) {
-            $month = date('n', strtotime($request->tanggal));
-            $year = date('Y', strtotime($request->tanggal));
+        $discount = (float) str_replace(['.', ','], ['', '.'], $request->discount ?? 0);
+        $ppn = (float) str_replace(['.', ','], ['', '.'], $request->ppn ?? 0);
+        $grandTotal = $total - $discount + $ppn;
+
+        DB::transaction(function () use ($request, $itemsData, $total, $discount, $ppn, $grandTotal) {
+            $month = date('n', strtotime($request->po_date));
+            $year = date('Y', strtotime($request->po_date));
             $romans = ['I', 'II', 'III', 'IV', 'V', 'VI', 'VII', 'VIII', 'IX', 'X', 'XI', 'XII'];
             $romanMonth = $romans[$month - 1];
 
@@ -96,7 +96,7 @@ class PurchaseOrderController extends Controller
                 ->first();
 
             $nextNumber = 101;
-            if ($lastPO) {
+            if ($lastPO && $lastPO->nomor_surat) {
                 $parts = explode('/', $lastPO->nomor_surat);
                 $lastNumber = intval($parts[0]);
                 $nextNumber = max(101, $lastNumber + 1);
@@ -104,31 +104,33 @@ class PurchaseOrderController extends Controller
 
             $nomorSurat = sprintf('%03d/PO/PIB-JMB/%s/%s', $nextNumber, $romanMonth, $year);
 
-            $selectedImages = $request->input('selected_images', '');
-            if (is_string($selectedImages)) {
-                $selectedImages = json_decode($selectedImages, true) ?? [];
-            }
-
             $purchaseOrder = PurchaseOrder::create([
                 'nomor_surat' => $nomorSurat,
-                'tanggal' => $request->tanggal,
-                'customer_id' => $request->customer_id,
-                'perihal' => json_encode($request->perihal),
-                'perihal_surat' => $request->perihal_surat,
-                'catatan' => $request->filled('catatan') ? trim($request->catatan) : null,
-                'kata_pengantar' => $request->kata_pengantar,
-                'kata_penutup' => $request->kata_penutup,
-                'tampilkan_gambar' => !empty($selectedImages),
-                'selected_images' => $selectedImages,
+                'po_number' => $nomorSurat,
+                'tanggal' => $request->po_date,
+                'po_date' => $request->po_date,
+                'vendor' => $request->vendor,
+                'vendor_address' => $request->vendor_address,
+                'vendor_cp' => $request->vendor_cp,
+                'vendor_phone' => $request->vendor_phone,
+                'buyer_name' => $request->buyer_name,
+                'buyer_address' => $request->buyer_address,
+                'buyer_cp' => $request->buyer_cp,
+                'buyer_phone' => $request->buyer_phone,
+                'shipping_name' => $request->shipping_name,
+                'shipping_address' => $request->shipping_address,
+                'shipping_cp' => $request->shipping_cp,
+                'shipping_phone' => $request->shipping_phone,
+                'discount' => $discount,
+                'ppn' => $ppn,
+                'total' => $total,
+                'grand_total' => $grandTotal,
                 'status' => 'draft',
-                'total' => 0,
             ]);
 
             foreach ($itemsData as $item) {
                 $purchaseOrder->items()->create($item);
             }
-
-            $purchaseOrder->update(['total' => $total]);
         });
 
         return redirect()->route('purchase-orders.index')->with('success', 'Purchase Order berhasil dibuat.');
@@ -136,14 +138,14 @@ class PurchaseOrderController extends Controller
 
     public function show(string $id)
     {
-        $purchaseOrder = PurchaseOrder::with(['customer', 'items.product'])->findOrFail($id);
+        $purchaseOrder = PurchaseOrder::with(['items'])->findOrFail($id);
 
         return view('admin.purchase-orders.show', compact('purchaseOrder'));
     }
 
     public function exportPdf(string $id)
     {
-        $purchaseOrder = PurchaseOrder::with(['customer', 'items.product'])->findOrFail($id);
+        $purchaseOrder = PurchaseOrder::with(['items'])->findOrFail($id);
 
         if (empty($purchaseOrder->verify_token)) {
             $purchaseOrder->update(['verify_token' => (string) Str::uuid()]);
@@ -153,43 +155,7 @@ class PurchaseOrderController extends Controller
         $verifyUrl = route('verify.purchase_order', $purchaseOrder->verify_token);
         $qrCode = QRCodeHelper::generate($verifyUrl, 150);
 
-        $products = Product::select('name', 'images', 'active_images')->get()->keyBy('name');
-        $services = Service::select('title', 'image', 'images', 'active_images')->get()->keyBy('title');
-        $perihalImages = [];
-
-        $selectedImages = $purchaseOrder->selected_images;
-        if (is_string($selectedImages)) {
-            $selectedImages = json_decode($selectedImages, true) ?? [];
-        } elseif (!is_array($selectedImages)) {
-            $selectedImages = [];
-        }
-
-        if (!empty($selectedImages)) {
-            foreach ($selectedImages as $name => $images) {
-                foreach ($images as $imgPath) {
-                    $localPath = Storage::disk('public')->path($imgPath);
-                    $perihalImages[] = [
-                        'name' => $name,
-                        'path' => file_exists($localPath) ? $localPath : null,
-                    ];
-                }
-            }
-        } else {
-            $perihalArray = is_array($purchaseOrder->perihal) ? $purchaseOrder->perihal : (json_decode($purchaseOrder->perihal, true) ?? []);
-            foreach ($perihalArray as $name) {
-                $localPath = null;
-                if ($product = $products->get($name)) {
-                    $firstImg = $product->active_images[0] ?? $product->images[0] ?? null;
-                    if ($firstImg) $localPath = Storage::disk('public')->path($firstImg);
-                } elseif ($service = $services->get($name)) {
-                    $firstImg = $service->active_images[0] ?? $service->images[0] ?? $service->image ?? null;
-                    if ($firstImg) $localPath = Storage::disk('public')->path($firstImg);
-                }
-                $perihalImages[] = ['name' => $name, 'path' => $localPath && file_exists($localPath) ? $localPath : null];
-            }
-        }
-
-        $pdf = app('dompdf.wrapper')->loadView('admin.purchase-orders.pdf', compact('purchaseOrder', 'qrCode', 'perihalImages'))
+        $pdf = app('dompdf.wrapper')->loadView('admin.purchase-orders.pdf', compact('purchaseOrder', 'qrCode'))
             ->setPaper([0, 0, 595.28, 935.43], 'portrait');
 
         $filename = 'Purchase_Order_'.str_replace('/', '_', $purchaseOrder->nomor_surat).'.pdf';
@@ -197,79 +163,120 @@ class PurchaseOrderController extends Controller
         return $pdf->download($filename);
     }
 
+    public function previewPdf(string $id)
+    {
+        $purchaseOrder = PurchaseOrder::with(['items'])->findOrFail($id);
+
+        if (empty($purchaseOrder->verify_token)) {
+            $purchaseOrder->update(['verify_token' => (string) Str::uuid()]);
+            $purchaseOrder->refresh();
+        }
+
+        $verifyUrl = route('verify.purchase_order', $purchaseOrder->verify_token);
+        $qrCode = QRCodeHelper::generate($verifyUrl, 150);
+
+        $pdf = app('dompdf.wrapper')->loadView('admin.purchase-orders.pdf', compact('purchaseOrder', 'qrCode'))
+            ->setPaper([0, 0, 595.28, 935.43], 'portrait');
+
+        return $pdf->inline();
+    }
+
+    public function print(string $id)
+    {
+        $purchaseOrder = PurchaseOrder::with(['items'])->findOrFail($id);
+
+        if (empty($purchaseOrder->verify_token)) {
+            $purchaseOrder->update(['verify_token' => (string) Str::uuid()]);
+            $purchaseOrder->refresh();
+        }
+
+        $verifyUrl = route('verify.purchase_order', $purchaseOrder->verify_token);
+        $qrCode = QRCodeHelper::generate($verifyUrl, 150);
+
+        return view('admin.purchase-orders.pdf', compact('purchaseOrder', 'qrCode'));
+    }
+
     public function edit(string $id)
     {
         $purchaseOrder = PurchaseOrder::with('items')->findOrFail($id);
-        $customers = Customer::orderBy('nama_instansi')->get();
-        $products = Product::orderBy('name')->get();
-        $services = Service::orderBy('title')->get();
 
-        return view('admin.purchase-orders.edit', compact('purchaseOrder', 'customers', 'products', 'services'));
+        return view('admin.purchase-orders.edit', compact('purchaseOrder'));
     }
 
     public function update(Request $request, string $id)
     {
         $request->validate([
-            'tanggal' => 'required|date',
-            'customer_id' => 'required|exists:customers,id',
-            'perihal' => 'required|array|min:1',
-            'perihal.*' => 'required|string|max:255',
+            'po_date' => 'required|date',
+            'vendor' => 'required|string|max:255',
+            'vendor_address' => 'nullable|string',
+            'vendor_cp' => 'nullable|string|max:255',
+            'vendor_phone' => 'nullable|string|max:50',
+            'buyer_name' => 'required|string|max:255',
+            'buyer_address' => 'nullable|string',
+            'buyer_cp' => 'nullable|string|max:255',
+            'buyer_phone' => 'nullable|string|max:50',
+            'shipping_name' => 'nullable|string|max:255',
+            'shipping_address' => 'nullable|string',
+            'shipping_cp' => 'nullable|string|max:255',
+            'shipping_phone' => 'nullable|string|max:50',
             'status' => 'required|in:draft,dikirim,dikonfirmasi,batal',
-            'perihal_surat' => 'nullable|string|max:255',
-            'catatan' => 'nullable|string',
-            'kata_pengantar' => 'nullable|string',
-            'kata_penutup' => 'nullable|string',
+            'discount' => 'nullable|numeric|min:0',
+            'ppn' => 'nullable|numeric|min:0',
             'items' => 'required|array|min:1',
-            'items.*.nama_item' => 'nullable|string|max:255',
+            'items.*.product_name' => 'nullable|string|max:255',
             'items.*.deskripsi' => 'required|string',
-            'items.*.volume' => 'required|string|max:255',
+            'items.*.qty' => 'required|numeric|min:0',
             'items.*.satuan' => 'nullable|string|max:50',
-            'items.*.harga_satuan' => 'required',
+            'items.*.price' => 'required|numeric|min:0',
         ]);
 
         $total = 0;
         $itemsData = [];
-        $perihalArray = $request->perihal ?? [];
-        $itemIndex = 0;
+
         foreach ($request->items as $item) {
-            $harga = (float) str_replace(['.', ','], ['', '.'], $item['harga_satuan']);
-            $volume = (float) str_replace(['.', ','], ['', '.'], $item['volume']);
-            $subtotal = $volume * $harga;
+            $qty = (float) str_replace(['.', ','], ['', '.'], $item['qty']);
+            $harga = (float) str_replace(['.', ','], ['', '.'], $item['price']);
+            $subtotal = $qty * $harga;
             $total += $subtotal;
 
-            $namaItem = ! empty($item['nama_item']) ? $item['nama_item'] : ($perihalArray[$itemIndex] ?? null);
-
             $itemsData[] = [
-                'nama_item' => $namaItem,
+                'product_name' => $item['product_name'] ?? null,
                 'deskripsi' => $item['deskripsi'],
-                'volume' => $item['volume'],
+                'volume' => $qty,
                 'satuan' => $item['satuan'] ?? null,
                 'harga_satuan' => $harga,
                 'subtotal' => $subtotal,
-                'tampilkan_label' => $item['tampilkan_label'] === '1',
+                'tampilkan_label' => true,
             ];
-            $itemIndex++;
         }
+
+        $discount = (float) str_replace(['.', ','], ['', '.'], $request->discount ?? 0);
+        $ppn = (float) str_replace(['.', ','], ['', '.'], $request->ppn ?? 0);
+        $grandTotal = $total - $discount + $ppn;
 
         $purchaseOrder = PurchaseOrder::findOrFail($id);
 
-        DB::transaction(function () use ($request, $purchaseOrder, $itemsData, $total) {
-            $selectedImages = $request->input('selected_images', '');
-            if (is_string($selectedImages)) {
-                $selectedImages = json_decode($selectedImages, true) ?? [];
-            }
-
+        DB::transaction(function () use ($request, $purchaseOrder, $itemsData, $total, $discount, $ppn, $grandTotal) {
             $purchaseOrder->update([
-                'tanggal' => $request->tanggal,
-                'customer_id' => $request->customer_id,
-                'perihal' => json_encode($request->perihal),
-                'perihal_surat' => $request->perihal_surat,
+                'tanggal' => $request->po_date,
+                'po_date' => $request->po_date,
+                'vendor' => $request->vendor,
+                'vendor_address' => $request->vendor_address,
+                'vendor_cp' => $request->vendor_cp,
+                'vendor_phone' => $request->vendor_phone,
+                'buyer_name' => $request->buyer_name,
+                'buyer_address' => $request->buyer_address,
+                'buyer_cp' => $request->buyer_cp,
+                'buyer_phone' => $request->buyer_phone,
+                'shipping_name' => $request->shipping_name,
+                'shipping_address' => $request->shipping_address,
+                'shipping_cp' => $request->shipping_cp,
+                'shipping_phone' => $request->shipping_phone,
                 'status' => $request->status,
-                'catatan' => $request->filled('catatan') ? trim($request->catatan) : null,
-                'kata_pengantar' => $request->kata_pengantar,
-                'kata_penutup' => $request->kata_penutup,
-                'tampilkan_gambar' => !empty($selectedImages),
-                'selected_images' => $selectedImages,
+                'discount' => $discount,
+                'ppn' => $ppn,
+                'total' => $total,
+                'grand_total' => $grandTotal,
             ]);
 
             $purchaseOrder->items()->delete();
@@ -277,8 +284,6 @@ class PurchaseOrderController extends Controller
             foreach ($itemsData as $item) {
                 $purchaseOrder->items()->create($item);
             }
-
-            $purchaseOrder->update(['total' => $total]);
         });
 
         return redirect()->route('purchase-orders.index')->with('success', 'Purchase Order berhasil diperbarui.');
