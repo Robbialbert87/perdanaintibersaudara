@@ -869,6 +869,10 @@
                 href="{{ route('quotations.index') }}">
                 <i class="bi bi-file-earmark-text"></i><span>Penawaran</span><span class="arr">&rarr;</span>
             </a>
+            <a class="sidebar-link {{ request()->routeIs('purchase-orders.*') ? 'active' : '' }}"
+                href="{{ route('purchase-orders.index') }}">
+                <i class="bi bi-cart-check"></i><span>Purchase Order</span><span class="arr">&rarr;</span>
+            </a>
             <a class="sidebar-link {{ request()->routeIs('invoices.*') ? 'active' : '' }}"
                 href="{{ route('invoices.index') }}">
                 <i class="bi bi-receipt"></i><span>Invoice</span><span class="arr">&rarr;</span>

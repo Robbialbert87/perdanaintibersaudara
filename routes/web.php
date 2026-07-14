@@ -4,6 +4,7 @@ use App\Http\Controllers\ActivityController;
 use App\Http\Controllers\CustomerController;
 use App\Http\Controllers\InvoiceController;
 use App\Http\Controllers\ProductController;
+use App\Http\Controllers\PurchaseOrderController;
 use App\Http\Controllers\QuotationController;
 use App\Http\Controllers\ServiceController;
 use App\Http\Controllers\UserController;
@@ -57,6 +58,7 @@ Route::get('/contact', function () {
 
 Route::get('/verify/{token}', [VerifyController::class, 'show'])->name('verify.invoice');
 Route::get('/verify-quotation/{token}', [VerifyController::class, 'showQuotation'])->name('verify.quotation');
+Route::get('/verify-purchase-order/{token}', [VerifyController::class, 'showPurchaseOrder'])->name('verify.purchase_order');
 Route::get('/produk/{id}', function ($id) {
     $product = Product::findOrFail($id);
 
@@ -90,6 +92,8 @@ Route::middleware(['auth', 'verified', 'throttle:60,1'])->group(function () {
     Route::delete('activities/{activity}/media', [ActivityController::class, 'deleteMedia'])->name('activities.deleteMedia');
     Route::get('quotations/{quotation}/export-pdf', [QuotationController::class, 'exportPdf'])->name('quotations.export_pdf');
     Route::resource('quotations', QuotationController::class);
+    Route::resource('purchase-orders', PurchaseOrderController::class);
+    Route::get('purchase-orders/{purchaseOrder}/export-pdf', [PurchaseOrderController::class, 'exportPdf'])->name('purchase-orders.export_pdf');
     Route::get('invoices/{invoice}/export-pdf', [InvoiceController::class, 'exportPdf'])->name('invoices.export_pdf');
     Route::post('invoices/{invoice}/mark-paid', [InvoiceController::class, 'markAsPaid'])->name('invoices.mark_paid');
     Route::post('invoices/ai-generate', [InvoiceController::class, 'aiGenerate'])->name('invoices.ai_generate');
