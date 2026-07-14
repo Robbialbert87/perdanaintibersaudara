@@ -9,6 +9,7 @@ use App\Http\Controllers\QuotationController;
 use App\Http\Controllers\ServiceController;
 use App\Http\Controllers\UserController;
 use App\Http\Controllers\VerifyController;
+use App\Http\Controllers\WarrantyCardController;
 use App\Models\Activity;
 use App\Models\Product;
 use App\Models\Service;
@@ -94,6 +95,8 @@ Route::middleware(['auth', 'verified', 'throttle:60,1'])->group(function () {
     Route::resource('quotations', QuotationController::class);
     Route::resource('purchase-orders', PurchaseOrderController::class);
     Route::get('purchase-orders/{purchaseOrder}/export-pdf', [PurchaseOrderController::class, 'exportPdf'])->name('purchase-orders.export_pdf');
+    Route::get('warranty-cards/{warrantyCard}/export-pdf', [WarrantyCardController::class, 'exportPdf'])->name('warranty-cards.export_pdf');
+    Route::resource('warranty-cards', WarrantyCardController::class);
     Route::get('invoices/{invoice}/export-pdf', [InvoiceController::class, 'exportPdf'])->name('invoices.export_pdf');
     Route::post('invoices/{invoice}/mark-paid', [InvoiceController::class, 'markAsPaid'])->name('invoices.mark_paid');
     Route::post('invoices/ai-generate', [InvoiceController::class, 'aiGenerate'])->name('invoices.ai_generate');

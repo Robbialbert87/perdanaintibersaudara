@@ -873,6 +873,10 @@
                 href="{{ route('purchase-orders.index') }}">
                 <i class="bi bi-cart-check"></i><span>Purchase Order</span><span class="arr">&rarr;</span>
             </a>
+            <a class="sidebar-link {{ request()->routeIs('warranty-cards.*') ? 'active' : '' }}"
+                href="{{ route('warranty-cards.index') }}">
+                <i class="bi bi-shield-check"></i><span>Kartu Garansi</span><span class="arr">&rarr;</span>
+            </a>
             <a class="sidebar-link {{ request()->routeIs('invoices.*') ? 'active' : '' }}"
                 href="{{ route('invoices.index') }}">
                 <i class="bi bi-receipt"></i><span>Invoice</span><span class="arr">&rarr;</span>
