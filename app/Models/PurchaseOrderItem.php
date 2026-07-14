@@ -19,6 +19,8 @@ class PurchaseOrderItem extends Model
         'satuan',
         'harga_satuan',
         'subtotal',
+        'dp_persentase',
+        'dp_nominal',
         'tampilkan_label',
     ];
 

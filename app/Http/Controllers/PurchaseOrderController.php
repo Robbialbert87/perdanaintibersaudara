@@ -50,24 +50,30 @@ class PurchaseOrderController extends Controller
             'shipping_address' => 'nullable|string',
             'shipping_cp' => 'nullable|string|max:255',
             'shipping_phone' => 'nullable|string|max:50',
-            'discount' => 'nullable|numeric|min:0',
-            'ppn' => 'nullable|numeric|min:0',
+            'discount' => 'nullable',
+            'ppn' => 'nullable',
+            'catatan' => 'nullable|string',
             'items' => 'required|array|min:1',
             'items.*.product_name' => 'nullable|string|max:255',
             'items.*.deskripsi' => 'required|string',
-            'items.*.qty' => 'required|numeric|min:0',
+            'items.*.qty' => 'required',
             'items.*.satuan' => 'nullable|string|max:50',
-            'items.*.price' => 'required|numeric|min:0',
+            'items.*.price' => 'required',
+            'items.*.dp_persentase' => 'nullable|numeric|min:0|max:100',
         ]);
 
         $total = 0;
+        $totalDp = 0;
         $itemsData = [];
 
         foreach ($request->items as $item) {
             $qty = (float) str_replace(['.', ','], ['', '.'], $item['qty']);
             $harga = (float) str_replace(['.', ','], ['', '.'], $item['price']);
             $subtotal = $qty * $harga;
+            $dpPersentase = (float) ($item['dp_persentase'] ?? 0);
+            $dpNominal = $subtotal * ($dpPersentase / 100);
             $total += $subtotal;
+            $totalDp += $dpNominal;
 
             $itemsData[] = [
                 'product_name' => $item['product_name'] ?? null,
@@ -76,6 +82,8 @@ class PurchaseOrderController extends Controller
                 'satuan' => $item['satuan'] ?? null,
                 'harga_satuan' => $harga,
                 'subtotal' => $subtotal,
+                'dp_persentase' => $dpPersentase,
+                'dp_nominal' => $dpNominal,
                 'tampilkan_label' => true,
             ];
         }
@@ -84,7 +92,7 @@ class PurchaseOrderController extends Controller
         $ppn = (float) str_replace(['.', ','], ['', '.'], $request->ppn ?? 0);
         $grandTotal = $total - $discount + $ppn;
 
-        DB::transaction(function () use ($request, $itemsData, $total, $discount, $ppn, $grandTotal) {
+        DB::transaction(function () use ($request, $itemsData, $total, $totalDp, $discount, $ppn, $grandTotal) {
             $month = date('n', strtotime($request->po_date));
             $year = date('Y', strtotime($request->po_date));
             $romans = ['I', 'II', 'III', 'IV', 'V', 'VI', 'VII', 'VIII', 'IX', 'X', 'XI', 'XII'];
@@ -124,8 +132,10 @@ class PurchaseOrderController extends Controller
                 'discount' => $discount,
                 'ppn' => $ppn,
                 'total' => $total,
+                'total_dp' => $totalDp,
                 'grand_total' => $grandTotal,
                 'status' => 'draft',
+                'catatan' => $request->filled('catatan') ? trim($request->catatan) : null,
             ]);
 
             foreach ($itemsData as $item) {
@@ -220,24 +230,30 @@ class PurchaseOrderController extends Controller
             'shipping_cp' => 'nullable|string|max:255',
             'shipping_phone' => 'nullable|string|max:50',
             'status' => 'required|in:draft,dikirim,dikonfirmasi,batal',
-            'discount' => 'nullable|numeric|min:0',
-            'ppn' => 'nullable|numeric|min:0',
+            'discount' => 'nullable',
+            'ppn' => 'nullable',
+            'catatan' => 'nullable|string',
             'items' => 'required|array|min:1',
             'items.*.product_name' => 'nullable|string|max:255',
             'items.*.deskripsi' => 'required|string',
-            'items.*.qty' => 'required|numeric|min:0',
+            'items.*.qty' => 'required',
             'items.*.satuan' => 'nullable|string|max:50',
-            'items.*.price' => 'required|numeric|min:0',
+            'items.*.price' => 'required',
+            'items.*.dp_persentase' => 'nullable|numeric|min:0|max:100',
         ]);
 
         $total = 0;
+        $totalDp = 0;
         $itemsData = [];
 
         foreach ($request->items as $item) {
             $qty = (float) str_replace(['.', ','], ['', '.'], $item['qty']);
             $harga = (float) str_replace(['.', ','], ['', '.'], $item['price']);
             $subtotal = $qty * $harga;
+            $dpPersentase = (float) ($item['dp_persentase'] ?? 0);
+            $dpNominal = $subtotal * ($dpPersentase / 100);
             $total += $subtotal;
+            $totalDp += $dpNominal;
 
             $itemsData[] = [
                 'product_name' => $item['product_name'] ?? null,
@@ -246,6 +262,8 @@ class PurchaseOrderController extends Controller
                 'satuan' => $item['satuan'] ?? null,
                 'harga_satuan' => $harga,
                 'subtotal' => $subtotal,
+                'dp_persentase' => $dpPersentase,
+                'dp_nominal' => $dpNominal,
                 'tampilkan_label' => true,
             ];
         }
@@ -256,7 +274,7 @@ class PurchaseOrderController extends Controller
 
         $purchaseOrder = PurchaseOrder::findOrFail($id);
 
-        DB::transaction(function () use ($request, $purchaseOrder, $itemsData, $total, $discount, $ppn, $grandTotal) {
+        DB::transaction(function () use ($request, $purchaseOrder, $itemsData, $total, $totalDp, $discount, $ppn, $grandTotal) {
             $purchaseOrder->update([
                 'tanggal' => $request->po_date,
                 'po_date' => $request->po_date,
@@ -276,7 +294,9 @@ class PurchaseOrderController extends Controller
                 'discount' => $discount,
                 'ppn' => $ppn,
                 'total' => $total,
+                'total_dp' => $totalDp,
                 'grand_total' => $grandTotal,
+                'catatan' => $request->filled('catatan') ? trim($request->catatan) : null,
             ]);
 
             $purchaseOrder->items()->delete();

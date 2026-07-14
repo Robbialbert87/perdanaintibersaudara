@@ -316,12 +316,14 @@
         <table class="po-items-table">
             <thead>
                 <tr>
-                    <th width="5%">No</th>
-                    <th width="10%">Jumlah</th>
-                    <th width="10%">Satuan</th>
-                    <th width="45%">Jenis Barang</th>
-                    <th width="15%" class="text-right">Harga Satuan</th>
-                    <th width="15%" class="text-right">Total Harga</th>
+                    <th width="4%">No</th>
+                    <th width="8%">Jumlah</th>
+                    <th width="8%">Satuan</th>
+                    <th width="30%">Jenis Barang</th>
+                    <th width="14%">Harga Satuan</th>
+                    <th width="14%">Total Harga</th>
+                    <th width="8%">DP %</th>
+                    <th width="14%" class="text-right">Jumlah DP</th>
                 </tr>
             </thead>
             <tbody>
@@ -333,6 +335,8 @@
                     <td>{{ $item->deskripsi }}</td>
                     <td class="text-right">Rp {{ number_format($item->harga_satuan, 0, ',', '.') }}</td>
                     <td class="text-right">Rp {{ number_format($item->subtotal, 0, ',', '.') }}</td>
+                    <td class="text-center">{{ $item->dp_persentase }}%</td>
+                    <td class="text-right">Rp {{ number_format($item->dp_nominal, 0, ',', '.') }}</td>
                 </tr>
                 @endforeach
             </tbody>
@@ -345,6 +349,10 @@
             <tr>
                 <td class="label">Subtotal</td>
                 <td class="value">Rp {{ number_format($purchaseOrder->total, 0, ',', '.') }}</td>
+            </tr>
+            <tr>
+                <td class="label">Total DP</td>
+                <td class="value">Rp {{ number_format($purchaseOrder->total_dp, 0, ',', '.') }}</td>
             </tr>
             @if($purchaseOrder->discount > 0)
             <tr>

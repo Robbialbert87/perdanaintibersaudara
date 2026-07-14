@@ -182,6 +182,10 @@
         background: #fff;
         color: #1a2332;
     }
+    .po-items-table textarea {
+        min-height: 38px;
+        resize: vertical;
+    }
     .po-items-table input:focus,
     .po-items-table select:focus,
     .po-items-table textarea:focus {
@@ -219,6 +223,22 @@
         color: #1a2332;
         border-top: 2px solid #000;
         padding-top: 8px;
+    }
+    .po-form-section {
+        padding: 20px 30px;
+        border: 1px solid #000;
+        border-top: none;
+    }
+    .po-form-section .form-label {
+        font-weight: 600;
+        font-size: 0.85rem;
+        color: #374151;
+        margin-bottom: 4px;
+    }
+    .po-form-section .form-control {
+        font-size: 0.9rem;
+        border: 1px solid #d1d5db;
+        border-radius: 4px;
     }
     .po-signature {
         display: flex;
@@ -410,13 +430,15 @@
             <table class="po-items-table" id="itemsTable">
                 <thead>
                     <tr>
-                        <th width="5%">No</th>
-                        <th width="10%">Jumlah</th>
-                        <th width="12%">Satuan</th>
-                        <th width="40%">Jenis Barang</th>
-                        <th width="18%">Harga Satuan</th>
-                        <th width="18%">Total Harga</th>
-                        <th width="7%" class="text-center">Aksi</th>
+                        <th width="4%">No</th>
+                        <th width="8%">Jumlah</th>
+                        <th width="10%">Satuan</th>
+                        <th width="30%">Jenis Barang</th>
+                        <th width="14%">Harga Satuan</th>
+                        <th width="14%">Total Harga</th>
+                        <th width="8%">DP %</th>
+                        <th width="12%">Jumlah DP</th>
+                        <th width="5%" class="text-center">Aksi</th>
                     </tr>
                 </thead>
                 <tbody id="itemsBody">
@@ -426,19 +448,27 @@
                         <td><input type="text" name="items[{{ $index }}][qty]" class="qty-input" value="{{ $item->volume }}" required></td>
                         <td>
                             <select name="items[{{ $index }}][satuan]" class="satuan-input">
+                                <option value="" {{ ($item->satuan ?? '') == '' ? 'selected' : '' }}>--</option>
                                 <option value="Unit" {{ ($item->satuan ?? '') == 'Unit' ? 'selected' : '' }}>Unit</option>
+                                <option value="Paket" {{ ($item->satuan ?? '') == 'Paket' ? 'selected' : '' }}>Paket</option>
                                 <option value="Pcs" {{ ($item->satuan ?? '') == 'Pcs' ? 'selected' : '' }}>Pcs</option>
+                                <option value="Cm" {{ ($item->satuan ?? '') == 'Cm' ? 'selected' : '' }}>Cm</option>
+                                <option value="mm" {{ ($item->satuan ?? '') == 'mm' ? 'selected' : '' }}>mm</option>
+                                <option value="Meter" {{ ($item->satuan ?? '') == 'Meter' ? 'selected' : '' }}>Meter</option>
                                 <option value="Set" {{ ($item->satuan ?? '') == 'Set' ? 'selected' : '' }}>Set</option>
                                 <option value="Box" {{ ($item->satuan ?? '') == 'Box' ? 'selected' : '' }}>Box</option>
-                                <option value="Meter" {{ ($item->satuan ?? '') == 'Meter' ? 'selected' : '' }}>Meter</option>
-                                <option value="Roll" {{ ($item->satuan ?? '') == 'Roll' ? 'selected' : '' }}>Roll</option>
-                                <option value="Pack" {{ ($item->satuan ?? '') == 'Pack' ? 'selected' : '' }}>Pack</option>
+                                <option value="Rim" {{ ($item->satuan ?? '') == 'Rim' ? 'selected' : '' }}>Rim</option>
                                 <option value="Lembar" {{ ($item->satuan ?? '') == 'Lembar' ? 'selected' : '' }}>Lembar</option>
+                                <option value="Buah" {{ ($item->satuan ?? '') == 'Buah' ? 'selected' : '' }}>Buah</option>
+                                <option value="Bulan" {{ ($item->satuan ?? '') == 'Bulan' ? 'selected' : '' }}>Bulan</option>
+                                <option value="Tahun" {{ ($item->satuan ?? '') == 'Tahun' ? 'selected' : '' }}>Tahun</option>
                             </select>
                         </td>
-                        <td><input type="text" name="items[{{ $index }}][deskripsi]" class="deskripsi-input" placeholder="Jenis Barang" value="{{ $item->deskripsi }}" required></td>
+                        <td><textarea name="items[{{ $index }}][deskripsi]" class="deskripsi-input" rows="2" placeholder="Jenis Barang / Deskripsi" required>{{ $item->deskripsi }}</textarea></td>
                         <td><input type="text" name="items[{{ $index }}][price]" class="price-input currency-format" value="{{ number_format($item->harga_satuan, 0, ',', '.') }}" required></td>
                         <td><input type="text" name="items[{{ $index }}][subtotal]" class="subtotal-input" value="{{ number_format($item->subtotal, 0, ',', '.') }}" readonly></td>
+                        <td><input type="text" name="items[{{ $index }}][dp_persentase]" class="dp-input" placeholder="0" value="{{ $item->dp_persentase }}"></td>
+                        <td><input type="text" name="items[{{ $index }}][dp_nominal]" class="dp-nominal-input" value="{{ number_format($item->dp_nominal, 0, ',', '.') }}" readonly></td>
                         <td class="text-center"><button type="button" class="btn-remove-item remove-row" {{ $purchaseOrder->items->count() == 1 ? 'disabled' : '' }}><i class="bi bi-trash"></i></button></td>
                     </tr>
                     @endforeach
@@ -457,6 +487,10 @@
                     <td class="value">Rp <span id="subtotalDisplay">{{ number_format($purchaseOrder->total, 0, ',', '.') }}</span></td>
                 </tr>
                 <tr>
+                    <td class="label">Total DP</td>
+                    <td class="value">Rp <span id="dpDisplay">{{ number_format($purchaseOrder->total_dp, 0, ',', '.') }}</span></td>
+                </tr>
+                <tr>
                     <td class="label">Diskon</td>
                     <td class="value">
                         <input type="text" name="discount" id="discountInput" class="currency-format" style="width: 150px; text-align: right; border: 1px solid #d1d5db; border-radius: 4px; padding: 4px 8px;" value="{{ number_format($purchaseOrder->discount, 0, ',', '.') }}">
@@ -473,6 +507,12 @@
                     <td class="value grand-total">Rp <span id="grandTotalDisplay">{{ number_format($purchaseOrder->grand_total, 0, ',', '.') }}</span></td>
                 </tr>
             </table>
+        </div>
+
+        <!-- Keterangan -->
+        <div class="po-form-section">
+            <label class="form-label">Keterangan <small class="text-muted">(opsional)</small></label>
+            <textarea name="catatan" class="form-control" rows="3" placeholder="Tulis keterangan tambahan jika diperlukan...">{{ old('catatan', $purchaseOrder->catatan) }}</textarea>
         </div>
 
         <!-- Signature -->
@@ -519,12 +559,19 @@ document.addEventListener('DOMContentLoaded', function() {
         const subtotal = qty * price;
         const subtotalInput = row.querySelector('.subtotal-input');
         if (subtotalInput) subtotalInput.value = subtotal > 0 ? formatIDR(subtotal) : '0';
+
+        const dpPersentase = parseFloat(row.querySelector('.dp-input')?.value) || 0;
+        const dpNominal = subtotal * (dpPersentase / 100);
+        const dpNominalInput = row.querySelector('.dp-nominal-input');
+        if (dpNominalInput) dpNominalInput.value = dpNominal > 0 ? formatIDR(dpNominal) : '0';
     };
 
     const calculateTotal = () => {
         let total = 0;
+        let totalDp = 0;
         document.querySelectorAll('.item-row').forEach(row => {
             total += parseIDR(row.querySelector('.subtotal-input')?.value || '0');
+            totalDp += parseIDR(row.querySelector('.dp-nominal-input')?.value || '0');
         });
 
         const discount = parseIDR(document.getElementById('discountInput').value);
@@ -532,6 +579,7 @@ document.addEventListener('DOMContentLoaded', function() {
         const grandTotal = total - discount + ppn;
 
         document.getElementById('subtotalDisplay').textContent = total > 0 ? formatIDR(total) : '0';
+        document.getElementById('dpDisplay').textContent = totalDp > 0 ? formatIDR(totalDp) : '0';
         document.getElementById('grandTotalDisplay').textContent = grandTotal > 0 ? formatIDR(grandTotal) : '0';
     };
 
@@ -539,7 +587,7 @@ document.addEventListener('DOMContentLoaded', function() {
         if (e.target.classList.contains('currency-format')) {
             formatCurrencyInput(e.target);
         }
-        if (e.target.classList.contains('qty-input') || e.target.classList.contains('price-input') || e.target.classList.contains('currency-format')) {
+        if (e.target.classList.contains('qty-input') || e.target.classList.contains('price-input') || e.target.classList.contains('currency-format') || e.target.classList.contains('dp-input')) {
             const row = e.target.closest('.item-row');
             if (row) calculateRowSubtotal(row);
             calculateTotal();
@@ -563,19 +611,27 @@ document.addEventListener('DOMContentLoaded', function() {
             <td><input type="text" name="items[${index}][qty]" class="qty-input" value="1" required></td>
             <td>
                 <select name="items[${index}][satuan]" class="satuan-input">
-                    <option value="Unit" selected>Unit</option>
+                    <option value="" selected>--</option>
+                    <option value="Unit">Unit</option>
+                    <option value="Paket">Paket</option>
                     <option value="Pcs">Pcs</option>
+                    <option value="Cm">Cm</option>
+                    <option value="mm">mm</option>
+                    <option value="Meter">Meter</option>
                     <option value="Set">Set</option>
                     <option value="Box">Box</option>
-                    <option value="Meter">Meter</option>
-                    <option value="Roll">Roll</option>
-                    <option value="Pack">Pack</option>
+                    <option value="Rim">Rim</option>
                     <option value="Lembar">Lembar</option>
+                    <option value="Buah">Buah</option>
+                    <option value="Bulan">Bulan</option>
+                    <option value="Tahun">Tahun</option>
                 </select>
             </td>
-            <td><input type="text" name="items[${index}][deskripsi]" class="deskripsi-input" placeholder="Jenis Barang" value=""></td>
+            <td><textarea name="items[${index}][deskripsi]" class="deskripsi-input" rows="2" placeholder="Jenis Barang / Deskripsi" required></textarea></td>
             <td><input type="text" name="items[${index}][price]" class="price-input currency-format" value="" required></td>
             <td><input type="text" name="items[${index}][subtotal]" class="subtotal-input" value="0" readonly></td>
+            <td><input type="text" name="items[${index}][dp_persentase]" class="dp-input" placeholder="0" value="0"></td>
+            <td><input type="text" name="items[${index}][dp_nominal]" class="dp-nominal-input" value="0" readonly></td>
             <td class="text-center"><button type="button" class="btn-remove-item remove-row"><i class="bi bi-trash"></i></button></td>
         </tr>`;
     };
@@ -583,7 +639,7 @@ document.addEventListener('DOMContentLoaded', function() {
     const reindexRows = () => {
         tbody.querySelectorAll('.item-row').forEach((row, i) => {
             row.querySelector('td').textContent = i + 1;
-            row.querySelectorAll('input, select').forEach(el => {
+            row.querySelectorAll('input, select, textarea').forEach(el => {
                 el.name = el.name.replace(/items\[\d+\]/, `items[${i}]`);
             });
         });

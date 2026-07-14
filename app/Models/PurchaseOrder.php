@@ -38,6 +38,7 @@ class PurchaseOrder extends Model
         'discount',
         'ppn',
         'grand_total',
+        'total_dp',
     ];
 
     protected $casts = [
