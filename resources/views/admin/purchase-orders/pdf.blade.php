@@ -149,35 +149,6 @@
             font-size: 10pt;
         }
 
-        /* Signature + QR */
-        .signature-section {
-            margin-top: 40px;
-        }
-        .signature-table {
-            width: auto;
-            border-collapse: collapse;
-            margin-left: auto;
-        }
-        .signature-table td {
-            padding: 0;
-            vertical-align: middle;
-        }
-        .signature-table .qr-cell {
-            padding-right: 20px;
-            text-align: center;
-        }
-        .signature-table .qr-cell img {
-            width: 100px;
-            height: 100px;
-            display: block;
-        }
-        .signature-table .text-cell {
-            text-align: left;
-            line-height: 1.8;
-        }
-        .signature-table .text-cell p {
-            margin: 0;
-        }
     </style>
 </head>
 <body>
@@ -300,25 +271,30 @@
 </div>
 @endif
 
-<!-- Signature + QR -->
-<div class="signature-section">
-    <table class="signature-table">
-        <tr>
-            <td class="qr-cell">
-                @if(isset($qrCode))
-                    <img src="{{ $qrCode }}" alt="QR Code">
-                @endif
-            </td>
-            <td class="text-cell">
-                <p>Hormat Kami,</p>
-                <br>
-                <p><strong>CV. PERDANA INTI BERSAUDARA</strong></p>
-                <p><strong>Erwin Darmawan</strong></p>
-                <p>Direktur</p>
-            </td>
-        </tr>
-    </table>
-</div>
+@if(isset($qrCode))
+<table style="width: 100%; margin-top: 30px;">
+    <tr>
+        <td style="text-align: right; vertical-align: middle;">
+            <table cellpadding="0" cellspacing="0" style="width: auto; border-collapse: collapse; margin-left: auto;">
+                <tr>
+                    <td style="padding: 0; padding-right: 15px; vertical-align: middle; text-align: center;">
+                        <img src="{{ $qrCode }}" alt="QR Code" style="width: 100px; height: 100px; display: block;">
+                    </td>
+                    <td style="padding: 0; vertical-align: middle; text-align: left;">
+                        <div style="margin-top: 0; text-align: left;">
+                            <p style="margin: 0;">Hormat Kami,</p>
+                            <br>
+                            <p style="margin: 0;"><strong>CV. PERDANA INTI BERSAUDARA</strong></p>
+                            <p style="margin: 0;"><strong>Erwin Darmawan</strong></p>
+                            <p style="margin: 0;">Direktur</p>
+                        </div>
+                    </td>
+                </tr>
+            </table>
+        </td>
+    </tr>
+</table>
+@endif
 
 </body>
 </html>
