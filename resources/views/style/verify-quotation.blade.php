@@ -124,10 +124,7 @@
                         <td class="label">Customer</td>
                         <td class="value">: {{ $quotation->customer->nama_instansi }}</td>
                     </tr>
-                    <tr>
-                        <td class="label">Total</td>
-                        <td class="value">: Rp {{ number_format($quotation->total, 0, ',', '.') }}</td>
-                    </tr>
+
                     @if($quotation->status !== 'draft')
                     <tr>
                         <td class="label">Status</td>
