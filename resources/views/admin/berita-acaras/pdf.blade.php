@@ -152,7 +152,7 @@
                 <h1>CV. PERDANA INTI BERSAUDARA</h1>
                 <h3>RADIOLOGI-SERVICE-SPAREPART-TIMBAL-ACCESORIES</h3>
                 <div class="header-footer">
-                    Jl. Kepodang 1 N0. 205 RT 24 Kel. Andil Jaya Jambi &nbsp;&nbsp; HP. 0852 6305 6505 &nbsp;&nbsp; E-mail : perdanaintibersaudara@gmail.com
+                    Jl. Kepodang 1 N0. 205 RT 24 Kel. Andil Jaya Kota Jambi &nbsp;&nbsp; HP. 0852 6305 6505 &nbsp;&nbsp; E-mail : perdanaintibersaudara@gmail.com
                 </div>
             </td>
         </tr>

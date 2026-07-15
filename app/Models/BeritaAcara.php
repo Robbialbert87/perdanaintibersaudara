@@ -14,6 +14,7 @@ class BeritaAcara extends Model
         'tanggal',
         'kegiatan',
         'lokasi',
+        'customer_id',
         'pihak_penyerah_nama',
         'pihak_penyerah_alamat',
         'pihak_penerima_nama',
@@ -30,5 +31,10 @@ class BeritaAcara extends Model
     public function items()
     {
         return $this->hasMany(BeritaAcaraItem::class);
+    }
+
+    public function customer()
+    {
+        return $this->belongsTo(Customer::class);
     }
 }

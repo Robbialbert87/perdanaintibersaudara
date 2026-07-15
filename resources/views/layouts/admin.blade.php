@@ -751,7 +751,9 @@
         /* ===== RESPONSIVE ===== */
         @media(max-width:991px) {
             .sidebar {
-                transform: translateX(-100%)
+                transform: translateX(-100%);
+                width: 280px;
+                z-index: 1055
             }
 
             .sidebar.show {
@@ -760,6 +762,10 @@
 
             .sidebar-toggle {
                 display: flex
+            }
+
+            .sidebar-overlay.show {
+                z-index: 1054
             }
 
             .layout {
@@ -777,9 +783,27 @@
             .topbar-title small {
                 display: none
             }
+
+            .sidebar-link {
+                padding: 12px 14px;
+                font-size: 14px
+            }
+
+            .sidebar-label {
+                padding: 18px 14px 8px
+            }
+
+            .sidebar-submenu .sidebar-link {
+                padding: 10px 14px;
+                font-size: 13px
+            }
         }
 
         @media(max-width:576px) {
+            .sidebar {
+                width: 260px
+            }
+
             .content-area {
                 padding: 12px
             }
@@ -815,6 +839,14 @@
 
             .card-header {
                 padding: 12px 14px !important
+            }
+
+            .sidebar-toggle {
+                bottom: 20px;
+                right: 16px;
+                width: 48px;
+                height: 48px;
+                font-size: 22px
             }
         }
     </style>

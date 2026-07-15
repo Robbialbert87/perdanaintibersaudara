@@ -4,6 +4,7 @@ namespace App\Http\Controllers;
 
 use App\Helpers\QRCodeHelper;
 use App\Models\BeritaAcara;
+use App\Models\Customer;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Str;
@@ -30,7 +31,9 @@ class BeritaAcaraController extends Controller
 
     public function create()
     {
-        return view('admin.berita-acaras.create');
+        $customers = Customer::orderBy('nama_instansi')->get();
+
+        return view('admin.berita-acaras.create', compact('customers'));
     }
 
     public function store(Request $request)
@@ -39,10 +42,7 @@ class BeritaAcaraController extends Controller
             'tanggal' => 'required|date',
             'kegiatan' => 'required|string',
             'lokasi' => 'required|string',
-            'pihak_penyerah_nama' => 'nullable|string|max:255',
-            'pihak_penyerah_alamat' => 'nullable|string',
-            'pihak_penerima_nama' => 'required|string|max:255',
-            'pihak_penerima_alamat' => 'nullable|string',
+            'customer_id' => 'required|exists:customers,id',
             'closing_text' => 'nullable|string',
             'items' => 'required|array|min:1',
             'items.*.nama_produk' => 'required|string|max:255',
@@ -50,7 +50,9 @@ class BeritaAcaraController extends Controller
             'items.*.berfungsi' => 'required|boolean',
         ]);
 
-        DB::transaction(function () use ($request) {
+        $customer = Customer::findOrFail($request->customer_id);
+
+        DB::transaction(function () use ($request, $customer) {
             $month = date('n', strtotime($request->tanggal));
             $year = date('Y', strtotime($request->tanggal));
             $romans = ['I', 'II', 'III', 'IV', 'V', 'VI', 'VII', 'VIII', 'IX', 'X', 'XI', 'XII'];
@@ -75,10 +77,11 @@ class BeritaAcaraController extends Controller
                 'tanggal' => $request->tanggal,
                 'kegiatan' => $request->kegiatan,
                 'lokasi' => $request->lokasi,
-                'pihak_penyerah_nama' => $request->pihak_penyerah_nama ?: 'CV. Perdana Inti Bersaudara',
-                'pihak_penyerah_alamat' => $request->pihak_penyerah_alamat,
-                'pihak_penerima_nama' => $request->pihak_penerima_nama,
-                'pihak_penerima_alamat' => $request->pihak_penerima_alamat,
+                'customer_id' => $customer->id,
+                'pihak_penyerah_nama' => 'CV. Perdana Inti Bersaudara',
+                'pihak_penyerah_alamat' => 'Jl. Kepodang 1 No. 205 RT. 24 Kel. Andil Jaya Kota Jambi',
+                'pihak_penerima_nama' => $customer->nama_instansi,
+                'pihak_penerima_alamat' => $customer->alamat ?? null,
                 'closing_text' => $request->filled('closing_text') ? trim($request->closing_text) : null,
                 'status' => 'draft',
             ]);
@@ -105,8 +108,9 @@ class BeritaAcaraController extends Controller
     public function edit(string $id)
     {
         $beritaAcara = BeritaAcara::with('items')->findOrFail($id);
+        $customers = Customer::orderBy('nama_instansi')->get();
 
-        return view('admin.berita-acaras.edit', compact('beritaAcara'));
+        return view('admin.berita-acaras.edit', compact('beritaAcara', 'customers'));
     }
 
     public function update(Request $request, string $id)
@@ -115,10 +119,7 @@ class BeritaAcaraController extends Controller
             'tanggal' => 'required|date',
             'kegiatan' => 'required|string',
             'lokasi' => 'required|string',
-            'pihak_penyerah_nama' => 'nullable|string|max:255',
-            'pihak_penyerah_alamat' => 'nullable|string',
-            'pihak_penerima_nama' => 'required|string|max:255',
-            'pihak_penerima_alamat' => 'nullable|string',
+            'customer_id' => 'required|exists:customers,id',
             'closing_text' => 'nullable|string',
             'status' => 'required|in:draft,dikirim,selesai,batal',
             'items' => 'required|array|min:1',
@@ -128,16 +129,18 @@ class BeritaAcaraController extends Controller
         ]);
 
         $beritaAcara = BeritaAcara::findOrFail($id);
+        $customer = Customer::findOrFail($request->customer_id);
 
-        DB::transaction(function () use ($request, $beritaAcara) {
+        DB::transaction(function () use ($request, $beritaAcara, $customer) {
             $beritaAcara->update([
                 'tanggal' => $request->tanggal,
                 'kegiatan' => $request->kegiatan,
                 'lokasi' => $request->lokasi,
-                'pihak_penyerah_nama' => $request->pihak_penyerah_nama ?: 'CV. Perdana Inti Bersaudara',
-                'pihak_penyerah_alamat' => $request->pihak_penyerah_alamat,
-                'pihak_penerima_nama' => $request->pihak_penerima_nama,
-                'pihak_penerima_alamat' => $request->pihak_penerima_alamat,
+                'customer_id' => $customer->id,
+                'pihak_penyerah_nama' => 'CV. Perdana Inti Bersaudara',
+                'pihak_penyerah_alamat' => 'Jl. Kepodang 1 No. 205 RT. 24 Kel. Andil Jaya Kota Jambi',
+                'pihak_penerima_nama' => $customer->nama_instansi,
+                'pihak_penerima_alamat' => $customer->alamat ?? null,
                 'closing_text' => $request->filled('closing_text') ? trim($request->closing_text) : null,
                 'status' => $request->status,
             ]);

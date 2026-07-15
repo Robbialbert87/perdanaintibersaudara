@@ -14,6 +14,7 @@ return new class extends Migration
             $table->date('tanggal');
             $table->text('kegiatan');
             $table->text('lokasi');
+            $table->foreignId('customer_id')->nullable()->constrained()->nullOnDelete();
             $table->string('pihak_penyerah_nama')->default('CV. Perdana Inti Bersaudara');
             $table->text('pihak_penyerah_alamat')->nullable();
             $table->string('pihak_penerima_nama');

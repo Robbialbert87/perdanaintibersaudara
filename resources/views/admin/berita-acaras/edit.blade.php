@@ -67,26 +67,39 @@
             <div class="card mb-4">
                 <div class="card-header"><h6 class="mb-0">Pihak Penyerah</h6></div>
                 <div class="card-body">
-                    <div class="mb-3">
-                        <label class="form-label">Nama</label>
-                        <input type="text" name="pihak_penyerah_nama" class="form-control" value="{{ old('pihak_penyerah_nama', $beritaAcara->pihak_penyerah_nama) }}">
+                    <div class="mb-2">
+                        <span class="text-muted">Nama:</span> <strong>CV. Perdana Inti Bersaudara</strong>
                     </div>
-                    <div class="mb-3">
-                        <label class="form-label">Alamat</label>
-                        <textarea name="pihak_penyerah_alamat" class="form-control" rows="2">{{ old('pihak_penyerah_alamat', $beritaAcara->pihak_penyerah_alamat) }}</textarea>
+                    <div class="mb-0">
+                        <span class="text-muted">Alamat:</span> <strong>Jl. Kepodang 1 No. 205 RT. 24 Kel. Andil Jaya Kota Jambi</strong>
                     </div>
                 </div>
             </div>
+
             <div class="card mb-4">
                 <div class="card-header"><h6 class="mb-0">Pihak Penerima</h6></div>
                 <div class="card-body">
                     <div class="mb-3">
-                        <label class="form-label">Nama <span class="text-danger">*</span></label>
-                        <input type="text" name="pihak_penerima_nama" class="form-control" value="{{ old('pihak_penerima_nama', $beritaAcara->pihak_penerima_nama) }}" required>
+                        <label class="form-label">Customer <span class="text-danger">*</span></label>
+                        <select name="customer_id" id="customer_id" class="form-select" required>
+                            <option value="">-- Pilih Customer --</option>
+                            @foreach($customers as $customer)
+                                <option value="{{ $customer->id }}" 
+                                    data-nama="{{ $customer->nama_instansi }}" 
+                                    data-alamat="{{ $customer->alamat ?? '' }}"
+                                    {{ old('customer_id', $beritaAcara->customer_id) == $customer->id ? 'selected' : '' }}>
+                                    {{ $customer->nama_instansi }}
+                                </option>
+                            @endforeach
+                        </select>
                     </div>
                     <div class="mb-3">
-                        <label class="form-label">Alamat</label>
-                        <textarea name="pihak_penerima_alamat" class="form-control" rows="2">{{ old('pihak_penerima_alamat', $beritaAcara->pihak_penerima_alamat) }}</textarea>
+                        <label class="form-label">Nama Penerima</label>
+                        <input type="text" name="pihak_penerima_nama" id="pihak_penerima_nama" class="form-control" value="{{ old('pihak_penerima_nama', $beritaAcara->pihak_penerima_nama) }}" readonly placeholder="Otomatis dari customer">
+                    </div>
+                    <div class="mb-0">
+                        <label class="form-label">Alamat Penerima</label>
+                        <textarea name="pihak_penerima_alamat" id="pihak_penerima_alamat" class="form-control" rows="2" readonly placeholder="Otomatis dari customer">{{ old('pihak_penerima_alamat', $beritaAcara->pihak_penerima_alamat) }}</textarea>
                     </div>
                 </div>
             </div>
@@ -160,6 +173,12 @@
 @push('scripts')
 <script>
 let itemIndex = {{ $beritaAcara->items->count() }};
+
+document.getElementById('customer_id').addEventListener('change', function() {
+    const option = this.options[this.selectedIndex];
+    document.getElementById('pihak_penerima_nama').value = option.dataset.nama || '';
+    document.getElementById('pihak_penerima_alamat').value = option.dataset.alamat || '';
+});
 
 function addItem() {
     const tbody = document.getElementById('itemsBody');

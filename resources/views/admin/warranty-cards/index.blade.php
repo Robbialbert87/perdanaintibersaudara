@@ -3,76 +3,124 @@
 @section('title', 'Daftar Kartu Garansi')
 
 @section('content')
-<div class="card shadow-sm border-0 mb-4">
-    <div class="card-header bg-white d-flex justify-content-between align-items-center py-3">
-        <h5 class="mb-0 text-primary"><i class="bi bi-shield-check me-2"></i>Daftar Kartu Garansi</h5>
-        <a href="{{ route('warranty-cards.create') }}" class="btn btn-primary btn-sm">
-            <i class="bi bi-plus-lg me-1"></i> Buat Kartu Garansi
-        </a>
+<div class="d-flex justify-content-between align-items-center mb-4">
+    <div>
+        <h4 class="mb-1" style="color:#f4f6f8">Kartu Garansi</h4>
+        <small class="text-muted">Daftar Kartu Garansi</small>
     </div>
-    <div class="card-body">
-        <form action="{{ route('warranty-cards.index') }}" method="GET" class="mb-3">
-            <div class="input-group">
-                <input type="text" name="search" class="form-control" placeholder="Cari nomor kartu, nama alat, atau nama RS/Klinik..." value="{{ request('search') }}">
-                <button class="btn btn-outline-secondary" type="submit"><i class="bi bi-search"></i> Cari</button>
-            </div>
-        </form>
+    <a href="{{ route('warranty-cards.create') }}" class="btn btn-primary">
+        <i class="bi bi-plus-lg"></i> <span class="d-none d-sm-inline">Buat Kartu Garansi</span>
+    </a>
+</div>
 
-        <div class="table-responsive">
-            <table class="table table-hover table-bordered align-middle">
-                <thead class="table-light">
+<div class="card">
+    <div class="card-header d-flex justify-content-between align-items-center">
+        <h6 class="mb-0" style="color:#f4f6f8">Daftar Kartu Garansi</h6>
+        <form method="GET" class="d-flex" style="max-width:250px">
+            <input type="text" name="search" class="form-control form-control-sm" placeholder="Cari..." value="{{ request('search') }}">
+        </form>
+    </div>
+    <div class="card-body p-0">
+        {{-- Desktop Table --}}
+        <div class="table-responsive d-none d-md-block">
+            <table class="table table-hover mb-0">
+                <thead>
                     <tr>
-                        <th width="5%" class="d-none d-sm-table-cell">No</th>
+                        <th width="5%">No</th>
                         <th>Nomor Kartu</th>
-                        <th class="d-none d-sm-table-cell">Tanggal</th>
+                        <th>Tanggal</th>
                         <th>Nama Alat</th>
-                        <th class="d-none d-sm-table-cell">Type</th>
+                        <th>Type</th>
                         <th>RS/Klinik</th>
-                        <th class="d-none d-sm-table-cell">Tgl Instalasi</th>
-                        <th width="15%" class="text-center">Aksi</th>
+                        <th>Tgl Instalasi</th>
+                        <th>Aksi</th>
                     </tr>
                 </thead>
                 <tbody>
-                    @forelse ($warrantyCards as $index => $wc)
+                    @forelse($warrantyCards as $index => $wc)
                     <tr>
-                        <td class="d-none d-sm-table-cell">{{ $warrantyCards->firstItem() + $index }}</td>
-                        <td class="text-nowrap">{{ $wc->nomor_kartu }}</td>
-                        <td class="d-none d-sm-table-cell">{{ date('d/m/Y', strtotime($wc->tanggal)) }}</td>
+                        <td>{{ $warrantyCards->firstItem() + $index }}</td>
+                        <td><strong>{{ $wc->nomor_kartu }}</strong></td>
+                        <td>{{ date('d/m/Y', strtotime($wc->tanggal)) }}</td>
                         <td>{{ $wc->nama_alat }}</td>
-                        <td class="d-none d-sm-table-cell">{{ $wc->type_alat }}</td>
+                        <td>{{ $wc->type_alat }}</td>
                         <td>{{ $wc->nama_rs_klinik }}</td>
-                        <td class="d-none d-sm-table-cell">{{ date('d/m/Y', strtotime($wc->tgl_instalasi)) }}</td>
-                        <td class="text-center text-nowrap">
-                            <a href="{{ route('warranty-cards.show', $wc->id) }}" class="btn btn-info btn-sm text-white" title="Detail">
-                                <i class="bi bi-eye"></i>
-                            </a>
-                            <a href="{{ route('warranty-cards.export_pdf', $wc->id) }}" target="_blank" class="btn btn-secondary btn-sm" title="Export PDF">
-                                <i class="bi bi-file-earmark-pdf"></i>
-                            </a>
-                            <a href="{{ route('warranty-cards.edit', $wc->id) }}" class="btn btn-warning btn-sm" title="Edit">
-                                <i class="bi bi-pencil-square"></i>
-                            </a>
-                            <form action="{{ route('warranty-cards.destroy', $wc->id) }}" method="POST" class="d-inline" onsubmit="return confirm('Yakin ingin menghapus kartu garansi ini?');">
-                                @csrf
-                                @method('DELETE')
-                                <button type="submit" class="btn btn-danger btn-sm" title="Hapus">
-                                    <i class="bi bi-trash"></i>
-                                </button>
-                            </form>
+                        <td>{{ date('d/m/Y', strtotime($wc->tgl_instalasi)) }}</td>
+                        <td>
+                            <div class="btn-group btn-group-sm">
+                                <a href="{{ route('warranty-cards.show', $wc->id) }}" class="btn btn-outline-secondary" title="Lihat">
+                                    <i class="bi bi-eye"></i>
+                                </a>
+                                <a href="{{ route('warranty-cards.export_pdf', $wc->id) }}" class="btn btn-outline-secondary" title="PDF">
+                                    <i class="bi bi-file-pdf"></i>
+                                </a>
+                                <a href="{{ route('warranty-cards.edit', $wc->id) }}" class="btn btn-outline-secondary" title="Edit">
+                                    <i class="bi bi-pencil"></i>
+                                </a>
+                                <form method="POST" action="{{ route('warranty-cards.destroy', $wc->id) }}" onsubmit="return confirm('Yakin hapus?')" class="d-inline">
+                                    @csrf @method('DELETE')
+                                    <button type="submit" class="btn btn-outline-danger" title="Hapus">
+                                        <i class="bi bi-trash"></i>
+                                    </button>
+                                </form>
+                            </div>
                         </td>
                     </tr>
                     @empty
                     <tr>
-                        <td colspan="8" class="text-center py-4 text-muted">Belum ada data Kartu Garansi.</td>
+                        <td colspan="8" class="text-center text-muted py-4">Belum ada data Kartu Garansi</td>
                     </tr>
                     @endforelse
                 </tbody>
             </table>
         </div>
 
-        <div class="d-flex justify-content-end mt-3">
-            {{ $warrantyCards->withQueryString()->links('pagination::bootstrap-5') }}
+        {{-- Mobile Cards --}}
+        <div class="d-md-none">
+            @forelse($warrantyCards as $wc)
+            <div class="border-bottom p-3">
+                <div class="d-flex justify-content-between align-items-start mb-2">
+                    <div>
+                        <strong style="color:#f4f6f8; font-size:13px;">{{ $wc->nomor_kartu }}</strong>
+                        <div class="text-muted" style="font-size:11px;">{{ date('d/m/Y', strtotime($wc->tanggal)) }}</div>
+                    </div>
+                </div>
+                <div style="font-size:12px; color:#c4cdd5; margin-bottom:4px;">
+                    <i class="bi bi-gear text-muted"></i> {{ $wc->nama_alat }} ({{ $wc->type_alat }})
+                </div>
+                <div style="font-size:12px; color:#919eab; margin-bottom:4px;">
+                    <i class="bi bi-hospital text-muted"></i> {{ $wc->nama_rs_klinik }}
+                </div>
+                <div style="font-size:11px; color:#637381; margin-bottom:8px;">
+                    Instalasi: {{ date('d/m/Y', strtotime($wc->tgl_instalasi)) }}
+                </div>
+                <div class="d-flex gap-1">
+                    <a href="{{ route('warranty-cards.show', $wc->id) }}" class="btn btn-sm btn-outline-secondary" style="font-size:11px; padding:3px 8px;">
+                        <i class="bi bi-eye"></i>
+                    </a>
+                    <a href="{{ route('warranty-cards.export_pdf', $wc->id) }}" class="btn btn-sm btn-outline-secondary" style="font-size:11px; padding:3px 8px;">
+                        <i class="bi bi-file-pdf"></i>
+                    </a>
+                    <a href="{{ route('warranty-cards.edit', $wc->id) }}" class="btn btn-sm btn-outline-secondary" style="font-size:11px; padding:3px 8px;">
+                        <i class="bi bi-pencil"></i>
+                    </a>
+                    <form method="POST" action="{{ route('warranty-cards.destroy', $wc->id) }}" onsubmit="return confirm('Yakin hapus?')" class="d-inline">
+                        @csrf @method('DELETE')
+                        <button type="submit" class="btn btn-sm btn-outline-danger" style="font-size:11px; padding:3px 8px;">
+                            <i class="bi bi-trash"></i>
+                        </button>
+                    </form>
+                </div>
+            </div>
+            @empty
+            <div class="text-center text-muted py-4">Belum ada data Kartu Garansi</div>
+            @endforelse
         </div>
     </div>
+    @if($warrantyCards->hasPages())
+    <div class="card-footer">
+        {{ $warrantyCards->withQueryString()->links() }}
+    </div>
+    @endif
 </div>
 @endsection
