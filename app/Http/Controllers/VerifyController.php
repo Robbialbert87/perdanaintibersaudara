@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers;
 
+use App\Models\BeritaAcara;
 use App\Models\Invoice;
 use App\Models\PurchaseOrder;
 use App\Models\Quotation;
@@ -60,5 +61,18 @@ class VerifyController extends Controller
         $tanggalGenerate = Carbon::now('Asia/Jakarta')->locale('id')->translatedFormat('d F Y H:i').' WIB';
 
         return view('style.verify-warranty-card', compact('warrantyCard', 'tanggalGenerate'));
+    }
+
+    public function showBeritaAcara(string $token)
+    {
+        $beritaAcara = BeritaAcara::with('items')->where('verify_token', $token)->first();
+
+        if (! $beritaAcara) {
+            return view('style.verify-not-found');
+        }
+
+        $tanggalGenerate = Carbon::now('Asia/Jakarta')->locale('id')->translatedFormat('d F Y H:i').' WIB';
+
+        return view('style.verify-berita-acara', compact('beritaAcara', 'tanggalGenerate'));
     }
 }

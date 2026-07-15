@@ -1,6 +1,7 @@
 <?php
 
 use App\Http\Controllers\ActivityController;
+use App\Http\Controllers\BeritaAcaraController;
 use App\Http\Controllers\CustomerController;
 use App\Http\Controllers\InvoiceController;
 use App\Http\Controllers\ProductController;
@@ -61,6 +62,7 @@ Route::get('/verify/{token}', [VerifyController::class, 'show'])->name('verify.i
 Route::get('/verify-quotation/{token}', [VerifyController::class, 'showQuotation'])->name('verify.quotation');
 Route::get('/verify-purchase-order/{token}', [VerifyController::class, 'showPurchaseOrder'])->name('verify.purchase_order');
 Route::get('/verify-warranty-card/{token}', [VerifyController::class, 'showWarrantyCard'])->name('verify.warranty_card');
+Route::get('/verify-berita-acara/{token}', [VerifyController::class, 'showBeritaAcara'])->name('verify.berita_acara');
 Route::get('/produk/{id}', function ($id) {
     $product = Product::findOrFail($id);
 
@@ -100,6 +102,10 @@ Route::middleware(['auth', 'verified', 'throttle:60,1'])->group(function () {
     Route::get('purchase-orders/{purchaseOrder}/print', [PurchaseOrderController::class, 'print'])->name('purchase-orders.print');
     Route::get('warranty-cards/{warrantyCard}/export-pdf', [WarrantyCardController::class, 'exportPdf'])->name('warranty-cards.export_pdf');
     Route::resource('warranty-cards', WarrantyCardController::class);
+    Route::get('berita-acaras/{beritaAcara}/export-pdf', [BeritaAcaraController::class, 'exportPdf'])->name('berita-acaras.export_pdf');
+    Route::get('berita-acaras/{beritaAcara}/preview-pdf', [BeritaAcaraController::class, 'previewPdf'])->name('berita-acaras.preview_pdf');
+    Route::get('berita-acaras/{beritaAcara}/print', [BeritaAcaraController::class, 'print'])->name('berita-acaras.print');
+    Route::resource('berita-acaras', BeritaAcaraController::class);
     Route::get('invoices/{invoice}/export-pdf', [InvoiceController::class, 'exportPdf'])->name('invoices.export_pdf');
     Route::post('invoices/{invoice}/mark-paid', [InvoiceController::class, 'markAsPaid'])->name('invoices.mark_paid');
     Route::post('invoices/ai-generate', [InvoiceController::class, 'aiGenerate'])->name('invoices.ai_generate');
