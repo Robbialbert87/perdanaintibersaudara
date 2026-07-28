@@ -142,7 +142,7 @@
                 <div class="d-flex justify-content-between align-items-center">
                     <div>
                         <p class="text-white text-opacity-75 text-uppercase small fw-semibold mb-1" style="letter-spacing: 0.5px;">Pengunjung Hari Ini</p>
-                        <h2 class="text-white mb-0 fw-bold">{{ \App\Models\Visitor::whereDate('created_at', now()->toDateString())->count() }}</h2>
+                        <h2 class="text-white mb-0 fw-bold">{{ \App\Models\Visitor::whereDate('created_at', now('Asia/Jakarta')->toDateString())->count() }}</h2>
                     </div>
                     <div class="icon-wrapper" style="background: rgba(255,255,255,0.15); color: white;">
                         <i class="bi bi-eye"></i>
