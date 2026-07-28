@@ -17,6 +17,7 @@ class TrackVisitor
                 'ip' => $request->ip(),
                 'url' => $request->url(),
                 'user_agent' => $request->userAgent(),
+                'created_at' => now(),
             ]);
         }
 
