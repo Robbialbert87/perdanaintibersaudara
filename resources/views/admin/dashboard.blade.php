@@ -134,4 +134,45 @@
         </div>
     </div>
 </div>
+
+<div class="row g-4 mb-4">
+    <div class="col-md-6">
+        <div class="card stat-card shadow-sm" style="background: linear-gradient(135deg, #6a1b9a, #9c27b0);">
+            <div class="card-body">
+                <div class="d-flex justify-content-between align-items-center">
+                    <div>
+                        <p class="text-white text-opacity-75 text-uppercase small fw-semibold mb-1" style="letter-spacing: 0.5px;">Pengunjung Hari Ini</p>
+                        <h2 class="text-white mb-0 fw-bold">{{ \App\Models\Visitor::whereDate('created_at', now()->toDateString())->count() }}</h2>
+                    </div>
+                    <div class="icon-wrapper" style="background: rgba(255,255,255,0.15); color: white;">
+                        <i class="bi bi-eye"></i>
+                    </div>
+                </div>
+            </div>
+            <div class="stat-footer d-flex align-items-center justify-content-between text-white" style="pointer-events:none;">
+                <span>Website Utama</span>
+                <i class="bi bi-calendar-day"></i>
+            </div>
+        </div>
+    </div>
+    <div class="col-md-6">
+        <div class="card stat-card shadow-sm" style="background: linear-gradient(135deg, #c2185b, #e91e63);">
+            <div class="card-body">
+                <div class="d-flex justify-content-between align-items-center">
+                    <div>
+                        <p class="text-white text-opacity-75 text-uppercase small fw-semibold mb-1" style="letter-spacing: 0.5px;">Pengunjung Bulan Ini</p>
+                        <h2 class="text-white mb-0 fw-bold">{{ \App\Models\Visitor::whereMonth('created_at', now()->month)->whereYear('created_at', now()->year)->count() }}</h2>
+                    </div>
+                    <div class="icon-wrapper" style="background: rgba(255,255,255,0.15); color: white;">
+                        <i class="bi bi-eye-fill"></i>
+                    </div>
+                </div>
+            </div>
+            <div class="stat-footer d-flex align-items-center justify-content-between text-white" style="pointer-events:none;">
+                <span>Website Utama</span>
+                <i class="bi bi-calendar-month"></i>
+            </div>
+        </div>
+    </div>
+</div>
 @endsection
