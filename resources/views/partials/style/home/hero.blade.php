@@ -218,8 +218,8 @@
                                             @else
                                                 <img data-src="{{ img_url($slide->image) }}"
                                                     alt="{{ $slide->title }}"
-                                                    class="w-100 h-100 object-fit-cover swiper-lazy"
-                                                    style="display: block;"
+                                                    class="w-100 h-100 object-fit-cover"
+                                                    style="display: block; background-color: #e8eef5;"
                                                     decoding="async">
                                             @endif
                                         @else
@@ -254,10 +254,19 @@
                         var headingEl = document.getElementById('heroHeading');
                         var subtitleEl = document.getElementById('heroSubtitle');
                         var linkEl = document.getElementById('heroServiceLink');
+
+                        function ensureSlideImage(slide) {
+                            if (!slide) return;
+                            var img = slide.querySelector('img[data-src]');
+                            if (img && !img.getAttribute('src')) {
+                                img.src = img.getAttribute('data-src');
+                                img.removeAttribute('data-src');
+                            }
+                        }
+
                         var swiper = new Swiper('.hero-services-swiper', {
                             loop: true,
                             speed: 800,
-                            lazy: true,
                             preloadImages: false,
                             watchSlidesProgress: true,
                             autoplay: {
@@ -275,6 +284,10 @@
                                 crossFade: true
                             },
                             on: {
+                                init: function () {
+                                    ensureSlideImage(this.slides[this.activeIndex]);
+                                    ensureSlideImage(this.slides[this.activeIndex + 1]);
+                                },
                                 slideChange: function () {
                                     var slide = this.slides[this.activeIndex];
                                     if (slide) {
@@ -283,6 +296,8 @@
                                         headingEl.textContent = type === 'produk' ? '(Produk)' : '(Layanan)';
                                         subtitleEl.textContent = title;
                                         linkEl.href = slide.dataset.url;
+                                        ensureSlideImage(slide);
+                                        ensureSlideImage(this.slides[this.activeIndex + 1]);
                                     }
                                 }
                             }
