@@ -14,8 +14,10 @@
             <div class="col-lg-5" data-aos="fade-right" data-aos-delay="200">
                 <div class="profile-image-wrapper">
                     <div class="profile-image">
-                        <img src="{{ asset('style/assets/img/health/WhatsApp Image 2026-05-21 at 11.49.39.jpeg') }}"
+                        <img src="{{ versioned_asset('style/assets/img/health/WhatsApp Image 2026-05-21 at 11.49.39.webp') }}"
                             alt="PIB Team & Facilities" class="img-fluid"
+                            width="1000" height="1000"
+                            loading="lazy" decoding="async"
                             style="border-radius: 20px; box-shadow: 0 15px 30px rgba(0,0,0,0.1);">
                     </div>
                     <div class="signature-section mt-4 text-center">

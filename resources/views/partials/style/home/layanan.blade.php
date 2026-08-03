@@ -18,7 +18,7 @@
                             <div class="entry-image position-relative" style="aspect-ratio: 4/3; overflow: hidden; background-color: #f0f4f9;">
                                 <a href="{{ route('layanan.detail', $service->id) }}">
                                     @if($layananImg)
-                                        <img src="{{ Storage::url($layananImg) }}"
+                                        <img src="{{ img_url($layananImg) }}"
                                             alt="{{ $service->title }}"
                                             class="img-fluid w-100 h-100 object-fit-contain"
                                             style="transition: transform 0.3s;"

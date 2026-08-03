@@ -3,6 +3,7 @@
 namespace App\Http\Controllers;
 
 use App\Models\Activity;
+use App\Support\ImageOptimizer;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Storage;
 use Illuminate\Support\Str;
@@ -41,6 +42,7 @@ class ActivityController extends Controller
                 $imagePaths[] = $file->store('activities', 'public');
             }
         }
+        $this->optimizeUploadedImages($imagePaths);
         $validated['images'] = $imagePaths;
         $validated['active_images'] = $imagePaths;
 
@@ -87,6 +89,7 @@ class ActivityController extends Controller
                 $newImagePaths[] = $file->store('activities', 'public');
             }
         }
+        $this->optimizeUploadedImages($newImagePaths);
 
         $activeImages = $request->input('active_images', []);
         $finalImages = array_slice(array_merge($activity->images ?? [], $newImagePaths), 0, 15);
@@ -154,5 +157,14 @@ class ActivityController extends Controller
         $activity->delete();
 
         return redirect()->route('activities.index')->with('success', 'Kegiatan berhasil dihapus.');
+    }
+
+    protected function optimizeUploadedImages(array $paths): void
+    {
+        $optimizer = app(ImageOptimizer::class);
+
+        foreach ($paths as $path) {
+            $optimizer->optimizeStoragePath($path);
+        }
     }
 }

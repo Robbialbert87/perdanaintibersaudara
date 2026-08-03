@@ -35,7 +35,7 @@
                                     <div class="swiper-slide">
                                         @if($item['type'] === 'image')
                                         <div class="text-center d-flex align-items-center justify-content-center" style="background-color: #f8f9fa; border-radius: 12px; aspect-ratio: 16/9; overflow: hidden;">
-                                            <img src="{{ Storage::url($item['path']) }}" alt="{{ $product->name }}" class="img-fluid" style="width: 100%; height: 100%; object-fit: contain;">
+                                            <img src="{{ img_url($item['path']) }}" alt="{{ $product->name }}" class="img-fluid" style="width: 100%; height: 100%; object-fit: contain;" decoding="async">
                                         </div>
                                         @else
                                         <div style="aspect-ratio: 16/9; overflow: hidden; background-color: #000;" class="d-flex align-items-center justify-content-center position-relative video-slide">
@@ -52,7 +52,7 @@
                         @else
                             @if($media[0]['type'] === 'image')
                             <div class="rounded-4 shadow-sm d-flex align-items-center justify-content-center" style="border: 1px solid rgba(0,0,0,0.05); overflow: hidden; background-color: #f8f9fa; aspect-ratio: 16/9;">
-                                <img src="{{ Storage::url($media[0]['path']) }}" alt="{{ $product->name }}" class="img-fluid" style="width: 100%; height: 100%; object-fit: contain;">
+                                <img src="{{ img_url($media[0]['path']) }}" alt="{{ $product->name }}" class="img-fluid" style="width: 100%; height: 100%; object-fit: contain;" fetchpriority="high" decoding="async">
                             </div>
                             @else
                             <div class="rounded-4 shadow-sm" style="border: 1px solid rgba(0,0,0,0.05); overflow: hidden; aspect-ratio: 16/9; background-color: #000;">

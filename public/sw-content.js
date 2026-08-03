@@ -1,4 +1,4 @@
-const CACHE = 'pib-cache-v3';
+const CACHE = 'pib-cache-v4';
 const STATIC_ASSETS = [
   '/',
   '/login',
@@ -15,7 +15,8 @@ const STATIC_ASSETS = [
   '/style/assets/vendor/bootstrap/js/bootstrap.bundle.min.js',
   '/style/assets/js/main.js',
   '/style/assets/img/pib-logo.png',
-  '/style/assets/img/logo.webp'
+  '/style/assets/img/logo.webp',
+  '/style/assets/img/PIBnew.webp'
 ];
 
 self.addEventListener('install', event => {
@@ -40,9 +41,27 @@ self.addEventListener('fetch', event => {
 
   if (url.origin !== location.origin) return;
 
-  const isStatic = /\.(css|js|png|jpg|jpeg|gif|svg|ico|woff2?|ttf|eot)$/i.test(url.pathname);
+  const isImage = /\.(png|jpg|jpeg|gif|webp|avif|svg|ico)$/i.test(url.pathname);
+  const isStatic = /\.(css|js|woff2?|ttf|eot)$/i.test(url.pathname);
 
-  if (isStatic) {
+  // Runtime cache for storage images: serve from cache, refresh in background
+  if (isImage && url.pathname.startsWith('/storage/')) {
+    event.respondWith(
+      caches.match(request).then(cached => {
+        const network = fetch(request).then(res => {
+          if (res.ok) {
+            const clone = res.clone();
+            caches.open(CACHE).then(cache => cache.put(request, clone));
+          }
+          return res;
+        }).catch(() => cached);
+        return cached || network;
+      })
+    );
+    return;
+  }
+
+  if (isStatic || isImage) {
     event.respondWith(
       caches.match(request).then(cached => cached || fetch(request).then(res => {
         const clone = res.clone();

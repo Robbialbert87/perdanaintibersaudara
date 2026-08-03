@@ -23,7 +23,7 @@
                         <a href="{{ route('layanan.detail', $service->id) }}">
                             @php $layananImg = $service->images[0] ?? $service->image; @endphp
                             @if($layananImg)
-                                <img src="{{ Storage::url($layananImg) }}"
+                                <img src="{{ img_url($layananImg) }}"
                                      alt="{{ $service->title }}"
                                      class="img-fluid w-100 h-100 object-fit-contain"
                                      style="transition: transform 0.3s;"

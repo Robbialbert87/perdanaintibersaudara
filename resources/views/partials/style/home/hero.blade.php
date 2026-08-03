@@ -33,7 +33,7 @@
     <div class="container">
         <div class="row g-0 align-items-center">
 
-            <div class="col-lg-6 hero-content" data-aos="fade-right" data-aos-delay="100">
+            <div class="col-lg-6 hero-content">
                 <div class="content-wrapper">
                     <h1 class="hero-title"
                         style="font-family: 'Quicksand', sans-serif; font-weight: bold; color: #13447f;">
@@ -146,7 +146,7 @@
                         }
                     </style>
 
-                    <div class="hero-stats" data-aos="fade-up" data-aos-delay="200" style="margin-bottom: 2.5rem;">
+                    <div class="hero-stats" style="margin-bottom: 2.5rem;">
                         <div class="stat-item">
                             <span class="purecounter" data-purecounter-start="0" data-purecounter-end="6"
                                 data-purecounter-duration="2"
@@ -173,7 +173,7 @@
                         </div>
                     </div>
 
-                    <div class="hero-actions" data-aos="fade-up" data-aos-delay="300">
+                    <div class="hero-actions">
                         <a href="{{ route('about') }}" class="btn btn-primary"
                             style="background-color: #065cc2; border-color: #065cc2; padding: 12px 30px; border-radius: 50px;">Tentang
                             Kami</a>
@@ -184,7 +184,7 @@
                 </div>
             </div>
 
-            <div class="col-lg-6 hero-image mt-5 mt-lg-0 d-flex flex-column" data-aos="fade-left" data-aos-delay="200">
+            <div class="col-lg-6 hero-image mt-5 mt-lg-0 d-flex flex-column">
                 <a id="heroServiceLink"
                     href="{{ $firstSlide ? $firstSlide->url : '#' }}"
                     style="text-decoration: none;">
@@ -209,23 +209,34 @@
                                     data-url="{{ $slide->url }}">
                                     <a href="{{ $slide->url }}">
                                         @if($slide->image)
-                                            <img src="{{ Storage::url($slide->image) }}"
-                                                alt="{{ $slide->title }}"
-                                                class="w-100 h-100 object-fit-cover"
-                                                style="display: block;">
+                                            @if($loop->first)
+                                                <img src="{{ img_url($slide->image) }}"
+                                                    alt="{{ $slide->title }}"
+                                                    class="w-100 h-100 object-fit-cover"
+                                                    style="display: block;"
+                                                    fetchpriority="high" decoding="async">
+                                            @else
+                                                <img data-src="{{ img_url($slide->image) }}"
+                                                    alt="{{ $slide->title }}"
+                                                    class="w-100 h-100 object-fit-cover swiper-lazy"
+                                                    style="display: block;"
+                                                    decoding="async">
+                                            @endif
                                         @else
-                                            <img src="{{ asset('style/assets/img/health/Gemini_Generated_Image_mnrhe1mnrhe1mnrh.png') }}"
+                                            <img src="{{ versioned_asset('style/assets/img/health/Gemini_Generated_Image_mnrhe1mnrhe1mnrh.webp') }}"
                                                 alt="{{ $slide->title }}"
                                                 class="w-100 h-100 object-fit-cover"
-                                                style="display: block;">
+                                                style="display: block;"
+                                                loading="lazy" decoding="async">
                                         @endif
                                     </a>
                                 </div>
                             @empty
                                 <div class="swiper-slide">
-                                    <img src="{{ asset('style/assets/img/health/Gemini_Generated_Image_mnrhe1mnrhe1mnrh.png') }}"
+                                    <img src="{{ versioned_asset('style/assets/img/health/Gemini_Generated_Image_mnrhe1mnrhe1mnrh.webp') }}"
                                         alt="Layanan" class="w-100 h-100 object-fit-cover"
-                                        style="display: block;">
+                                        style="display: block;"
+                                        decoding="async">
                                 </div>
                             @endforelse
                         </div>
@@ -246,6 +257,9 @@
                         var swiper = new Swiper('.hero-services-swiper', {
                             loop: true,
                             speed: 800,
+                            lazy: true,
+                            preloadImages: false,
+                            watchSlidesProgress: true,
                             autoplay: {
                                 delay: 1500,
                                 disableOnInteraction: false,

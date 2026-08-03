@@ -3,6 +3,7 @@
 namespace App\Http\Controllers;
 
 use App\Models\Product;
+use App\Support\ImageOptimizer;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Storage;
 use Illuminate\Support\Str;
@@ -44,6 +45,7 @@ class ProductController extends Controller
                 $imagePaths[] = $file->store('products', 'public');
             }
         }
+        $this->optimizeUploadedImages($imagePaths);
         $validated['images'] = $imagePaths;
         $validated['active_images'] = $imagePaths;
 
@@ -93,6 +95,7 @@ class ProductController extends Controller
                 $newImagePaths[] = $file->store('products', 'public');
             }
         }
+        $this->optimizeUploadedImages($newImagePaths);
 
         $activeImages = $request->input('active_images', []);
         $finalImages = array_slice(array_merge($product->images ?? [], $newImagePaths), 0, 15);
@@ -160,5 +163,14 @@ class ProductController extends Controller
         $product->delete();
 
         return redirect()->route('products.index')->with('success', 'Produk berhasil dihapus.');
+    }
+
+    protected function optimizeUploadedImages(array $paths): void
+    {
+        $optimizer = app(ImageOptimizer::class);
+
+        foreach ($paths as $path) {
+            $optimizer->optimizeStoragePath($path);
+        }
     }
 }

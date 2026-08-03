@@ -1,7 +1,7 @@
 <header id="header" class="header d-flex align-items-center fixed-top">
     <div class="container-fluid container-xl d-flex align-items-center justify-content-between header-container">
         <a href="{{ url('/') }}" class="logo d-flex align-items-center text-decoration-none">
-            <img src="{{ asset('style/assets/img/PIBnew.png') }}" alt="PIB Logo">
+            <img src="{{ versioned_asset('style/assets/img/PIBnew.webp') }}" alt="PIB Logo" width="94" height="40" fetchpriority="high">
         </a>
 
         <nav class="navmenu">

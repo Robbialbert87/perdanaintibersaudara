@@ -3,6 +3,7 @@
 namespace App\Http\Controllers;
 
 use App\Models\Service;
+use App\Support\ImageOptimizer;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Storage;
 use Illuminate\Support\Str;
@@ -41,6 +42,7 @@ class ServiceController extends Controller
                 $imagePaths[] = $file->store('services', 'public');
             }
         }
+        $this->optimizeUploadedImages($imagePaths);
         $validated['images'] = $imagePaths;
         $validated['active_images'] = $imagePaths;
 
@@ -58,6 +60,7 @@ class ServiceController extends Controller
             $validated['image'] = $imagePaths[0];
         } elseif ($request->hasFile('image')) {
             $validated['image'] = $request->file('image')->store('services', 'public');
+            $this->optimizeUploadedImages([$validated['image']]);
         }
 
         // Clean up empty features
@@ -103,6 +106,7 @@ class ServiceController extends Controller
                 $newImagePaths[] = $file->store('services', 'public');
             }
         }
+        $this->optimizeUploadedImages($newImagePaths);
 
         $activeImages = $request->input('active_images', []);
         $finalImages = array_slice(array_merge($service->images ?? [], $newImagePaths), 0, 15);
@@ -134,6 +138,7 @@ class ServiceController extends Controller
                 Storage::disk('public')->delete($service->image);
             }
             $validated['image'] = $request->file('image')->store('services', 'public');
+            $this->optimizeUploadedImages([$validated['image']]);
         }
 
         // Clean up empty features
@@ -203,5 +208,14 @@ class ServiceController extends Controller
         $service->delete();
 
         return redirect()->route('services.index')->with('success', 'Layanan berhasil dihapus.');
+    }
+
+    protected function optimizeUploadedImages(array $paths): void
+    {
+        $optimizer = app(ImageOptimizer::class);
+
+        foreach ($paths as $path) {
+            $optimizer->optimizeStoragePath($path);
+        }
     }
 }
