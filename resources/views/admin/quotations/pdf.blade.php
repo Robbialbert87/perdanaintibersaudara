@@ -153,6 +153,37 @@
         $perihalArray = is_array($quotation->perihal) ? $quotation->perihal : (json_decode($quotation->perihal, true) ?? [$quotation->perihal]);
         $perihalText = implode(', ', $perihalArray);
         $perihalLabel = count($perihalArray) > 1 ? 'produk/jasa' : 'produk/jasa';
+
+        function terbilang($angka) {
+            $angka = abs((int)$angka);
+            $bilangan = ['', 'satu', 'dua', 'tiga', 'empat', 'lima', 'enam', 'tujuh', 'delapan', 'sembilan', 'sepuluh', 'sebelas'];
+            $hasil = '';
+            if ($angka < 12) {
+                $hasil = $bilangan[$angka];
+            } elseif ($angka < 20) {
+                $hasil = $bilangan[$angka - 10] . ' belas';
+            } elseif ($angka < 100) {
+                $hasil = $bilangan[(int)($angka / 10)] . ' puluh ' . $bilangan[$angka % 10];
+            } elseif ($angka < 200) {
+                $hasil = 'seratus ' . terbilang($angka - 100);
+            } elseif ($angka < 1000) {
+                $hasil = $bilangan[(int)($angka / 100)] . ' ratus ' . terbilang($angka % 100);
+            } elseif ($angka < 2000) {
+                $hasil = 'seribu ' . terbilang($angka - 1000);
+            } elseif ($angka < 1000000) {
+                $sisa = $angka % 1000;
+                $hasil = terbilang((int)($angka / 1000)) . ' ribu' . ($sisa > 0 ? ' ' . terbilang($sisa) : '');
+            } elseif ($angka < 1000000000) {
+                $sisa = $angka % 1000000;
+                $hasil = terbilang((int)($angka / 1000000)) . ' juta' . ($sisa > 0 ? ' ' . terbilang($sisa) : '');
+            } elseif ($angka < 1000000000000) {
+                $sisa = $angka % 1000000000;
+                $hasil = terbilang((int)($angka / 1000000000)) . ' miliar' . ($sisa > 0 ? ' ' . terbilang($sisa) : '');
+            } else {
+                $hasil = '~';
+            }
+            return trim($hasil) ?: 'nol';
+        }
     @endphp
 
     <div class="header">
@@ -265,6 +296,11 @@
             <tr>
                 <td colspan="{{ $itemCount > 1 ? 4 : 3 }}" class="text-right" style="font-weight: bold; border: 1px solid black; padding: 6px 8px;"><strong>TOTAL</strong></td>
                 <td class="text-center" style="font-weight: bold; border: 1px solid black; padding: 6px 8px;"><strong>Rp {{ number_format($quotation->items->sum(fn($item) => (float) $item->volume * $item->harga_satuan), 0, ',', '.') }}</strong></td>
+            </tr>
+            <tr>
+                <td colspan="{{ $itemCount > 1 ? 4 : 3 }}" style="border: none; padding-top: 8px; font-style: italic;">
+                    <strong>Terbilang :</strong> {{ ucfirst(terbilang($quotation->items->sum(fn($item) => (float) $item->volume * $item->harga_satuan))) }} rupiah
+                </td>
             </tr>
         </tfoot>
         @endif
