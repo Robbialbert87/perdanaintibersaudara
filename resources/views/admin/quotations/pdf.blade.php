@@ -298,7 +298,7 @@
                 <td class="text-center" style="font-weight: bold; border: 1px solid black; padding: 6px 8px;"><strong>Rp {{ number_format($quotation->items->sum(fn($item) => (float) $item->volume * $item->harga_satuan), 0, ',', '.') }}</strong></td>
             </tr>
             <tr>
-                <td colspan="{{ $itemCount > 1 ? 4 : 3 }}" style="border: none; padding-top: 8px; font-style: italic;">
+                <td colspan="{{ $itemCount > 1 ? 4 : 3 }}" style="border-left: 1px solid black; border-right: 1px solid black; border-bottom: 1px solid black; border-top: none; padding-top: 8px; font-style: italic;">
                     <strong>Terbilang :</strong> {{ ucfirst(terbilang($quotation->items->sum(fn($item) => (float) $item->volume * $item->harga_satuan))) }} rupiah
                 </td>
             </tr>
