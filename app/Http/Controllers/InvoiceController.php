@@ -455,7 +455,10 @@ PROMPT;
                 return $invoice;
             });
 
-        return redirect()->route('invoices.show', $invoice->id)->with('success', 'Invoice berhasil dibuat');
+        return response()->json([
+                'success' => true,
+                'redirect' => route('invoices.show', $invoice->id),
+            ]);
         } catch (\Exception $e) {
             return response()->json(['error' => 'Gagal menyimpan: ' . $e->getMessage()], 500);
         }
