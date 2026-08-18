@@ -322,7 +322,7 @@
         <div class="bank-info">
             <p style="text-decoration: underline;">Pembayaran dapat dilakukan melalui:</p>
             <p>Bank BCA</p>
-            <p>No. Rekening 619 801 2733</p>
+            <p>No. Rekening 619 801 2191</p>
             <p>(PIB) Perdana Inti Bersaudara</p>
         </div>
     </div>
