@@ -124,35 +124,6 @@
                         <td class="label">Customer</td>
                         <td class="value">: {{ $invoice->customer->nama_instansi }}</td>
                     </tr>
-                    @if($invoice->ppn_active)
-                    @php
-                        $ppn = round($invoice->total * 0.11);
-                        $grandTotal = $invoice->total + $ppn;
-                    @endphp
-                    <tr>
-                        <td class="label">Sub Total</td>
-                        <td class="value">: Rp {{ number_format($invoice->total, 0, ',', '.') }}</td>
-                    </tr>
-                    <tr>
-                        <td class="label">PPN (11%)</td>
-                        <td class="value">: Rp {{ number_format($ppn, 0, ',', '.') }}</td>
-                    </tr>
-                    <tr>
-                        <td class="label" style="font-weight: 700;">Grand Total</td>
-                        <td class="value" style="font-weight: 700;">: Rp {{ number_format($grandTotal, 0, ',', '.') }}</td>
-                    </tr>
-                    @else
-                    <tr>
-                        <td class="label">Total Invoice</td>
-                        <td class="value">: Rp {{ number_format($invoice->total, 0, ',', '.') }}</td>
-                    </tr>
-                    @endif
-                    @if($invoice->status !== 'draft')
-                    <tr>
-                        <td class="label">Status</td>
-                        <td class="value">: {{ ucfirst($invoice->status) }}</td>
-                    </tr>
-                    @endif
                     @if($invoice->customer->email !== 'info.jmb@rsrapha.com')
                     <tr class="divider">
                         <td class="label">Dibuat Oleh</td>
