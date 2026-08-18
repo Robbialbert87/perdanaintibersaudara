@@ -255,6 +255,10 @@ class InvoiceController extends Controller
         ]);
 
         $provider = $request->provider ?? config('services.ai.provider', 'gemini');
+
+        $customerNames = Customer::pluck('nama_instansi')->toArray();
+        $customerList = implode(', ', array_map(fn($n) => '"' . $n . '"', $customerNames));
+
         $systemPrompt = <<<PROMPT
 Anda adalah asisten yang membantu mengisi form invoice.
 Dari teks berikut, ekstrak informasi customer, item (nama_item, deskripsi, tanggal_kegiatan, volume, satuan, harga_satuan), dan catatan.
@@ -262,9 +266,15 @@ catatan hanya diisi jika user secara eksplisit menyebutkan catatan atau keterang
 Tanggal kegiatan dimasukkan ke tanggal_kegiatan, BUKAN ke catatan.
 Kembalikan HANYA JSON tanpa markdown atau teks lain.
 
+PENTING untuk customer_name:
+Daftar customer yang tersedia di database: [$customerList]
+Pilih nama customer yang PALING COCOK dari daftar di atas berdasarkan kemiripan huruf/suku kata.
+Contoh: jika user menulis "askot" dan di daftar ada "Ascott", maka pilih "Ascott".
+Jika tidak ada yang cocok sama sekali, gunakan nama dari teks user.
+
 Format JSON:
 {
-  "customer_name": "nama instansi atau kosong",
+  "customer_name": "nama instansi paling cocok dari daftar atau kosong",
   "items": [
     {
       "nama_item": "nama item",
@@ -300,11 +310,37 @@ PROMPT;
             return response()->json(['error' => 'AI tidak dapat memahami prompt. Coba lebih detail.'], 422);
         }
 
-        // Cari customer
+        // Cari customer (fuzzy search)
         $customer = null;
-        $foundCustomers = [];
+        $foundCustomers = collect();
         if (!empty($data['customer_name'])) {
-            $foundCustomers = Customer::where('nama_instansi', 'like', '%' . $data['customer_name'] . '%')->get();
+            $searchName = $data['customer_name'];
+
+            // 1. Exact match
+            $foundCustomers = Customer::where('nama_instansi', $searchName)->get();
+
+            // 2. Case-insensitive LIKE
+            if ($foundCustomers->isEmpty()) {
+                $foundCustomers = Customer::whereRaw('LOWER(nama_instansi) LIKE ?', ['%' . strtolower($searchName) . '%'])->get();
+            }
+
+            // 3. SOUNDEX (kemiripan bunyi: askot ≈ ascott)
+            if ($foundCustomers->isEmpty()) {
+                $foundCustomers = Customer::whereRaw('SOUNDEX(nama_instansi) = SOUNDEX(?)', [$searchName])->get();
+            }
+
+            // 4. Multi-kata: pecah input, cari yang paling banyak cocok
+            if ($foundCustomers->isEmpty()) {
+                $words = array_filter(explode(' ', strtolower($searchName)));
+                if (count($words) > 0) {
+                    $foundCustomers = Customer::where(function ($q) use ($words) {
+                        foreach ($words as $word) {
+                            $q->orWhereRaw('LOWER(nama_instansi) LIKE ?', ['%' . $word . '%']);
+                        }
+                    })->get();
+                }
+            }
+
             $customer = $foundCustomers->first();
         }
 
