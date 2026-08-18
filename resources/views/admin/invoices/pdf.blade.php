@@ -163,11 +163,14 @@
         } elseif ($angka < 100) {
             $hasil = $bilangan[(int)($angka / 10)] . ' puluh ' . $bilangan[$angka % 10];
         } elseif ($angka < 200) {
-            $hasil = 'seratus ' . terbilang($angka - 100);
+            $sisa = $angka - 100;
+            $hasil = 'seratus' . ($sisa > 0 ? ' ' . terbilang($sisa) : '');
         } elseif ($angka < 1000) {
-            $hasil = $bilangan[(int)($angka / 100)] . ' ratus ' . terbilang($angka % 100);
+            $sisa = $angka % 100;
+            $hasil = $bilangan[(int)($angka / 100)] . ' ratus' . ($sisa > 0 ? ' ' . terbilang($sisa) : '');
         } elseif ($angka < 2000) {
-            $hasil = 'seribu ' . terbilang($angka - 1000);
+            $sisa = $angka - 1000;
+            $hasil = 'seribu' . ($sisa > 0 ? ' ' . terbilang($sisa) : '');
         } elseif ($angka < 1000000) {
             $sisa = $angka % 1000;
             $hasil = terbilang((int)($angka / 1000)) . ' ribu' . ($sisa > 0 ? ' ' . terbilang($sisa) : '');
