@@ -110,6 +110,7 @@ Route::middleware(['auth', 'verified', 'throttle:60,1'])->group(function () {
     Route::post('invoices/{invoice}/mark-paid', [InvoiceController::class, 'markAsPaid'])->name('invoices.mark_paid');
     Route::post('invoices/ai-generate', [InvoiceController::class, 'aiGenerate'])->name('invoices.ai_generate');
     Route::post('invoices/ai-store', [InvoiceController::class, 'aiStore'])->name('invoices.ai_store');
+    Route::post('invoices/ai-store-draft', [InvoiceController::class, 'aiStoreDraft'])->name('invoices.ai_store_draft');
     Route::post('invoices/preview', [InvoiceController::class, 'preview'])->name('invoices.preview');
     Route::resource('invoices', InvoiceController::class);
     Route::resource('users', UserController::class)->except(['show']);

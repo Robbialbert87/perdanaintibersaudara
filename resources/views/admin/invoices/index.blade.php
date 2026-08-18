@@ -293,6 +293,40 @@ function saveFromAI() {
     });
 }
 
+function editFromAI() {
+    if (!aiGeneratedData || !aiGeneratedData.customer_id) {
+        alert('Customer tidak ditemukan. Silakan buat invoice manual.');
+        return;
+    }
+
+    const btn = document.querySelector('#previewModal .btn-secondary');
+    btn.disabled = true;
+    btn.innerHTML = '<span class="spinner-border spinner-border-sm me-1"></span>Menyimpan draft...';
+
+    fetch('{{ route("invoices.ai_store_draft") }}', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json', 'X-CSRF-TOKEN': '{{ csrf_token() }}' },
+        body: JSON.stringify(aiGeneratedData)
+    })
+    .then(async r => {
+        if (!r.ok) {
+            let msg = 'Gagal menyimpan draft (kode ' + r.status + '). Coba lagi.';
+            try { const d = await r.json(); if (d.error) msg = d.error; } catch(_) {}
+            throw new Error(msg);
+        }
+        return r.json();
+    })
+    .then(data => {
+        if (data.error) { alert(data.error); return; }
+        if (data.redirect) { window.location.href = data.redirect; }
+    })
+    .catch(err => { alert(err.message || 'Gagal menyimpan draft. Coba lagi.'); })
+    .finally(() => {
+        btn.disabled = false;
+        btn.innerHTML = '<i class="bi bi-pencil me-1"></i> Kembali Edit';
+    });
+}
+
 
 </script>
 <script>
@@ -364,7 +398,7 @@ document.addEventListener('click', function (e) {
                 <p class="text-muted text-center py-4">Memuat preview...</p>
             </div>
             <div class="modal-footer">
-                <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">
+                <button type="button" class="btn btn-secondary" onclick="editFromAI()">
                     <i class="bi bi-pencil me-1"></i> Kembali Edit
                 </button>
                 <button type="button" id="saveBtn" class="btn btn-primary" onclick="saveFromAI()">

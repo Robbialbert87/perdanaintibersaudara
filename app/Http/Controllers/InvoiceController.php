@@ -425,6 +425,91 @@ PROMPT;
         }
     }
 
+    public function aiStoreDraft(Request $request)
+    {
+        try {
+            $request->validate([
+                'customer_id' => 'required|exists:customers,id',
+                'items' => 'required|array|min:1',
+                'items.*.group_no' => 'nullable|integer',
+                'items.*.nama_item' => 'nullable|string|max:255',
+                'items.*.deskripsi' => 'required|string',
+                'items.*.volume' => 'required|string|max:255',
+                'items.*.satuan' => 'nullable|string|max:50',
+                'items.*.harga_satuan' => 'required',
+                'items.*.subtotal' => 'required',
+                'catatan' => 'nullable|string',
+                'kata_penutup' => 'nullable|string',
+            ]);
+
+            $total = 0;
+            $itemsData = [];
+            foreach ($request->items as $item) {
+                $harga = (float) str_replace(['.', ','], ['', '.'], $item['harga_satuan']);
+                $subtotal = (float) str_replace(['.', ','], ['', '.'], $item['subtotal']);
+                $total += $subtotal;
+
+                $namaItem = !empty($item['nama_item']) ? $item['nama_item'] : null;
+
+                $itemsData[] = [
+                    'group_no' => !empty($item['group_no']) ? intval($item['group_no']) : 1,
+                    'nama_item' => $namaItem,
+                    'deskripsi' => $item['deskripsi'],
+                    'tanggal_kegiatan' => $this->convertIndonesianDate($item['tanggal_kegiatan'] ?? ''),
+                    'volume' => $item['volume'],
+                    'satuan' => $item['satuan'] ?? null,
+                    'harga_satuan' => $harga,
+                    'subtotal' => $subtotal,
+                ];
+            }
+
+            $invoice = DB::transaction(function () use ($request, $itemsData, $total) {
+                $month = date('n');
+                $year = date('Y');
+                $romans = ['I', 'II', 'III', 'IV', 'V', 'VI', 'VII', 'VIII', 'IX', 'X', 'XI', 'XII'];
+                $romanMonth = $romans[$month - 1];
+
+                $lastInvoice = Invoice::whereYear('tanggal', $year)
+                    ->whereMonth('tanggal', $month)
+                    ->orderBy('id', 'desc')
+                    ->first();
+
+                $nextNumber = 1;
+                if ($lastInvoice) {
+                    $parts = explode('/', $lastInvoice->nomor_invoice);
+                    $nextNumber = intval($parts[0]) + 1;
+                }
+
+                $nomorInvoice = sprintf('%03d/INV/PIB-JMB/%s/%s', $nextNumber, $romanMonth, $year);
+
+                $invoice = Invoice::create([
+                    'nomor_invoice' => $nomorInvoice,
+                    'tanggal' => now()->format('Y-m-d'),
+                    'customer_id' => $request->customer_id,
+                    'catatan' => $request->filled('catatan') ? trim($request->catatan) : null,
+                    'kata_penutup' => $request->kata_penutup,
+                    'status' => 'draft',
+                    'total' => 0,
+                ]);
+
+                foreach ($itemsData as $item) {
+                    $invoice->items()->create($item);
+                }
+
+                $invoice->update(['total' => $total]);
+
+                return $invoice;
+            });
+
+            return response()->json([
+                'success' => true,
+                'redirect' => route('invoices.edit', $invoice->id),
+            ]);
+        } catch (\Exception $e) {
+            return response()->json(['error' => 'Gagal menyimpan draft: ' . $e->getMessage()], 500);
+        }
+    }
+
     public function destroy(string $id)
     {
         if (! auth()->user()->isAdmin()) {
