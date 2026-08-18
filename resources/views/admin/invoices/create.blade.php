@@ -165,6 +165,24 @@
                                 </div>
                             </td>
                         </tr>
+                        <tr id="ppnRow" style="display:none;">
+                            <td colspan="7" class="text-end fw-bold align-middle"><strong>PPN (11%)</strong></td>
+                            <td colspan="2">
+                                <div class="input-group">
+                                    <span class="input-group-text">Rp</span>
+                                    <input type="text" id="ppnAmount" class="form-control fw-bold" value="" readonly>
+                                </div>
+                            </td>
+                        </tr>
+                        <tr id="grandTotalRow" style="display:none;">
+                            <td colspan="7" class="text-end fw-bold align-middle"><strong>GRAND TOTAL</strong></td>
+                            <td colspan="2">
+                                <div class="input-group">
+                                    <span class="input-group-text">Rp</span>
+                                    <input type="text" id="grandTotal" class="form-control fw-bold" value="" readonly>
+                                </div>
+                            </td>
+                        </tr>
                     </tfoot>
                 </table>
             </div>
@@ -172,6 +190,13 @@
             <div class="d-flex gap-2 mb-4">
                 <button type="button" id="addRow" class="btn btn-success btn-sm"><i class="bi bi-plus-lg"></i> Tambah Baris</button>
                 <button type="button" id="addGroup" class="btn btn-outline-primary btn-sm"><i class="bi bi-folder-plus"></i> Tambah Grup Baru</button>
+            </div>
+
+            <div class="mb-4">
+                <div class="form-check form-switch">
+                    <input class="form-check-input" type="checkbox" id="ppnToggle" name="ppn_active" value="1">
+                    <label class="form-check-label fw-bold" for="ppnToggle">Aktifkan PPN 11%</label>
+                </div>
             </div>
 
             <div class="mb-4">
@@ -230,7 +255,24 @@ document.addEventListener('DOMContentLoaded', function() {
             total += parseIDR(row.querySelector('.subtotal-input').value);
         });
         document.getElementById('totalKeseluruhan').value = total > 0 ? formatIDR(total) : '0';
+
+        const ppnActive = document.getElementById('ppnToggle').checked;
+        const ppnRow = document.getElementById('ppnRow');
+        const grandTotalRow = document.getElementById('grandTotalRow');
+        if (ppnActive) {
+            const ppn = Math.round(total * 0.11);
+            const grandTotal = total + ppn;
+            document.getElementById('ppnAmount').value = formatIDR(ppn);
+            document.getElementById('grandTotal').value = formatIDR(grandTotal);
+            ppnRow.style.display = '';
+            grandTotalRow.style.display = '';
+        } else {
+            ppnRow.style.display = 'none';
+            grandTotalRow.style.display = 'none';
+        }
     };
+
+    document.getElementById('ppnToggle').addEventListener('change', calculateTotal);
 
     tbody.addEventListener('input', function(e) {
         if (e.target.classList.contains('currency-format')) {

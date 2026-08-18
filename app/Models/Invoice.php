@@ -18,6 +18,7 @@ class Invoice extends Model
         'quotation_id',
         'perihal',
         'total',
+        'ppn_active',
         'status',
         'catatan',
         'kata_penutup',
@@ -29,6 +30,7 @@ class Invoice extends Model
         'tanggal' => 'date',
         'tanggal_bayar' => 'date',
         'perihal' => 'array',
+        'ppn_active' => 'boolean',
     ];
 
     protected static function booted(): void

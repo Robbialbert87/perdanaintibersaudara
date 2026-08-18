@@ -231,12 +231,19 @@
         @endif
     </div>
 
+    @php
+        $hasTanggal = $invoice->items->contains('tanggal_kegiatan', '!=', null);
+        $totalCol = $hasTanggal ? 5 : 4;
+    @endphp
+
     <table class="table-items">
         <thead>
             <tr>
                 <th width="5%">No</th>
-                <th width="30%">Deskripsi Pekerjaan / Barang</th>
+                <th width="{{ $hasTanggal ? '30' : '47' }}%">Deskripsi Pekerjaan / Barang</th>
+                @if($hasTanggal)
                 <th width="17%">Tgl Kegiatan</th>
+                @endif
                 <th width="8%">Volume</th>
                 <th width="20%">Harga Satuan</th>
                 <th width="20%">Jumlah Harga</th>
@@ -259,7 +266,9 @@
                         @endif
                         <div class="item-desc">{!! nl2br(e($item->deskripsi)) !!}</div>
                     </td>
+                    @if($hasTanggal)
                     <td style="text-align: center; vertical-align: middle;">{{ $item->tanggal_kegiatan ? \Carbon\Carbon::parse($item->tanggal_kegiatan)->locale('id')->translatedFormat('d F Y') : '-' }}</td>
+                    @endif
                     <td style="text-align: center; vertical-align: middle;">{{ $item->volume }} {{ $item->satuan ?? '' }}</td>
                     <td style="text-align: center; vertical-align: middle;">Rp {{ number_format($item->harga_satuan, 0, ',', '.') }}</td>
                     <td style="text-align: center; vertical-align: middle;">Rp {{ number_format($item->subtotal, 0, ',', '.') }}</td>
@@ -268,15 +277,39 @@
             @endforeach
         </tbody>
         <tfoot>
+            @if($invoice->ppn_active)
+            @php
+                $ppn = round($invoice->total * 0.11);
+                $grandTotal = $invoice->total + $ppn;
+            @endphp
             <tr>
-                <td colspan="5" class="text-right" style="font-weight: bold;"><strong>TOTAL</strong></td>
+                <td colspan="{{ $totalCol }}" class="text-right" style="font-weight: bold;">Sub Total</td>
+                <td class="text-right" style="font-weight: bold;">Rp {{ number_format($invoice->total, 0, ',', '.') }}</td>
+            </tr>
+            <tr>
+                <td colspan="{{ $totalCol }}" class="text-right" style="font-weight: bold;">PPN (11%)</td>
+                <td class="text-right" style="font-weight: bold;">Rp {{ number_format($ppn, 0, ',', '.') }}</td>
+            </tr>
+            <tr>
+                <td colspan="{{ $totalCol }}" class="text-right" style="font-weight: bold;">GRAND TOTAL</td>
+                <td class="text-right" style="font-weight: bold;"><strong>Rp {{ number_format($grandTotal, 0, ',', '.') }}</strong></td>
+            </tr>
+            <tr>
+                <td colspan="{{ $totalCol + 1 }}" style="border: none; padding-top: 8px; font-style: italic;">
+                    <strong>Terbilang :</strong> {{ ucfirst(terbilang($grandTotal)) }} rupiah
+                </td>
+            </tr>
+            @else
+            <tr>
+                <td colspan="{{ $totalCol }}" class="text-right" style="font-weight: bold;"><strong>TOTAL</strong></td>
                 <td class="text-right" style="font-weight: bold;"><strong>Rp {{ number_format($invoice->total, 0, ',', '.') }}</strong></td>
             </tr>
             <tr>
-                <td colspan="6" style="border: none; padding-top: 8px; font-style: italic;">
+                <td colspan="{{ $totalCol + 1 }}" style="border: none; padding-top: 8px; font-style: italic;">
                     <strong>Terbilang :</strong> {{ ucfirst(terbilang($invoice->total)) }} rupiah
                 </td>
             </tr>
+            @endif
         </tfoot>
     </table>
 

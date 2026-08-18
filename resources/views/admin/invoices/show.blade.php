@@ -173,10 +173,29 @@
                     @endforeach
                 </tbody>
                 <tfoot class="table-dark">
+                    @if($invoice->ppn_active)
+                    @php
+                        $ppn = round($invoice->total * 0.11);
+                        $grandTotal = $invoice->total + $ppn;
+                    @endphp
+                    <tr>
+                        <td colspan="5" class="text-end">Sub Total</td>
+                        <td class="text-end">Rp {{ number_format($invoice->total, 0, ',', '.') }}</td>
+                    </tr>
+                    <tr>
+                        <td colspan="5" class="text-end">PPN (11%)</td>
+                        <td class="text-end">Rp {{ number_format($ppn, 0, ',', '.') }}</td>
+                    </tr>
+                    <tr>
+                        <td colspan="5" class="text-end"><strong>GRAND TOTAL</strong></td>
+                        <td class="text-end"><strong>Rp {{ number_format($grandTotal, 0, ',', '.') }}</strong></td>
+                    </tr>
+                    @else
                     <tr>
                         <td colspan="5" class="text-end"><strong>TOTAL</strong></td>
                         <td class="text-end"><strong>Rp {{ number_format($invoice->total, 0, ',', '.') }}</strong></td>
                     </tr>
+                    @endif
                 </tfoot>
             </table>
         </div>

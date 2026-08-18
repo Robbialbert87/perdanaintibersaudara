@@ -82,6 +82,7 @@ class InvoiceController extends Controller
             'total' => $total,
             'catatan' => $request->catatan ?? '',
             'kata_penutup' => $request->kata_penutup ?? '',
+            'ppn_active' => $request->boolean('ppn_active'),
         ])->render();
 
         return response()->json([
@@ -153,6 +154,7 @@ class InvoiceController extends Controller
                 'customer_id' => $request->customer_id,
                 'catatan' => $request->filled('catatan') ? trim($request->catatan) : null,
                 'kata_penutup' => $request->kata_penutup,
+                'ppn_active' => $request->boolean('ppn_active'),
                 'status' => 'draft',
                 'total' => 0,
             ]);
@@ -233,6 +235,7 @@ class InvoiceController extends Controller
                 'customer_id' => $request->customer_id,
                 'catatan' => $request->filled('catatan') ? trim($request->catatan) : null,
                 'kata_penutup' => $request->kata_penutup,
+                'ppn_active' => $request->boolean('ppn_active'),
             ]);
 
             $invoice->items()->delete();
