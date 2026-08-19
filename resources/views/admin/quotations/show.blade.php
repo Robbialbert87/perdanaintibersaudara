@@ -122,8 +122,9 @@
                         <th width="5%">No</th>
                         <th>Deskripsi Pekerjaan / Barang</th>
                         <th width="10%" class="text-center">Vol</th>
-                        <th width="20%" class="text-end">Harga Satuan (Rp)</th>
-                        <th width="20%" class="text-end">Jumlah Harga (Rp)</th>
+                        <th width="15%" class="text-end">Harga Satuan (Rp)</th>
+                        <th width="8%" class="text-center">Diskon (%)</th>
+                        <th width="17%" class="text-end">Jumlah Harga (Rp)</th>
                     </tr>
                 </thead>
                 <tbody>
@@ -138,13 +139,14 @@
                         </td>
                         <td class="text-center">{{ $item->volume }} {{ $item->satuan ?? $item->product->satuan ?? '' }}</td>
                         <td class="text-end">{{ number_format($item->harga_satuan, 0, ',', '.') }}</td>
+                        <td class="text-center">{{ $item->diskon ? $item->diskon . '%' : '-' }}</td>
                         <td class="text-end">{{ number_format($item->subtotal, 0, ',', '.') }}</td>
                     </tr>
                     @endforeach
                 </tbody>
                 <tfoot class="table-dark">
                     <tr>
-                        <td colspan="4" class="text-end fw-bold"><strong>TOTAL</strong></td>
+                        <td colspan="5" class="text-end fw-bold"><strong>TOTAL</strong></td>
                         <td class="text-end fw-bold"><strong>Rp {{ number_format($quotation->total, 0, ',', '.') }}</strong></td>
                     </tr>
                 </tfoot>

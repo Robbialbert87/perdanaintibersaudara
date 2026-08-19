@@ -67,6 +67,7 @@ class QuotationController extends Controller
             'items.*.volume' => 'required|string|max:255',
             'items.*.satuan' => 'nullable|string|max:50',
             'items.*.harga_satuan' => 'required',
+            'items.*.diskon' => 'nullable|numeric|min:0|max:100',
         ]);
 
         $total = 0;
@@ -76,7 +77,12 @@ class QuotationController extends Controller
         foreach ($request->items as $item) {
             $harga = (float) str_replace(['.', ','], ['', '.'], $item['harga_satuan']);
             $volume = (float) str_replace(['.', ','], ['', '.'], $item['volume']);
-            $subtotal = $volume * $harga;
+            $diskon = !empty($item['diskon']) ? (float) $item['diskon'] : 0;
+            if ($diskon > 0) {
+                $subtotal = $volume * $harga * (100 - $diskon) / 100;
+            } else {
+                $subtotal = $volume * $harga;
+            }
             $total += $subtotal;
 
             $namaItem = ! empty($item['nama_item']) ? $item['nama_item'] : ($perihalArray[$itemIndex] ?? null);
@@ -87,6 +93,7 @@ class QuotationController extends Controller
                 'volume' => $item['volume'],
                 'satuan' => $item['satuan'] ?? null,
                 'harga_satuan' => $harga,
+                'diskon' => $diskon > 0 ? $diskon : null,
                 'subtotal' => $subtotal,
                 'tampilkan_label' => $item['tampilkan_label'] === '1',
             ];
@@ -263,6 +270,7 @@ class QuotationController extends Controller
             'items.*.volume' => 'required|string|max:255',
             'items.*.satuan' => 'nullable|string|max:50',
             'items.*.harga_satuan' => 'required',
+            'items.*.diskon' => 'nullable|numeric|min:0|max:100',
         ]);
 
         $total = 0;
@@ -272,7 +280,12 @@ class QuotationController extends Controller
         foreach ($request->items as $item) {
             $harga = (float) str_replace(['.', ','], ['', '.'], $item['harga_satuan']);
             $volume = (float) str_replace(['.', ','], ['', '.'], $item['volume']);
-            $subtotal = $volume * $harga;
+            $diskon = !empty($item['diskon']) ? (float) $item['diskon'] : 0;
+            if ($diskon > 0) {
+                $subtotal = $volume * $harga * (100 - $diskon) / 100;
+            } else {
+                $subtotal = $volume * $harga;
+            }
             $total += $subtotal;
 
             $namaItem = ! empty($item['nama_item']) ? $item['nama_item'] : ($perihalArray[$itemIndex] ?? null);
@@ -283,6 +296,7 @@ class QuotationController extends Controller
                 'volume' => $item['volume'],
                 'satuan' => $item['satuan'] ?? null,
                 'harga_satuan' => $harga,
+                'diskon' => $diskon > 0 ? $diskon : null,
                 'subtotal' => $subtotal,
                 'tampilkan_label' => $item['tampilkan_label'] === '1',
             ];

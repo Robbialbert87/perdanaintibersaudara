@@ -17,6 +17,7 @@ class QuotationItem extends Model
         'volume',
         'satuan',
         'harga_satuan',
+        'diskon',
         'subtotal',
         'tampilkan_label',
     ];

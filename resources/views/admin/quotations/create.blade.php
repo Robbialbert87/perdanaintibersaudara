@@ -127,12 +127,13 @@
                         <thead class="table-light">
                             <tr>
                                 <th width="20%">Produk/Jasa (Opsional)</th>
-                                <th width="25%">Deskripsi Detail <span class="text-danger">*</span></th>
-                                <th width="8%">Volume</th>
-                                <th width="10%">Satuan</th>
-                                <th width="12%">Harga Satuan</th>
-                                <th width="12%">Jumlah Harga</th>
-                                <th width="6%" class="text-center">Label<br><small class="text-muted">PDF</small></th>
+                                <th width="22%">Deskripsi Detail <span class="text-danger">*</span></th>
+                                <th width="7%">Volume</th>
+                                <th width="9%">Satuan</th>
+                                <th width="11%">Harga Satuan</th>
+                                <th width="8%">Diskon (%)</th>
+                                <th width="11%">Jumlah Harga</th>
+                                <th width="5%" class="text-center">Label<br><small class="text-muted">PDF</small></th>
                                 <th width="7%" class="text-center">Aksi</th>
                             </tr>
                         </thead>
@@ -170,6 +171,9 @@
                                 <td data-label="Harga Satuan">
                                     <input type="text" name="items[0][harga_satuan]" class="form-control harga-input currency-format" value="" required>
                                 </td>
+                                <td data-label="Diskon (%)">
+                                    <input type="number" name="items[0][diskon]" class="form-control diskon-input" value="" min="0" max="100" placeholder="0">
+                                </td>
                                 <td data-label="Jumlah Harga">
                                     <input type="text" name="items[0][subtotal]" class="form-control subtotal-input currency-format" value="0" readonly>
                                 </td>
@@ -186,7 +190,7 @@
                     </tbody>
                     <tfoot class="table-dark">
                         <tr>
-                            <td colspan="5" class="text-end fw-bold align-middle text-white"><strong>TOTAL KESELURUHAN</strong></td>
+                            <td colspan="6" class="text-end fw-bold align-middle text-white"><strong>TOTAL KESELURUHAN</strong></td>
                             <td colspan="3">
                                 <div class="input-group">
                                     <span class="input-group-text">Rp</span>
@@ -266,11 +270,17 @@ document.addEventListener('DOMContentLoaded', function() {
         input.value = parts.length > 1 ? integerPart + ',' + parts[1] : integerPart;
     };
 
-    // Calculate row subtotal = volume * harga_satuan
+    // Calculate row subtotal = volume * harga_satuan * (100 - diskon) / 100
     const calculateRowSubtotal = (row) => {
         const volume = parseFloat(row.querySelector('.volume-input').value) || 0;
         const harga = parseIDR(row.querySelector('.harga-input').value);
-        const subtotal = volume * harga;
+        const diskon = parseFloat(row.querySelector('.diskon-input').value) || 0;
+        let subtotal;
+        if (diskon > 0) {
+            subtotal = volume * harga * (100 - diskon) / 100;
+        } else {
+            subtotal = volume * harga;
+        }
         row.querySelector('.subtotal-input').value = subtotal > 0 ? formatIDR(subtotal) : '0';
     };
 
@@ -287,7 +297,7 @@ document.addEventListener('DOMContentLoaded', function() {
         if (e.target.classList.contains('currency-format')) {
             formatCurrencyInput(e.target);
         }
-        if (e.target.classList.contains('volume-input') || e.target.classList.contains('harga-input') || e.target.classList.contains('currency-format')) {
+        if (e.target.classList.contains('volume-input') || e.target.classList.contains('harga-input') || e.target.classList.contains('diskon-input') || e.target.classList.contains('currency-format')) {
             const row = e.target.closest('.item-row');
             if (row) calculateRowSubtotal(row);
             calculateTotal();
@@ -454,6 +464,9 @@ document.addEventListener('DOMContentLoaded', function() {
             </td>
             <td data-label="Harga Satuan">
                 <input type="text" name="items[${index}][harga_satuan]" class="form-control harga-input currency-format" value="" required>
+            </td>
+            <td data-label="Diskon (%)">
+                <input type="number" name="items[${index}][diskon]" class="form-control diskon-input" value="" min="0" max="100" placeholder="0">
             </td>
             <td data-label="Jumlah Harga">
                 <input type="text" name="items[${index}][subtotal]" class="form-control subtotal-input currency-format" value="0" readonly>
