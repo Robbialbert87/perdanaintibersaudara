@@ -111,11 +111,11 @@ class QuotationController extends Controller
                 ->orderBy('id', 'desc')
                 ->first();
 
-            $nextNumber = 101;
+            $nextNumber = $month * 100 + 1;
             if ($lastQuotation) {
                 $parts = explode('/', $lastQuotation->nomor_surat);
                 $lastNumber = intval($parts[0]);
-                $nextNumber = max(101, $lastNumber + 1);
+                $nextNumber = max($month * 100 + 1, $lastNumber + 1);
             }
 
             $nomorSurat = sprintf('%03d/SP/PIB-JMB/%s/%s', $nextNumber, $romanMonth, $year);
