@@ -59,11 +59,11 @@ class WarrantyCardController extends Controller
                 ->orderBy('id', 'desc')
                 ->first();
 
-            $nextNumber = 101;
+            $nextNumber = $month * 100 + 1;
             if ($lastCard) {
                 $parts = explode('/', $lastCard->nomor_kartu);
                 $lastNumber = intval($parts[0]);
-                $nextNumber = max(101, $lastNumber + 1);
+                $nextNumber = max($month * 100 + 1, $lastNumber + 1);
             }
 
             $nomorKartu = sprintf('%03d/GAR/PIB-JMB/%s/%s', $nextNumber, $romanMonth, $year);

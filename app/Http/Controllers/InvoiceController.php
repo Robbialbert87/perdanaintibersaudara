@@ -140,10 +140,10 @@ class InvoiceController extends Controller
                 ->orderBy('id', 'desc')
                 ->first();
 
-            $nextNumber = 1;
+            $nextNumber = $month * 100 + 1;
             if ($lastInvoice) {
                 $parts = explode('/', $lastInvoice->nomor_invoice);
-                $nextNumber = intval($parts[0]) + 1;
+                $nextNumber = max($month * 100 + 1, intval($parts[0]) + 1);
             }
 
             $nomorInvoice = sprintf('%03d/INV/PIB-JMB/%s/%s', $nextNumber, $romanMonth, $year);
@@ -431,10 +431,10 @@ PROMPT;
                     ->orderBy('id', 'desc')
                     ->first();
 
-                $nextNumber = 1;
+                $nextNumber = $month * 100 + 1;
                 if ($lastInvoice) {
                     $parts = explode('/', $lastInvoice->nomor_invoice);
-                    $nextNumber = intval($parts[0]) + 1;
+                    $nextNumber = max($month * 100 + 1, intval($parts[0]) + 1);
                 }
 
                 $nomorInvoice = sprintf('%03d/INV/PIB-JMB/%s/%s', $nextNumber, $romanMonth, $year);
@@ -516,10 +516,10 @@ PROMPT;
                     ->orderBy('id', 'desc')
                     ->first();
 
-                $nextNumber = 1;
+                $nextNumber = $month * 100 + 1;
                 if ($lastInvoice) {
                     $parts = explode('/', $lastInvoice->nomor_invoice);
-                    $nextNumber = intval($parts[0]) + 1;
+                    $nextNumber = max($month * 100 + 1, intval($parts[0]) + 1);
                 }
 
                 $nomorInvoice = sprintf('%03d/INV/PIB-JMB/%s/%s', $nextNumber, $romanMonth, $year);
