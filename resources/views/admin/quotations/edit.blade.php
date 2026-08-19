@@ -402,6 +402,12 @@ document.addEventListener('DOMContentLoaded', function() {
                 <input type="text" name="items[${index}][subtotal]" class="form-control subtotal-input currency-format" value="0" readonly>
             </td>
             <td class="text-center">
+                <div class="form-check form-switch d-inline-block m-0">
+                    <input type="hidden" name="items[${index}][tampilkan_label]" value="0">
+                    <input type="checkbox" class="form-check-input" name="items[${index}][tampilkan_label]" value="1" checked style="cursor:pointer;">
+                </div>
+            </td>
+            <td class="text-center">
                 <button type="button" class="btn btn-danger btn-sm remove-row"><i class="bi bi-trash"></i></button>
             </td>
         </tr>`;
