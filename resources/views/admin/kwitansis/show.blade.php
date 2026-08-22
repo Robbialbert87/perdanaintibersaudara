@@ -55,6 +55,12 @@
                 <td class="text-muted">Untuk Pembayaran</td>
                 <td>: {{ $kwitansi->untuk_pembayaran ?? '-' }}</td>
             </tr>
+            @if($kwitansi->catatan)
+            <tr>
+                <td class="text-muted">Catatan</td>
+                <td>: {!! nl2br(e($kwitansi->catatan)) !!}</td>
+            </tr>
+            @endif
             @if($kwitansi->invoice)
             <tr>
                 <td class="text-muted">Referensi Invoice</td>

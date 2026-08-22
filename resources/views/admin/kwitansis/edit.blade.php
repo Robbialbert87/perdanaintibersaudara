@@ -66,6 +66,13 @@
                 </div>
             </div>
 
+            <div class="mb-4">
+                <label class="form-label">Catatan <span class="text-muted">(opsional)</span></label>
+                <textarea name="catatan" class="form-control @error('catatan') is-invalid @enderror" rows="4" placeholder="Contoh:&#10;1. Mohon Pembayaran ditransfer ke rekening Bank berikut :&#10;BCA, No. Rekening 619 801 2191, An. CV Perdana Inti Bersaudara&#10;2. Pembayaran baru dianggap sah setelah cek/giro telah dicairkan">{{ trim(old('catatan', $kwitansi->catatan)) }}</textarea>
+                @error('catatan')<div class="invalid-feedback">{{ $message }}</div>@enderror
+                <small class="text-muted">Jika diisi, catatan ini akan tampil pada PDF kwitansi.</small>
+            </div>
+
             <div class="d-flex justify-content-between">
                 <a href="{{ route('kwitansis.index') }}" class="btn btn-secondary"><i class="bi bi-arrow-left"></i> Kembali</a>
                 <button type="submit" class="btn btn-primary"><i class="bi bi-save"></i> Simpan Perubahan</button>

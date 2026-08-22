@@ -46,6 +46,7 @@ class KwitansiController extends Controller
             'invoice_id' => 'nullable|exists:invoices,id',
             'jumlah' => 'required',
             'untuk_pembayaran' => 'nullable|string|max:500',
+            'catatan' => 'nullable|string|max:2000',
         ]);
 
         $jumlah = (float) str_replace(['.', ','], ['', '.'], $request->jumlah);
@@ -76,6 +77,7 @@ class KwitansiController extends Controller
                 'invoice_id' => $request->invoice_id,
                 'jumlah' => $jumlah,
                 'untuk_pembayaran' => $request->filled('untuk_pembayaran') ? trim($request->untuk_pembayaran) : null,
+                'catatan' => $request->filled('catatan') ? trim($request->catatan) : null,
             ]);
         });
 
@@ -101,11 +103,9 @@ class KwitansiController extends Controller
         $verifyUrl = route('verify.kwitansi', $kwitansi->verify_token);
         $qrCode = QRCodeHelper::generate($verifyUrl, 150);
 
-        // A6 landscape: 148mm x 105mm = 419.53pt x 297.64pt
-        // dompdf menukar width/height saat orientasi landscape,
-        // sehingga dimensi dikirim dalam portrait (297.64 x 419.53)
+        // F4 portrait, sama seperti penawaran/invoice
         $pdf = app('dompdf.wrapper')->loadView('admin.kwitansis.pdf', compact('kwitansi', 'qrCode'))
-            ->setPaper([0, 0, 297.64, 419.53], 'landscape');
+            ->setPaper([0, 0, 595.28, 935.43], 'portrait');
 
         $filename = 'Kwitansi_'.str_replace('/', '_', $kwitansi->nomor_kwitansi).'.pdf';
 
@@ -129,6 +129,7 @@ class KwitansiController extends Controller
             'invoice_id' => 'nullable|exists:invoices,id',
             'jumlah' => 'required',
             'untuk_pembayaran' => 'nullable|string|max:500',
+            'catatan' => 'nullable|string|max:2000',
         ]);
 
         $kwitansi = Kwitansi::findOrFail($id);
@@ -140,6 +141,7 @@ class KwitansiController extends Controller
             'invoice_id' => $request->invoice_id,
             'jumlah' => $jumlah,
             'untuk_pembayaran' => $request->filled('untuk_pembayaran') ? trim($request->untuk_pembayaran) : null,
+            'catatan' => $request->filled('catatan') ? trim($request->catatan) : null,
         ]);
 
         return redirect()->route('kwitansis.index')->with('success', 'Kwitansi berhasil diperbarui.');

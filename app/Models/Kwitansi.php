@@ -17,6 +17,7 @@ class Kwitansi extends Model
         'invoice_id',
         'jumlah',
         'untuk_pembayaran',
+        'catatan',
         'verify_token',
     ];
 
