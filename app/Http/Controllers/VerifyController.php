@@ -4,6 +4,7 @@ namespace App\Http\Controllers;
 
 use App\Models\BeritaAcara;
 use App\Models\Invoice;
+use App\Models\Kwitansi;
 use App\Models\PurchaseOrder;
 use App\Models\Quotation;
 use App\Models\WarrantyCard;
@@ -74,5 +75,18 @@ class VerifyController extends Controller
         $tanggalGenerate = Carbon::now('Asia/Jakarta')->locale('id')->translatedFormat('d F Y H:i').' WIB';
 
         return view('style.verify-berita-acara', compact('beritaAcara', 'tanggalGenerate'));
+    }
+
+    public function showKwitansi(string $token)
+    {
+        $kwitansi = Kwitansi::with('customer')->where('verify_token', $token)->first();
+
+        if (! $kwitansi) {
+            return view('style.verify-not-found');
+        }
+
+        $tanggalGenerate = Carbon::now('Asia/Jakarta')->locale('id')->translatedFormat('d F Y H:i').' WIB';
+
+        return view('style.verify-kwitansi', compact('kwitansi', 'tanggalGenerate'));
     }
 }

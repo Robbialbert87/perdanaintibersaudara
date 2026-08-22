@@ -4,6 +4,7 @@ use App\Http\Controllers\ActivityController;
 use App\Http\Controllers\BeritaAcaraController;
 use App\Http\Controllers\CustomerController;
 use App\Http\Controllers\InvoiceController;
+use App\Http\Controllers\KwitansiController;
 use App\Http\Controllers\ProductController;
 use App\Http\Controllers\PurchaseOrderController;
 use App\Http\Controllers\QuotationController;
@@ -63,6 +64,7 @@ Route::get('/verify-quotation/{token}', [VerifyController::class, 'showQuotation
 Route::get('/verify-purchase-order/{token}', [VerifyController::class, 'showPurchaseOrder'])->name('verify.purchase_order');
 Route::get('/verify-warranty-card/{token}', [VerifyController::class, 'showWarrantyCard'])->name('verify.warranty_card');
 Route::get('/verify-berita-acara/{token}', [VerifyController::class, 'showBeritaAcara'])->name('verify.berita_acara');
+Route::get('/verify-kwitansi/{token}', [VerifyController::class, 'showKwitansi'])->name('verify.kwitansi');
 Route::get('/produk/{id}', function ($id) {
     $product = Product::findOrFail($id);
 
@@ -113,6 +115,8 @@ Route::middleware(['auth', 'verified', 'throttle:60,1'])->group(function () {
     Route::post('invoices/ai-store-draft', [InvoiceController::class, 'aiStoreDraft'])->name('invoices.ai_store_draft');
     Route::post('invoices/preview', [InvoiceController::class, 'preview'])->name('invoices.preview');
     Route::resource('invoices', InvoiceController::class);
+    Route::get('kwitansis/{kwitansi}/export-pdf', [KwitansiController::class, 'exportPdf'])->name('kwitansis.export_pdf');
+    Route::resource('kwitansis', KwitansiController::class);
     Route::resource('users', UserController::class)->except(['show']);
 });
 

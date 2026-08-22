@@ -917,6 +917,10 @@
                 href="{{ route('invoices.index') }}">
                 <i class="bi bi-receipt"></i><span>Invoice</span><span class="arr">&rarr;</span>
             </a>
+            <a class="sidebar-link {{ request()->routeIs('kwitansis.*') ? 'active' : '' }}"
+                href="{{ route('kwitansis.index') }}">
+                <i class="bi bi-cash-coin"></i><span>Kwitansi</span><span class="arr">&rarr;</span>
+            </a>
 
             <div class="sidebar-label">Lainnya</div>
             <a class="sidebar-link {{ request()->routeIs('activities.*') ? 'active' : '' }}"

@@ -218,47 +218,51 @@
 </div>
 
 <!-- Two Column: Pesanan Pembelian & Alamat Pengiriman -->
+@php
+    $hasBuyer = $purchaseOrder->buyer_name || $purchaseOrder->buyer_address || $purchaseOrder->buyer_cp || $purchaseOrder->buyer_phone;
+    $hasShipping = $purchaseOrder->shipping_name || $purchaseOrder->shipping_address || $purchaseOrder->shipping_cp || $purchaseOrder->shipping_phone;
+@endphp
+
+@if($hasBuyer || $hasShipping)
 <table class="two-col-table">
     <tr>
+        @if($hasBuyer)
         <td>
             <div class="col-header">PESANAN PEMBELIAN</div>
-            <div class="field-row"><span class="field-label">Nama:</span> {{ $purchaseOrder->buyer_name ?? '-' }}</div>
-            <div class="field-row"><span class="field-label">Alamat:</span> {{ $purchaseOrder->buyer_address ?? '-' }}</div>
-            <div class="field-row"><span class="field-label">CP:</span> {{ $purchaseOrder->buyer_cp ?? '-' }}</div>
-            <div class="field-row"><span class="field-label">Telepon:</span> {{ $purchaseOrder->buyer_phone ?? '-' }}</div>
+            @if($purchaseOrder->buyer_name)<div class="field-row"><span class="field-label">Nama:</span> {{ $purchaseOrder->buyer_name }}</div>@endif
+            @if($purchaseOrder->buyer_address)<div class="field-row"><span class="field-label">Alamat:</span> {{ $purchaseOrder->buyer_address }}</div>@endif
+            @if($purchaseOrder->buyer_cp)<div class="field-row"><span class="field-label">CP:</span> {{ $purchaseOrder->buyer_cp }}</div>@endif
+            @if($purchaseOrder->buyer_phone)<div class="field-row"><span class="field-label">Telepon:</span> {{ $purchaseOrder->buyer_phone }}</div>@endif
         </td>
+        @endif
+        @if($hasShipping)
         <td>
             <div class="col-header">ALAMAT PENGIRIMAN</div>
-            <div class="field-row"><span class="field-label">Nama:</span> {{ $purchaseOrder->shipping_name ?? '-' }}</div>
-            <div class="field-row"><span class="field-label">Alamat:</span> {{ $purchaseOrder->shipping_address ?? '-' }}</div>
-            <div class="field-row"><span class="field-label">CP:</span> {{ $purchaseOrder->shipping_cp ?? '-' }}</div>
-            <div class="field-row"><span class="field-label">Telepon:</span> {{ $purchaseOrder->shipping_phone ?? '-' }}</div>
+            @if($purchaseOrder->shipping_name)<div class="field-row"><span class="field-label">Nama:</span> {{ $purchaseOrder->shipping_name }}</div>@endif
+            @if($purchaseOrder->shipping_address)<div class="field-row"><span class="field-label">Alamat:</span> {{ $purchaseOrder->shipping_address }}</div>@endif
+            @if($purchaseOrder->shipping_cp)<div class="field-row"><span class="field-label">CP:</span> {{ $purchaseOrder->shipping_cp }}</div>@endif
+            @if($purchaseOrder->shipping_phone)<div class="field-row"><span class="field-label">Telepon:</span> {{ $purchaseOrder->shipping_phone }}</div>@endif
         </td>
+        @endif
     </tr>
 </table>
+@endif
 
 <!-- Items Table -->
-<div class="section-title">Daftar Barang</div>
 <table class="items-table">
     <thead>
         <tr>
-            <th>Jumlah</th>
-            <th>Satuan</th>
-            <th>Jenis Barang</th>
-            <th>Harga Satuan</th>
-            <th>DP %</th>
-            <th>Jumlah</th>
+            <th width="8%">No</th>
+            <th width="62%">Jenis Kegiatan</th>
+            <th width="30%" class="text-center">Volume</th>
         </tr>
     </thead>
     <tbody>
-        @foreach($purchaseOrder->items as $item)
+        @foreach($purchaseOrder->items as $index => $item)
         <tr>
-            <td>{{ $item->volume }}</td>
-            <td>{{ $item->satuan ?? '-' }}</td>
+            <td>{{ $index + 1 }}</td>
             <td>{{ $item->deskripsi }}</td>
-            <td>Rp{{ number_format($item->harga_satuan, 0, ',', '.') }}</td>
-            <td>{{ (int)$item->dp_persentase }}%</td>
-            <td>Rp{{ number_format($item->subtotal - $item->dp_nominal, 0, ',', '.') }}</td>
+            <td class="text-center">{{ $item->volume }} {{ $item->satuan ?? '' }}</td>
         </tr>
         @endforeach
         </tbody>
