@@ -68,13 +68,13 @@
                                 </div>
                             </div>
                             <div class="row g-3">
-                                <div class="col-md-5">
+                                <div class="col-md-6">
                                     <label class="ie-label">Produk/Jasa (Opsional)</label>
                                     <input type="text" name="items[{{ $index }}][nama_item]" class="form-control nama-item-input" list="itemSuggestions" value="{{ $item->nama_item }}" placeholder="Nama Barang/Pekerjaan">
                                 </div>
-                                <div class="col-md-7">
+                                <div class="col-md-6">
                                     <label class="ie-label">Deskripsi <span class="text-danger">*</span></label>
-                                    <textarea name="items[{{ $index }}][deskripsi]" class="form-control deskripsi-input" rows="3" required>{{ $item->deskripsi }}</textarea>
+                                    <textarea name="items[{{ $index }}][deskripsi]" class="form-control deskripsi-input" rows="2" required>{{ $item->deskripsi }}</textarea>
                                 </div>
                             </div>
                             <div class="row g-3">
@@ -286,14 +286,14 @@ document.addEventListener('DOMContentLoaded', function() {
                 </div>
             </div>
             <div class="row g-3">
-                <div class="col-md-5">
+                <div class="col-md-6">
                     <label class="ie-label">Produk/Jasa (Opsional)</label>
                     <input type="text" name="items[${index}][nama_item]" class="form-control nama-item-input" list="itemSuggestions"
                         value="${namaItem}" placeholder="Nama Barang/Pekerjaan">
                 </div>
-                <div class="col-md-7">
+                <div class="col-md-6">
                     <label class="ie-label">Deskripsi <span class="text-danger">*</span></label>
-                    <textarea name="items[${index}][deskripsi]" class="form-control deskripsi-input" rows="3" required placeholder="Deskripsi pekerjaan/barang..."></textarea>
+                    <textarea name="items[${index}][deskripsi]" class="form-control deskripsi-input" rows="2" required placeholder="Deskripsi pekerjaan/barang..."></textarea>
                 </div>
             </div>
             <div class="row g-3">
