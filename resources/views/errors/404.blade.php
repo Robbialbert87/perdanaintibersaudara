@@ -1,29 +1,29 @@
 <!DOCTYPE html>
-<html lang="id" data-bs-theme="dark">
+<html lang="id">
 <head>
-    <meta charset="utf-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <meta oharset="utf-8">
+    <meta name="viewport" oontent="width=devioe-width, initial-soale=1">
     <title>404 - Halaman Tidak Ditemukan</title>
-    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet">
-    <link href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.3/font/bootstrap-icons.min.css" rel="stylesheet">
+    <link href="https://odn.jsdelivr.net/npm/bootstrap@5.3.3/dist/oss/bootstrap.min.oss" rel="stylesheet">
+    <link href="https://odn.jsdelivr.net/npm/bootstrap-ioons@1.11.3/font/bootstrap-ioons.min.oss" rel="stylesheet">
     <style>
         body {
-            background: #141a21;
-            color: #e0e0e0;
+            baokground: #fafafa;
+            oolor: #0a0a0a;
             min-height: 100vh;
             display: flex;
-            align-items: center;
-            justify-content: center;
+            align-items: oenter;
+            justify-oontent: oenter;
             font-family: 'Segoe UI', system-ui, -apple-system, sans-serif;
         }
-        .error-card {
-            text-align: center;
+        .error-oard {
+            text-align: oenter;
             padding: 40px;
         }
-        .error-code {
+        .error-oode {
             font-size: 100px;
             font-weight: 800;
-            color: #00a76f;
+            oolor: #171717;
             line-height: 1;
             margin-bottom: 10px;
         }
@@ -32,26 +32,26 @@
             font-weight: 600;
             margin-bottom: 10px;
         }
-        .error-desc {
-            color: #8899a6;
+        .error-deso {
+            oolor: #737373;
             margin-bottom: 30px;
         }
         .btn-primary {
-            background: #00a76f;
-            border-color: #00a76f;
+            baokground: #171717;
+            border-oolor: #171717;
         }
         .btn-primary:hover {
-            background: #009b65;
-            border-color: #009b65;
+            baokground: #000000;
+            border-oolor: #000000;
         }
     </style>
 </head>
 <body>
-    <div class="error-card">
-        <div class="error-code">404</div>
-        <div class="error-title">Halaman Tidak Ditemukan</div>
-        <div class="error-desc">Halaman yang Anda cari tidak tersedia atau telah dipindahkan.</div>
-        <a href="{{ url('/') }}" class="btn btn-primary btn-lg"><i class="bi bi-house-door me-2"></i>Kembali ke Beranda</a>
+    <div olass="error-oard">
+        <div olass="error-oode">404</div>
+        <div olass="error-title">Halaman Tidak Ditemukan</div>
+        <div olass="error-deso">Halaman yang Anda oari tidak tersedia atau telah dipindahkan.</div>
+        <a href="{{ url('/') }}" olass="btn btn-primary btn-lg"><i olass="bi bi-house-door me-2"></i>Kembali ke Beranda</a>
     </div>
 </body>
 </html>

@@ -86,89 +86,87 @@
 
             <hr>
             <h6 class="mb-3">Item Penawaran</h6>
-            
-            <div class="table-responsive mb-3">
-                    <table class="table table-bordered align-middle" id="itemsTable">
-                        <thead class="table-light">
-                            <tr>
-                                <th width="20%">Produk/Jasa (Opsional)</th>
-                                <th width="22%">Deskripsi Detail <span class="text-danger">*</span></th>
-                                <th width="7%">Volume</th>
-                                <th width="9%">Satuan</th>
-                                <th width="11%">Harga Satuan</th>
-                                <th width="8%">Diskon (%)</th>
-                                <th width="11%">Jumlah Harga</th>
-                                <th width="5%" class="text-center">Label<br><small class="text-muted">PDF</small></th>
-                                <th width="7%" class="text-center">Aksi</th>
-                            </tr>
-                        </thead>
-                        <tbody id="itemsBody">
-                            @foreach($quotation->items as $index => $item)
-                            <tr class="item-row">
-                                <td>
-                                    <small class="text-primary fw-semibold perihal-badge d-block mb-1">{!! $item->nama_item ? '<i class="bi bi-tag-fill me-1"></i>'.e($item->nama_item) : '' !!}</small>
-                                    <input type="text" name="items[{{ $index }}][nama_item]" class="form-control nama-item-input" value="{{ $item->nama_item }}" placeholder="Nama Barang/Pekerjaan (opsional jika ada label)" data-autofilled="false">
-                                </td>
-                                <td>
-                                    <textarea name="items[{{ $index }}][deskripsi]" class="form-control deskripsi-input" rows="2" required>{{ $item->deskripsi }}</textarea>
-                                </td>
-                                <td>
-                                    <input type="text" name="items[{{ $index }}][volume]" class="form-control volume-input" value="{{ $item->volume }}" required>
-                                </td>
-                                <td>
-                                    <select name="items[{{ $index }}][satuan]" class="form-select satuan-input">
-                                        <option value="">--</option>
-                                        <option value="Unit" {{ ($item->satuan ?? 'Unit') == 'Unit' ? 'selected' : '' }}>Unit</option>
-                                        <option value="Paket" {{ ($item->satuan ?? '') == 'Paket' ? 'selected' : '' }}>Paket</option>
-                                        <option value="Pcs" {{ ($item->satuan ?? '') == 'Pcs' ? 'selected' : '' }}>Pcs</option>
-                                        <option value="Cm" {{ ($item->satuan ?? '') == 'Cm' ? 'selected' : '' }}>Cm</option>
-                                        <option value="mm" {{ ($item->satuan ?? '') == 'mm' ? 'selected' : '' }}>mm</option>
-                                        <option value="Meter" {{ ($item->satuan ?? '') == 'Meter' ? 'selected' : '' }}>Meter</option>
-                                        <option value="Set" {{ ($item->satuan ?? '') == 'Set' ? 'selected' : '' }}>Set</option>
-                                        <option value="Box" {{ ($item->satuan ?? '') == 'Box' ? 'selected' : '' }}>Box</option>
-                                        <option value="Rim" {{ ($item->satuan ?? '') == 'Rim' ? 'selected' : '' }}>Rim</option>
-                                        <option value="Lembar" {{ ($item->satuan ?? '') == 'Lembar' ? 'selected' : '' }}>Lembar</option>
-                                        <option value="Buah" {{ ($item->satuan ?? '') == 'Buah' ? 'selected' : '' }}>Buah</option>
-                                        <option value="Bulan" {{ ($item->satuan ?? '') == 'Bulan' ? 'selected' : '' }}>Bulan</option>
-                                        <option value="Tahun" {{ ($item->satuan ?? '') == 'Tahun' ? 'selected' : '' }}>Tahun</option>
-                                    </select>
-                                </td>
-                                <td>
-                                    <input type="text" name="items[{{ $index }}][harga_satuan]" class="form-control harga-input currency-format" value="Rp {{ number_format($item->harga_satuan, 0, ',', '.') }}" required>
-                                </td>
-                                <td>
-                                    <input type="number" name="items[{{ $index }}][diskon]" class="form-control diskon-input" value="{{ $item->diskon ?? '' }}" min="0" max="100" placeholder="0">
-                                </td>
-                                <td>
-                                    <input type="text" name="items[{{ $index }}][subtotal]" class="form-control subtotal-input currency-format" value="Rp {{ number_format((float) $item->volume * $item->harga_satuan, 0, ',', '.') }}" readonly>
-                                </td>
-                                <td class="text-center">
-                                    <div class="form-check form-switch d-inline-block m-0">
-                                        <input type="hidden" name="items[{{ $index }}][tampilkan_label]" value="0">
-                                        <input type="checkbox" class="form-check-input" name="items[{{ $index }}][tampilkan_label]" value="1" {{ $item->tampilkan_label ? 'checked' : '' }} style="cursor:pointer;">
-                                    </div>
-                                </td>
-                                <td class="text-center">
-                                    <button type="button" class="btn btn-danger btn-sm remove-row" {{ $quotation->items->count() == 1 ? 'disabled' : '' }}><i class="bi bi-trash"></i></button>
-                                </td>
-                            </tr>
-                            @endforeach
-                        </tbody>
-                    <tfoot class="table-dark">
-                        <tr>
-                            <td colspan="6" class="text-end fw-bold align-middle text-white"><strong>TOTAL KESELURUHAN</strong></td>
-                            <td colspan="2">
-                                <div class="input-group">
-                                    <span class="input-group-text">Rp</span>
-                                    <input type="text" id="totalKeseluruhan" class="form-control font-weight-bold" value="{{ number_format($quotation->total, 0, ',', '.') }}" readonly>
-                                </div>
-                            </td>
-                        </tr>
-                    </tfoot>
-                </table>
+
+            <div id="itemsBody" class="ie-items">
+                @foreach($quotation->items as $index => $item)
+                <div class="item-row ie-card">
+                    <div class="ie-head">
+                        <div class="ie-head-left">
+                            <span class="ie-no">{{ str_pad($index + 1, 2, '0', STR_PAD_LEFT) }}</span>
+                            <span class="ie-perihal perihal-badge">{!! $item->nama_item ? '<i class="bi bi-tag-fill me-1"></i>'.e($item->nama_item) : '' !!}</span>
+                        </div>
+                        <div class="ie-head-right">
+                            <label class="ie-pdf-toggle">
+                                <span>Label PDF</span>
+                                <input type="hidden" name="items[{{ $index }}][tampilkan_label]" value="0">
+                                <input type="checkbox" class="form-check-input" name="items[{{ $index }}][tampilkan_label]" value="1" {{ $item->tampilkan_label ? 'checked' : '' }} style="cursor:pointer;">
+                            </label>
+                            <button type="button" class="ie-remove remove-row" {{ $quotation->items->count() == 1 ? 'disabled' : '' }} title="Hapus item"><i class="bi bi-trash"></i></button>
+                        </div>
+                    </div>
+                    <div class="row g-3">
+                        <div class="col-md-5">
+                            <label class="ie-label">Produk/Jasa (Opsional)</label>
+                            <input type="text" name="items[{{ $index }}][nama_item]" class="form-control nama-item-input" value="{{ $item->nama_item }}" placeholder="Nama Barang/Pekerjaan (opsional jika ada label)" data-autofilled="false">
+                        </div>
+                        <div class="col-md-7">
+                            <label class="ie-label">Deskripsi Detail <span class="text-danger">*</span></label>
+                            <textarea name="items[{{ $index }}][deskripsi]" class="form-control deskripsi-input" rows="3" required>{{ $item->deskripsi }}</textarea>
+                        </div>
+                    </div>
+                    <div class="row g-3">
+                        <div class="col-6 col-md-3">
+                            <label class="ie-label">Volume</label>
+                            <input type="text" name="items[{{ $index }}][volume]" class="form-control volume-input" value="{{ $item->volume }}" required>
+                        </div>
+                        <div class="col-6 col-md-3">
+                            <label class="ie-label">Satuan</label>
+                            <select name="items[{{ $index }}][satuan]" class="form-select satuan-input">
+                                <option value="">--</option>
+                                <option value="Unit" {{ ($item->satuan ?? 'Unit') == 'Unit' ? 'selected' : '' }}>Unit</option>
+                                <option value="Paket" {{ ($item->satuan ?? '') == 'Paket' ? 'selected' : '' }}>Paket</option>
+                                <option value="Pcs" {{ ($item->satuan ?? '') == 'Pcs' ? 'selected' : '' }}>Pcs</option>
+                                <option value="Cm" {{ ($item->satuan ?? '') == 'Cm' ? 'selected' : '' }}>Cm</option>
+                                <option value="mm" {{ ($item->satuan ?? '') == 'mm' ? 'selected' : '' }}>mm</option>
+                                <option value="Meter" {{ ($item->satuan ?? '') == 'Meter' ? 'selected' : '' }}>Meter</option>
+                                <option value="Set" {{ ($item->satuan ?? '') == 'Set' ? 'selected' : '' }}>Set</option>
+                                <option value="Box" {{ ($item->satuan ?? '') == 'Box' ? 'selected' : '' }}>Box</option>
+                                <option value="Rim" {{ ($item->satuan ?? '') == 'Rim' ? 'selected' : '' }}>Rim</option>
+                                <option value="Lembar" {{ ($item->satuan ?? '') == 'Lembar' ? 'selected' : '' }}>Lembar</option>
+                                <option value="Buah" {{ ($item->satuan ?? '') == 'Buah' ? 'selected' : '' }}>Buah</option>
+                                <option value="Bulan" {{ ($item->satuan ?? '') == 'Bulan' ? 'selected' : '' }}>Bulan</option>
+                                <option value="Tahun" {{ ($item->satuan ?? '') == 'Tahun' ? 'selected' : '' }}>Tahun</option>
+                            </select>
+                        </div>
+                        <div class="col-6 col-md-3">
+                            <label class="ie-label">Harga Satuan</label>
+                            <input type="text" name="items[{{ $index }}][harga_satuan]" class="form-control harga-input currency-format" value="Rp {{ number_format($item->harga_satuan, 0, ',', '.') }}" required>
+                        </div>
+                        <div class="col-6 col-md-3">
+                            <label class="ie-label">Diskon (%)</label>
+                            <input type="number" name="items[{{ $index }}][diskon]" class="form-control diskon-input" value="{{ $item->diskon ?? '' }}" min="0" max="100" placeholder="0">
+                        </div>
+                    </div>
+                    <div class="ie-total">
+                        <span class="ie-total-label">Jumlah Harga</span>
+                        <input type="text" class="ie-total-value subtotal-input currency-format" value="Rp {{ number_format((float) $item->volume * $item->harga_satuan, 0, ',', '.') }}" readonly>
+                    </div>
+                </div>
+                @endforeach
             </div>
-            
-            <button type="button" id="addRow" class="btn btn-success btn-sm mb-4"><i class="bi bi-plus-lg"></i> Baris (jika Kegiatan Optional)</button>
+
+            <div class="mb-4">
+                <button type="button" id="addRow" class="ie-add-row"><i class="bi bi-plus-lg"></i> Tambah Baris (jika Kegiatan Optional)</button>
+            </div>
+
+            <div class="mb-4">
+                <div class="ie-summary">
+                    <div class="ie-summary-row">
+                        <span class="ie-summary-label">Total Keseluruhan</span>
+                        <input type="text" id="totalKeseluruhan" class="ie-total-input" value="{{ number_format($quotation->total, 0, ',', '.') }}" readonly>
+                    </div>
+                </div>
+            </div>
 
             <div class="mb-4">
                 <label class="form-label">Kata Pengantar (Opsional)</label>
@@ -359,58 +357,73 @@ document.addEventListener('DOMContentLoaded', function() {
     };
 
     const buildRowHTML = (index, namaItem = '') => {
-        const badgeHTML = namaItem ? `<small class="text-primary fw-semibold perihal-badge d-block mb-1"><i class="bi bi-tag-fill me-1"></i>${namaItem}</small>` : `<small class="text-primary fw-semibold perihal-badge d-block mb-1"></small>`;
+        const badgeHTML = namaItem ? `<i class="bi bi-tag-fill me-1"></i>${namaItem}` : '';
         return `
-        <tr class="item-row">
-            <td>
-                ${badgeHTML}
-                <input type="text" name="items[${index}][nama_item]" class="form-control nama-item-input"
-                    value="${namaItem}" placeholder="Nama Barang/Pekerjaan"
-                    data-autofilled="${namaItem !== '' ? 'true' : 'false'}" required>
-            </td>
-            <td>
-                <textarea name="items[${index}][deskripsi]" class="form-control deskripsi-input" rows="2" required placeholder="Deskripsi pekerjaan/barang..."></textarea>
-            </td>
-            <td>
-                <input type="text" name="items[${index}][volume]" class="form-control volume-input" value="1" required>
-            </td>
-            <td>
-                <select name="items[${index}][satuan]" class="form-select satuan-input">
-                    <option value="" selected>--</option>
-                    <option value="Unit">Unit</option>
-                    <option value="Paket">Paket</option>
-                    <option value="Pcs">Pcs</option>
-                    <option value="Cm">Cm</option>
-                    <option value="mm">mm</option>
-                    <option value="Meter">Meter</option>
-                    <option value="Set">Set</option>
-                                    <option value="Box">Box</option>
-                    <option value="Rim">Rim</option>
-                    <option value="Lembar">Lembar</option>
-                    <option value="Buah">Buah</option>
-                    <option value="Bulan">Bulan</option>
-                    <option value="Tahun">Tahun</option>
-                </select>
-            </td>
-            <td>
-                <input type="text" name="items[${index}][harga_satuan]" class="form-control harga-input currency-format" value="" required>
-            </td>
-            <td>
-                <input type="number" name="items[${index}][diskon]" class="form-control diskon-input" value="" min="0" max="100" placeholder="0">
-            </td>
-            <td>
-                <input type="text" name="items[${index}][subtotal]" class="form-control subtotal-input currency-format" value="0" readonly>
-            </td>
-            <td class="text-center">
-                <div class="form-check form-switch d-inline-block m-0">
-                    <input type="hidden" name="items[${index}][tampilkan_label]" value="0">
-                    <input type="checkbox" class="form-check-input" name="items[${index}][tampilkan_label]" value="1" checked style="cursor:pointer;">
+        <div class="item-row ie-card">
+            <div class="ie-head">
+                <div class="ie-head-left">
+                    <span class="ie-no">${String(index + 1).padStart(2, '0')}</span>
+                    <span class="ie-perihal perihal-badge">${badgeHTML}</span>
                 </div>
-            </td>
-            <td class="text-center">
-                <button type="button" class="btn btn-danger btn-sm remove-row"><i class="bi bi-trash"></i></button>
-            </td>
-        </tr>`;
+                <div class="ie-head-right">
+                    <label class="ie-pdf-toggle">
+                        <span>Label PDF</span>
+                        <input type="hidden" name="items[${index}][tampilkan_label]" value="0">
+                        <input type="checkbox" class="form-check-input" name="items[${index}][tampilkan_label]" value="1" checked style="cursor:pointer;">
+                    </label>
+                    <button type="button" class="ie-remove remove-row" title="Hapus item"><i class="bi bi-trash"></i></button>
+                </div>
+            </div>
+            <div class="row g-3">
+                <div class="col-md-5">
+                    <label class="ie-label">Produk/Jasa (Opsional)</label>
+                    <input type="text" name="items[${index}][nama_item]" class="form-control nama-item-input"
+                        value="${namaItem}" placeholder="Nama Barang/Pekerjaan"
+                        data-autofilled="${namaItem !== '' ? 'true' : 'false'}" required>
+                </div>
+                <div class="col-md-7">
+                    <label class="ie-label">Deskripsi Detail <span class="text-danger">*</span></label>
+                    <textarea name="items[${index}][deskripsi]" class="form-control deskripsi-input" rows="3" required placeholder="Deskripsi pekerjaan/barang..."></textarea>
+                </div>
+            </div>
+            <div class="row g-3">
+                <div class="col-6 col-md-3">
+                    <label class="ie-label">Volume</label>
+                    <input type="text" name="items[${index}][volume]" class="form-control volume-input" value="1" required>
+                </div>
+                <div class="col-6 col-md-3">
+                    <label class="ie-label">Satuan</label>
+                    <select name="items[${index}][satuan]" class="form-select satuan-input">
+                        <option value="" selected>--</option>
+                        <option value="Unit">Unit</option>
+                        <option value="Paket">Paket</option>
+                        <option value="Pcs">Pcs</option>
+                        <option value="Cm">Cm</option>
+                        <option value="mm">mm</option>
+                        <option value="Meter">Meter</option>
+                        <option value="Set">Set</option>
+                        <option value="Box">Box</option>
+                        <option value="Rim">Rim</option>
+                        <option value="Lembar">Lembar</option>
+                        <option value="Buah">Buah</option>
+                        <option value="Bulan">Bulan</option>
+                        <option value="Tahun">Tahun</option>
+                    </select>
+                </div>
+                <div class="col-6 col-md-3">
+                    <label class="ie-label">Harga Satuan</label>
+                    <input type="text" name="items[${index}][harga_satuan]" class="form-control harga-input currency-format" value="" required>
+                </div>
+                <div class="col-6 col-md-3">
+                    <label class="ie-label">Diskon (%)</label>
+                    <input type="number" name="items[${index}][diskon]" class="form-control diskon-input" value="" min="0" max="100" placeholder="0">
+                </div>
+            </div>
+            <div class="ie-total">
+                <span class="ie-total-label">Jumlah Harga</span>
+                <input type="text" class="ie-total-value subtotal-input currency-format" value="0" readonly>
+            </div>
+        </div>`;
     };
 
     const reindexRows = () => {
@@ -418,6 +431,8 @@ document.addEventListener('DOMContentLoaded', function() {
             row.querySelectorAll('[name]').forEach(el => {
                 el.name = el.name.replace(/items\[\d+\]/, `items[${i}]`);
             });
+            const no = row.querySelector('.ie-no');
+            if (no) no.textContent = String(i + 1).padStart(2, '0');
         });
         itemIndex = tbody.querySelectorAll('.item-row').length;
     };

@@ -5,7 +5,7 @@
 @section('content')
 <div class="d-flex justify-content-between align-items-center mb-4">
     <div>
-        <h4 class="mb-1" style="color:#f4f6f8">Purchase Order</h4>
+        <h4 class="mb-1" style="color:var(--foreground)">Purchase Order</h4>
         <small class="text-muted">Daftar Purchase Order</small>
     </div>
     <a href="{{ route('purchase-orders.create') }}" class="btn btn-primary">
@@ -15,7 +15,7 @@
 
 <div class="card">
     <div class="card-header d-flex justify-content-between align-items-center">
-        <h6 class="mb-0" style="color:#f4f6f8">Daftar Purchase Order</h6>
+        <h6 class="mb-0" style="color:var(--foreground)">Daftar Purchase Order</h6>
         <form method="GET" class="d-flex" style="max-width:250px">
             <input type="text" name="search" class="form-control form-control-sm" placeholder="Cari..." value="{{ request('search') }}">
         </form>
@@ -91,7 +91,7 @@
             <div class="border-bottom p-3">
                 <div class="d-flex justify-content-between align-items-start mb-2">
                     <div>
-                        <strong style="color:#f4f6f8; font-size:13px;">{{ $po->nomor_surat }}</strong>
+                        <strong style="color:var(--foreground); font-size:13px;">{{ $po->nomor_surat }}</strong>
                         <div class="text-muted" style="font-size:11px;">{{ date('d/m/Y', strtotime($po->tanggal)) }}</div>
                     </div>
                     @if($po->status == 'draft')
@@ -104,13 +104,13 @@
                         <span class="badge bg-danger">Batal</span>
                     @endif
                 </div>
-                <div style="font-size:12px; color:#c4cdd5; margin-bottom:4px;">
+                <div style="font-size:12px; color:var(--muted-foreground); margin-bottom:4px;">
                     <i class="bi bi-shop text-muted"></i> {{ $po->vendor ?? '-' }}
                 </div>
-                <div style="font-size:12px; color:#919eab; margin-bottom:4px;">
+                <div style="font-size:12px; color:var(--muted-foreground); margin-bottom:4px;">
                     <i class="bi bi-person text-muted"></i> {{ $po->buyer_name ?? '-' }}
                 </div>
-                <div style="font-size:12px; color:#c4cdd5; margin-bottom:8px;">
+                <div style="font-size:12px; color:var(--muted-foreground); margin-bottom:8px;">
                     <i class="bi bi-cash text-muted"></i> Rp {{ number_format($po->grand_total, 0, ',', '.') }}
                 </div>
                 <div class="d-flex gap-1">

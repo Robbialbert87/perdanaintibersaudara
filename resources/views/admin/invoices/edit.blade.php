@@ -6,49 +6,6 @@
 <style>
 .modal-backdrop ~ .modal-backdrop { display: none !important; }
 #previewModal .modal-footer { position: relative; z-index: 1060; }
-@media (max-width: 768px) {
-    #itemsTable, #itemsTable thead, #itemsTable tbody,
-    #itemsTable tr, #itemsTable td { display: block; }
-    #itemsTable { min-width: auto !important; }
-    #itemsTable thead { display: none; }
-    #itemsTable tr.item-row {
-        background: #1c252e;
-        border: 1px solid #454f5b;
-        border-radius: 10px;
-        padding: 16px;
-        margin-bottom: 16px;
-    }
-    #itemsTable td {
-        border: none !important;
-        padding: 6px 0 !important;
-        width: 100% !important;
-    }
-    #itemsTable td:before {
-        content: attr(data-label);
-        display: block;
-        font-weight: 600;
-        font-size: 11px;
-        color: #637381;
-        text-transform: uppercase;
-        letter-spacing: .5px;
-        margin-bottom: 4px;
-    }
-    #itemsTable td:last-child {
-        text-align: right;
-        padding-top: 12px !important;
-    }
-    #itemsTable td textarea { min-height: 54px; }
-    #itemsTable tfoot tr {
-        display: flex;
-        align-items: center;
-        gap: 8px;
-    }
-    #itemsTable tfoot td { border: none !important; }
-    #itemsTable tfoot td:first-child { flex: 1; text-align: right; padding: 0 !important; }
-    #itemsTable tfoot td:last-child { flex: 1; padding: 0 !important; }
-    #itemsTable tfoot td:last-child .input-group { margin-bottom: 0; }
-    #itemsTable tfoot td:before { display: none; }
-}
 </style>
 @endpush
 
@@ -96,117 +53,101 @@
                 @endforeach
             </datalist>
 
-            <div class="table-responsive mb-3">
-                <table class="table table-bordered align-middle" id="itemsTable" style="min-width:600px;">
-                    <thead class="table-light">
-                        <tr>
-                            <th width="8%">Grup</th>
-                            <th width="15%">Produk/Jasa</th>
-                            <th width="15%">Deskripsi <span class="text-danger">*</span></th>
-                            <th width="11%">Tgl Kegiatan</th>
-                            <th width="8%">Vol</th>
-                            <th width="9%">Satuan</th>
-                            <th width="15%">Harga Satuan</th>
-                            <th width="18%">Jumlah Harga</th>
-                            <th width="3%" class="text-center">#</th>
-                        </tr>
-                    </thead>
-                    <tbody id="itemsBody">
+            <div id="itemsBody" class="ie-items">
                         @foreach($invoice->items as $index => $item)
-                        <tr class="item-row">
-                            <td data-label="Grup">
-                                <input type="number" name="items[{{ $index }}][group_no]" class="form-control group-no-input text-center fw-bold" value="{{ $item->group_no ?? 1 }}" min="1">
-                            </td>
-                            <td data-label="Produk/Jasa">
-                                <input type="text" name="items[{{ $index }}][nama_item]" class="form-control nama-item-input" list="itemSuggestions" value="{{ $item->nama_item }}" placeholder="Nama Barang/Pekerjaan">
-                            </td>
-                            <td data-label="Deskripsi">
-                                <textarea name="items[{{ $index }}][deskripsi]" class="form-control deskripsi-input" rows="2" required>{{ $item->deskripsi }}</textarea>
-                            </td>
-                            <td data-label="Tgl Kegiatan">
-                                <input type="date" name="items[{{ $index }}][tanggal_kegiatan]" class="form-control tanggal-input" value="{{ $item->tanggal_kegiatan }}">
-                            </td>
-                            <td data-label="Volume">
-                                <input type="number" name="items[{{ $index }}][volume]" class="form-control volume-input" value="{{ $item->volume }}" required placeholder="0" step="any" min="0">
-                            </td>
-                            <td data-label="Satuan">
-                                <select name="items[{{ $index }}][satuan]" class="form-select satuan-input">
-                                    <option value="">--</option>
-                                    <option value="Unit" {{ ($item->satuan ?? 'Unit') == 'Unit' ? 'selected' : '' }}>Unit</option>
-                                    <option value="Orang" {{ ($item->satuan ?? '') == 'Orang' ? 'selected' : '' }}>Orang</option>
-                                    <option value="Paket" {{ ($item->satuan ?? '') == 'Paket' ? 'selected' : '' }}>Paket</option>
-                                    <option value="Pcs" {{ ($item->satuan ?? '') == 'Pcs' ? 'selected' : '' }}>Pcs</option>
-                                    <option value="Cm" {{ ($item->satuan ?? '') == 'Cm' ? 'selected' : '' }}>Cm</option>
-                                    <option value="mm" {{ ($item->satuan ?? '') == 'mm' ? 'selected' : '' }}>mm</option>
-                                    <option value="Meter" {{ ($item->satuan ?? '') == 'Meter' ? 'selected' : '' }}>Meter</option>
-                                    <option value="Set" {{ ($item->satuan ?? '') == 'Set' ? 'selected' : '' }}>Set</option>
-                                    <option value="Box" {{ ($item->satuan ?? '') == 'Box' ? 'selected' : '' }}>Box</option>
-                                    <option value="Rim" {{ ($item->satuan ?? '') == 'Rim' ? 'selected' : '' }}>Rim</option>
-                                    <option value="Lembar" {{ ($item->satuan ?? '') == 'Lembar' ? 'selected' : '' }}>Lembar</option>
-                                    <option value="Buah" {{ ($item->satuan ?? '') == 'Buah' ? 'selected' : '' }}>Buah</option>
-                                    <option value="Bulan" {{ ($item->satuan ?? '') == 'Bulan' ? 'selected' : '' }}>Bulan</option>
-                                    <option value="Tahun" {{ ($item->satuan ?? '') == 'Tahun' ? 'selected' : '' }}>Tahun</option>
-                                </select>
-                            </td>
-                            <td data-label="Harga Satuan">
-                                <input type="text" name="items[{{ $index }}][harga_satuan]" class="form-control harga-input currency-format" value="{{ floatval($item->harga_satuan) }}" required placeholder="0">
-                            </td>
-                            <td data-label="Jumlah Harga">
-                                <input type="text" name="items[{{ $index }}][subtotal]" class="form-control subtotal-input" value="{{ number_format($item->subtotal, 0, ',', '.') }}" readonly placeholder="Otomatis">
-                            </td>
-                            <td class="text-center" data-label="">
-                                <button type="button" class="btn btn-danger btn-sm remove-row"><i class="bi bi-trash"></i></button>
-                            </td>
-                        </tr>
+                        <div class="item-row ie-card">
+                            <div class="ie-head">
+                                <div class="ie-head-left">
+                                    <span class="ie-no">{{ str_pad($index + 1, 2, '0', STR_PAD_LEFT) }}</span>
+                                    <span class="ie-group">Grup
+                                        <input type="number" name="items[{{ $index }}][group_no]" class="ie-group-input group-no-input" value="{{ $item->group_no ?? 1 }}" min="1">
+                                    </span>
+                                </div>
+                                <div class="ie-head-right">
+                                    <button type="button" class="ie-remove remove-row" title="Hapus item"><i class="bi bi-trash"></i></button>
+                                </div>
+                            </div>
+                            <div class="row g-3">
+                                <div class="col-md-5">
+                                    <label class="ie-label">Produk/Jasa (Opsional)</label>
+                                    <input type="text" name="items[{{ $index }}][nama_item]" class="form-control nama-item-input" list="itemSuggestions" value="{{ $item->nama_item }}" placeholder="Nama Barang/Pekerjaan">
+                                </div>
+                                <div class="col-md-7">
+                                    <label class="ie-label">Deskripsi <span class="text-danger">*</span></label>
+                                    <textarea name="items[{{ $index }}][deskripsi]" class="form-control deskripsi-input" rows="3" required>{{ $item->deskripsi }}</textarea>
+                                </div>
+                            </div>
+                            <div class="row g-3">
+                                <div class="col-6 col-md-3">
+                                    <label class="ie-label">Tgl Kegiatan</label>
+                                    <input type="date" name="items[{{ $index }}][tanggal_kegiatan]" class="form-control tanggal-input" value="{{ $item->tanggal_kegiatan }}">
+                                </div>
+                                <div class="col-6 col-md-3">
+                                    <label class="ie-label">Volume</label>
+                                    <input type="number" name="items[{{ $index }}][volume]" class="form-control volume-input" value="{{ $item->volume }}" required placeholder="0" step="any" min="0">
+                                </div>
+                                <div class="col-6 col-md-3">
+                                    <label class="ie-label">Satuan</label>
+                                    <select name="items[{{ $index }}][satuan]" class="form-select satuan-input">
+                                        <option value="">--</option>
+                                        <option value="Unit" {{ ($item->satuan ?? 'Unit') == 'Unit' ? 'selected' : '' }}>Unit</option>
+                                        <option value="Orang" {{ ($item->satuan ?? '') == 'Orang' ? 'selected' : '' }}>Orang</option>
+                                        <option value="Paket" {{ ($item->satuan ?? '') == 'Paket' ? 'selected' : '' }}>Paket</option>
+                                        <option value="Pcs" {{ ($item->satuan ?? '') == 'Pcs' ? 'selected' : '' }}>Pcs</option>
+                                        <option value="Cm" {{ ($item->satuan ?? '') == 'Cm' ? 'selected' : '' }}>Cm</option>
+                                        <option value="mm" {{ ($item->satuan ?? '') == 'mm' ? 'selected' : '' }}>mm</option>
+                                        <option value="Meter" {{ ($item->satuan ?? '') == 'Meter' ? 'selected' : '' }}>Meter</option>
+                                        <option value="Set" {{ ($item->satuan ?? '') == 'Set' ? 'selected' : '' }}>Set</option>
+                                        <option value="Box" {{ ($item->satuan ?? '') == 'Box' ? 'selected' : '' }}>Box</option>
+                                        <option value="Rim" {{ ($item->satuan ?? '') == 'Rim' ? 'selected' : '' }}>Rim</option>
+                                        <option value="Lembar" {{ ($item->satuan ?? '') == 'Lembar' ? 'selected' : '' }}>Lembar</option>
+                                        <option value="Buah" {{ ($item->satuan ?? '') == 'Buah' ? 'selected' : '' }}>Buah</option>
+                                        <option value="Bulan" {{ ($item->satuan ?? '') == 'Bulan' ? 'selected' : '' }}>Bulan</option>
+                                        <option value="Tahun" {{ ($item->satuan ?? '') == 'Tahun' ? 'selected' : '' }}>Tahun</option>
+                                    </select>
+                                </div>
+                                <div class="col-6 col-md-3">
+                                    <label class="ie-label">Harga Satuan</label>
+                                    <input type="text" name="items[{{ $index }}][harga_satuan]" class="form-control harga-input currency-format" value="{{ floatval($item->harga_satuan) }}" required placeholder="0">
+                                </div>
+                            </div>
+                            <div class="ie-total">
+                                <span class="ie-total-label">Jumlah Harga</span>
+                                <input type="text" class="ie-total-value subtotal-input" value="{{ number_format($item->subtotal, 0, ',', '.') }}" readonly placeholder="Otomatis">
+                            </div>
+                        </div>
                         @endforeach
-                    </tbody>
-                    <tfoot class="table-dark">
-                        <tr>
-                            <td colspan="7" class="text-end fw-bold align-middle text-white"><strong>TOTAL</strong></td>
-                            <td colspan="2">
-                                <div class="input-group">
-                                    <span class="input-group-text">Rp</span>
-                                    <input type="text" id="totalKeseluruhan" class="form-control fw-bold" value="{{ number_format($invoice->total, 0, ',', '.') }}" readonly>
-                                </div>
-                            </td>
-                        </tr>
-                        <tr id="ppnRow" style="{{ $invoice->ppn_active ? '' : 'display:none;' }}">
-                            <td colspan="7" class="text-end fw-bold align-middle text-white">
-                                <strong>PPN (11%)</strong>
-                            </td>
-                            <td colspan="2">
-                                <div class="input-group">
-                                    <span class="input-group-text">Rp</span>
-                                    <input type="text" id="ppnAmount" class="form-control fw-bold" value="" readonly>
-                                </div>
-                            </td>
-                        </tr>
-                        <tr id="grandTotalRow" style="{{ $invoice->ppn_active ? '' : 'display:none;' }}">
-                            <td colspan="7" class="text-end fw-bold align-middle text-white">
-                                <strong>GRAND TOTAL</strong>
-                            </td>
-                            <td colspan="2">
-                                <div class="input-group">
-                                    <span class="input-group-text">Rp</span>
-                                    <input type="text" id="grandTotal" class="form-control fw-bold" value="" readonly>
-                                </div>
-                            </td>
-                        </tr>
-                    </tfoot>
-                </table>
-            </div>
+                    </div>
 
-            <div class="d-flex gap-2 mb-4">
-                <button type="button" id="addRow" class="btn btn-success btn-sm"><i class="bi bi-plus-lg"></i> Tambah Baris</button>
-                <button type="button" id="addGroup" class="btn btn-outline-primary btn-sm"><i class="bi bi-folder-plus"></i> Tambah Grup Baru</button>
-            </div>
+                    <div class="d-flex flex-wrap gap-2 mb-4">
+                        <button type="button" id="addRow" class="ie-add-row" style="flex:1;"><i class="bi bi-plus-lg"></i> Tambah Baris</button>
+                        <button type="button" id="addGroup" class="ie-add-row alt" style="flex:1;"><i class="bi bi-folder-plus"></i> Tambah Grup Baru</button>
+                    </div>
 
-            <div class="mb-4">
-                <div class="form-check form-switch">
-                    <input class="form-check-input" type="checkbox" id="ppnToggle" name="ppn_active" value="1" {{ $invoice->ppn_active ? 'checked' : '' }}>
-                    <label class="form-check-label fw-bold" for="ppnToggle">Aktifkan PPN 11%</label>
-                </div>
-            </div>
+                    <div class="row g-4 mb-4 align-items-start">
+                        <div class="col-md-6">
+                            <div class="form-check form-switch">
+                                <input class="form-check-input" type="checkbox" id="ppnToggle" name="ppn_active" value="1" {{ $invoice->ppn_active ? 'checked' : '' }}>
+                                <label class="form-check-label fw-bold" for="ppnToggle">Aktifkan PPN 11%</label>
+                            </div>
+                        </div>
+                        <div class="col-md-6">
+                            <div class="ie-summary">
+                                <div class="ie-summary-row">
+                                    <span class="ie-summary-label">Total</span>
+                                    <input type="text" id="totalKeseluruhan" class="ie-total-input" value="{{ number_format($invoice->total, 0, ',', '.') }}" readonly>
+                                </div>
+                                <div class="ie-summary-row" id="ppnRow" style="{{ $invoice->ppn_active ? '' : 'display:none;' }}">
+                                    <span class="ie-summary-label">PPN (11%)</span>
+                                    <input type="text" id="ppnAmount" class="ie-total-input" value="" readonly>
+                                </div>
+                                <div class="ie-summary-row main" id="grandTotalRow" style="{{ $invoice->ppn_active ? '' : 'display:none;' }}">
+                                    <span class="ie-summary-label">Grand Total</span>
+                                    <input type="text" id="grandTotal" class="ie-total-input" value="" readonly>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
 
             <div class="mb-4">
                 <label class="form-label">Catatan Tambahan (Opsional)</label>
@@ -331,55 +272,69 @@ document.addEventListener('DOMContentLoaded', function() {
     };
 
     const buildRowHTML = (index, namaItem = '', groupNo = 1) => {
-        const badgeHTML = namaItem ? `<small class="text-primary fw-semibold perihal-badge d-block mb-1"><i class="bi bi-tag-fill me-1"></i>${namaItem}</small>` : '';
         return `
-        <tr class="item-row">
-            <td data-label="Grup">
-                <input type="number" name="items[${index}][group_no]" class="form-control group-no-input text-center fw-bold" value="${groupNo}" min="1">
-            </td>
-            <td data-label="Produk/Jasa">
-                ${badgeHTML}
-                <input type="text" name="items[${index}][nama_item]" class="form-control nama-item-input" list="itemSuggestions"
-                    value="${namaItem}" placeholder="Nama Barang/Pekerjaan">
-            </td>
-            <td data-label="Deskripsi">
-                <textarea name="items[${index}][deskripsi]" class="form-control deskripsi-input" rows="2" required placeholder="Deskripsi pekerjaan/barang..."></textarea>
-            </td>
-            <td data-label="Tgl Kegiatan">
-                <input type="date" name="items[${index}][tanggal_kegiatan]" class="form-control tanggal-input">
-            </td>
-            <td data-label="Volume">
-                <input type="number" name="items[${index}][volume]" class="form-control volume-input" value="" required placeholder="0" step="any" min="0">
-            </td>
-            <td data-label="Satuan">
-                <select name="items[${index}][satuan]" class="form-select satuan-input">
-                    <option value="" selected>--</option>
-                    <option value="Unit">Unit</option>
-                    <option value="Orang">Orang</option>
-                    <option value="Paket">Paket</option>
-                    <option value="Pcs">Pcs</option>
-                    <option value="Cm">Cm</option>
-                    <option value="mm">mm</option>
-                    <option value="Meter">Meter</option>
-                    <option value="Set">Set</option>
-                    <option value="Box">Box</option>
-                    <option value="Rim">Rim</option>
-                    <option value="Lembar">Lembar</option>
-                    <option value="Buah">Buah</option>
-                    <option value="Bulan">Bulan</option>
-                    <option value="Tahun">Tahun</option>
-                </select>
-            </td>
-            <td data-label="Harga Satuan">
-                <input type="text" name="items[${index}][harga_satuan]" class="form-control harga-input currency-format" value="" required placeholder="0">
-            </td>
-            <td data-label="Jumlah Harga">
-                <input type="text" name="items[${index}][subtotal]" class="form-control subtotal-input" value="" readonly placeholder="Otomatis">
-            </td>
-            <td class="text-center" data-label="">
-                <button type="button" class="btn btn-danger btn-sm remove-row"><i class="bi bi-trash"></i></button>
-            </td>
-        </tr>`;
+        <div class="item-row ie-card">
+            <div class="ie-head">
+                <div class="ie-head-left">
+                    <span class="ie-no">${String(index + 1).padStart(2, '0')}</span>
+                    <span class="ie-group">Grup
+                        <input type="number" name="items[${index}][group_no]" class="ie-group-input group-no-input" value="${groupNo}" min="1">
+                    </span>
+                </div>
+                <div class="ie-head-right">
+                    <button type="button" class="ie-remove remove-row" title="Hapus item"><i class="bi bi-trash"></i></button>
+                </div>
+            </div>
+            <div class="row g-3">
+                <div class="col-md-5">
+                    <label class="ie-label">Produk/Jasa (Opsional)</label>
+                    <input type="text" name="items[${index}][nama_item]" class="form-control nama-item-input" list="itemSuggestions"
+                        value="${namaItem}" placeholder="Nama Barang/Pekerjaan">
+                </div>
+                <div class="col-md-7">
+                    <label class="ie-label">Deskripsi <span class="text-danger">*</span></label>
+                    <textarea name="items[${index}][deskripsi]" class="form-control deskripsi-input" rows="3" required placeholder="Deskripsi pekerjaan/barang..."></textarea>
+                </div>
+            </div>
+            <div class="row g-3">
+                <div class="col-6 col-md-3">
+                    <label class="ie-label">Tgl Kegiatan</label>
+                    <input type="date" name="items[${index}][tanggal_kegiatan]" class="form-control tanggal-input">
+                </div>
+                <div class="col-6 col-md-3">
+                    <label class="ie-label">Volume</label>
+                    <input type="number" name="items[${index}][volume]" class="form-control volume-input" value="" required placeholder="0" step="any" min="0">
+                </div>
+                <div class="col-6 col-md-3">
+                    <label class="ie-label">Satuan</label>
+                    <select name="items[${index}][satuan]" class="form-select satuan-input">
+                        <option value="" selected>--</option>
+                        <option value="Unit">Unit</option>
+                        <option value="Orang">Orang</option>
+                        <option value="Paket">Paket</option>
+                        <option value="Pcs">Pcs</option>
+                        <option value="Cm">Cm</option>
+                        <option value="mm">mm</option>
+                        <option value="Meter">Meter</option>
+                        <option value="Set">Set</option>
+                        <option value="Box">Box</option>
+                        <option value="Rim">Rim</option>
+                        <option value="Lembar">Lembar</option>
+                        <option value="Buah">Buah</option>
+                        <option value="Bulan">Bulan</option>
+                        <option value="Tahun">Tahun</option>
+                    </select>
+                </div>
+                <div class="col-6 col-md-3">
+                    <label class="ie-label">Harga Satuan</label>
+                    <input type="text" name="items[${index}][harga_satuan]" class="form-control harga-input currency-format" value="" required placeholder="0">
+                </div>
+            </div>
+            <div class="ie-total">
+                <span class="ie-total-label">Jumlah Harga</span>
+                <input type="text" class="ie-total-value subtotal-input" value="" readonly placeholder="Otomatis">
+            </div>
+        </div>`;
     };
 
     const reindexRows = () => {
@@ -387,6 +342,8 @@ document.addEventListener('DOMContentLoaded', function() {
             row.querySelectorAll('[name]').forEach(el => {
                 el.name = el.name.replace(/items\[\d+\]/, `items[${i}]`);
             });
+            const no = row.querySelector('.ie-no');
+            if (no) no.textContent = String(i + 1).padStart(2, '0');
         });
         itemIndex = tbody.querySelectorAll('.item-row').length;
     };

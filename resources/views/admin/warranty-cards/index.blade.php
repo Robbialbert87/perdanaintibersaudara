@@ -5,7 +5,7 @@
 @section('content')
 <div class="d-flex justify-content-between align-items-center mb-4">
     <div>
-        <h4 class="mb-1" style="color:#f4f6f8">Kartu Garansi</h4>
+        <h4 class="mb-1" style="color:var(--foreground)">Kartu Garansi</h4>
         <small class="text-muted">Daftar Kartu Garansi</small>
     </div>
     <a href="{{ route('warranty-cards.create') }}" class="btn btn-primary">
@@ -15,7 +15,7 @@
 
 <div class="card">
     <div class="card-header d-flex justify-content-between align-items-center">
-        <h6 class="mb-0" style="color:#f4f6f8">Daftar Kartu Garansi</h6>
+        <h6 class="mb-0" style="color:var(--foreground)">Daftar Kartu Garansi</h6>
         <form method="GET" class="d-flex" style="max-width:250px">
             <input type="text" name="search" class="form-control form-control-sm" placeholder="Cari..." value="{{ request('search') }}">
         </form>
@@ -81,14 +81,14 @@
             <div class="border-bottom p-3">
                 <div class="d-flex justify-content-between align-items-start mb-2">
                     <div>
-                        <strong style="color:#f4f6f8; font-size:13px;">{{ $wc->nomor_kartu }}</strong>
+                        <strong style="color:var(--foreground); font-size:13px;">{{ $wc->nomor_kartu }}</strong>
                         <div class="text-muted" style="font-size:11px;">{{ date('d/m/Y', strtotime($wc->tanggal)) }}</div>
                     </div>
                 </div>
-                <div style="font-size:12px; color:#c4cdd5; margin-bottom:4px;">
+                <div style="font-size:12px; color:var(--muted-foreground); margin-bottom:4px;">
                     <i class="bi bi-gear text-muted"></i> {{ $wc->nama_alat }} ({{ $wc->type_alat }})
                 </div>
-                <div style="font-size:12px; color:#919eab; margin-bottom:4px;">
+                <div style="font-size:12px; color:var(--muted-foreground); margin-bottom:4px;">
                     <i class="bi bi-hospital text-muted"></i> {{ $wc->nama_rs_klinik }}
                 </div>
                 <div style="font-size:11px; color:#637381; margin-bottom:8px;">

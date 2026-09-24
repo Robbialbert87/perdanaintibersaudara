@@ -5,7 +5,7 @@
 @section('content')
 <div class="d-flex justify-content-between align-items-center mb-4">
     <div>
-        <h4 class="mb-1" style="color:#f4f6f8">Detail Berita Acara</h4>
+        <h4 class="mb-1" style="color:var(--foreground)">Detail Berita Acara</h4>
         <small class="text-muted">{{ $beritaAcara->nomor_surat }}</small>
     </div>
     <div class="d-flex gap-2">

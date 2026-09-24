@@ -5,7 +5,7 @@
 @section('content')
 <div class="d-flex justify-content-between align-items-center mb-4">
     <div>
-        <h4 class="mb-1" style="color:#f4f6f8">Detail Kwitansi</h4>
+        <h4 class="mb-1" style="color:var(--foreground)">Detail Kwitansi</h4>
         <small class="text-muted">{{ $kwitansi->nomor_kwitansi }}</small>
     </div>
     <div class="d-flex gap-2">
@@ -23,7 +23,7 @@
 
 <div class="card">
     <div class="card-header py-3">
-        <h6 class="mb-0" style="color:#f4f6f8"><i class="bi bi-cash-coin me-2"></i>{{ $kwitansi->nomor_kwitansi }}</h6>
+        <h6 class="mb-0" style="color:var(--foreground)"><i class="bi bi-cash-coin me-2"></i>{{ $kwitansi->nomor_kwitansi }}</h6>
     </div>
     <div class="card-body">
         <table class="table table-borderless mb-0">

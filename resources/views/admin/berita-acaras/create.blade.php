@@ -12,7 +12,7 @@
 @section('content')
 <div class="d-flex justify-content-between align-items-center mb-4">
     <div>
-        <h4 class="mb-1" style="color:#f4f6f8">Tambah Berita Acara</h4>
+        <h4 class="mb-1" style="color:var(--foreground)">Tambah Berita Acara</h4>
         <small class="text-muted">Buat Berita Acara Serah Terima dan Uji Fungsi baru</small>
     </div>
     <a href="{{ route('berita-acaras.index') }}" class="btn btn-outline-secondary">

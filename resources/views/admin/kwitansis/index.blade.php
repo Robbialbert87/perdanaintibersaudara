@@ -5,7 +5,7 @@
 @section('content')
 <div class="d-flex justify-content-between align-items-center mb-4">
     <div>
-        <h4 class="mb-1" style="color:#f4f6f8">Kwitansi</h4>
+        <h4 class="mb-1" style="color:var(--foreground)">Kwitansi</h4>
         <small class="text-muted">Daftar Kwitansi Pembayaran</small>
     </div>
     <a href="{{ route('kwitansis.create') }}" class="btn btn-primary">
@@ -15,7 +15,7 @@
 
 <div class="card">
     <div class="card-header d-flex justify-content-between align-items-center">
-        <h6 class="mb-0" style="color:#f4f6f8">Daftar Kwitansi</h6>
+        <h6 class="mb-0" style="color:var(--foreground)">Daftar Kwitansi</h6>
         <form method="GET" class="d-flex" style="max-width:250px">
             <input type="text" name="search" class="form-control form-control-sm" placeholder="Cari..." value="{{ request('search') }}">
         </form>
@@ -79,15 +79,15 @@
             <div class="border-bottom p-3">
                 <div class="d-flex justify-content-between align-items-start mb-2">
                     <div>
-                        <strong style="color:#f4f6f8; font-size:13px;">{{ $kw->nomor_kwitansi }}</strong>
+                        <strong style="color:var(--foreground); font-size:13px;">{{ $kw->nomor_kwitansi }}</strong>
                         <div class="text-muted" style="font-size:11px;">{{ date('d/m/Y', strtotime($kw->tanggal)) }}</div>
                     </div>
-                    <span style="font-size:12px; color:#c4cdd5;">Rp {{ number_format($kw->jumlah, 0, ',', '.') }}</span>
+                    <span style="font-size:12px; color:var(--muted-foreground);">Rp {{ number_format($kw->jumlah, 0, ',', '.') }}</span>
                 </div>
-                <div style="font-size:12px; color:#c4cdd5; margin-bottom:4px;">
+                <div style="font-size:12px; color:var(--muted-foreground); margin-bottom:4px;">
                     <i class="bi bi-person text-muted"></i> {{ $kw->customer->nama_instansi ?? '-' }}
                 </div>
-                <div style="font-size:11px; color:#919eab; margin-bottom:8px;">
+                <div style="font-size:11px; color:var(--muted-foreground); margin-bottom:8px;">
                     <i class="bi bi-card-text text-muted"></i> {{ Str::limit($kw->untuk_pembayaran, 50) ?? '-' }}
                 </div>
                 <div class="d-flex gap-1">

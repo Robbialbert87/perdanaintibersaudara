@@ -1,74 +1,95 @@
 <!DOCTYPE html>
-<html lang="{{ str_replace('_', '-', app()->getLocale()) }}" data-bs-theme="dark">
+<html lang="{{ str_replace('_', '-', app()->getLocale()) }}">
 <head>
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1">
 <meta name="csrf-token" content="{{ csrf_token() }}">
-<meta name="theme-color" content="#141a21">
+<meta name="theme-color" content="#ffffff">
 <meta name="apple-mobile-web-app-capable" content="yes">
 <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
 <meta name="apple-mobile-web-app-title" content="PIB Admin">
 <link rel="manifest" href="{{ route('manifest') }}">
-<title>Login - (PIB) Perdana Inti Bersaudara</title>
+<title>@yield('title', 'Masuk') - (PIB) Perdana Inti Bersaudara</title>
+@stack('styles')
 <link href="{{ asset('logo1.png') }}" rel="icon">
 <link href="{{ asset('icon-192x192.png') }}" rel="apple-touch-icon">
 <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet">
 <link href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.3/font/bootstrap-icons.min.css" rel="stylesheet">
+<link href="{{ asset('style/admin-design.css') }}" rel="stylesheet">
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-<link href="https://fonts.googleapis.com/css2?family=Public+Sans:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
+<link href="https://fonts.googleapis.com/css2?family=Geist:wght@300..800&display=swap" rel="stylesheet">
+<script src="https://unpkg.com/lucide@latest/dist/umd/lucide.min.js"></script>
 <style>
-:root{--primary:#00a76f;--primary-bg:rgba(0,167,111,.12)}
-*{box-sizing:border-box}
-html,body{height:100%;background:#141a21;font-family:'Public Sans',sans-serif;-webkit-font-smoothing:antialiased}
-body{display:flex;align-items:center;justify-content:center;padding:20px}
+    body.auth-body {
+        min-height: 100vh;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        padding: 20px;
+        background:
+            radial-gradient(1200px 600px at 10% -10%, color-mix(in srgb, var(--primary) 5%, transparent), transparent),
+            var(--background);
+    }
 
-.brand-top{text-align:center;margin-bottom:32px}
-.brand-top .brand-icon{width:48px;height:48px;border-radius:12px;display:flex;align-items:center;justify-content:center;margin:0 auto 12px}
-.brand-top .brand-icon img{width:100%;height:100%;object-fit:contain;border-radius:12px}
-.brand-top h1{font-weight:700;font-size:22px;color:#f4f6f8;letter-spacing:-.4px;margin:0}
-.brand-top p{font-size:14px;color:#637381;margin:4px 0 0}
+    .auth-card {
+        width: 100%;
+        max-width: 420px;
+    }
 
-.card{background:#1c252e!important;border:1px solid #454f5b!important;border-radius:12px!important;box-shadow:0 4px 8px rgba(0,0,0,.2)!important;width:100%;max-width:420px}
-.card-body{padding:28px!important}
+    .brand-top {
+        text-align: center;
+        margin-bottom: 28px;
+    }
 
-.form-label{font-size:13px;font-weight:500;color:#c4cdd5;margin-bottom:5px}
-.form-control{background:#141a21!important;border:1px solid #454f5b!important;border-radius:8px!important;color:#f4f6f8!important;font-size:14px;padding:10px 14px;transition:all .2s}
-.form-control:focus{background:#141a21!important;border-color:var(--primary)!important;box-shadow:0 0 0 3px rgba(0,167,111,.15)!important}
-.form-control::placeholder{color:#637381}
-.form-check-input{background:#141a21!important;border:1px solid #454f5b!important;margin-top:.3em}
-.form-check-input:checked{background:var(--primary)!important;border-color:var(--primary)!important}
-.form-check-label{font-size:13px;color:#919eab}
+    .brand-top .brand-icon {
+        width: 52px;
+        height: 52px;
+        border-radius: 14px;
+        overflow: hidden;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        margin: 0 auto 14px;
+        border: 1px solid var(--border);
+        background: #fff;
+    }
 
-.btn{border-radius:8px;font-size:14px;font-weight:600;padding:10px 20px;transition:all .2s}
-.btn-primary{background:var(--primary)!important;border-color:var(--primary)!important;color:#fff!important}
-.btn-primary:hover{background:#009c64!important;box-shadow:0 4px 12px rgba(0,167,111,.3)!important}
+    .brand-top .brand-icon img {
+        width: 100%;
+        height: 100%;
+        object-fit: contain;
+        border-radius: 14px;
+    }
 
-.alert{border-radius:8px;font-size:13px;padding:12px 16px;border:1px solid transparent;margin-bottom:16px}
-.alert-success{background:rgba(34,197,94,.1);border-color:rgba(34,197,94,.2);color:#22c55e}
-.alert-danger{background:rgba(239,68,68,.1);border-color:rgba(239,68,68,.2);color:#ef4444}
-.alert-danger ul{margin:0;padding-left:16px}
-.alert-danger li{color:#ef4444;font-size:13px}
+    .brand-top h1 {
+        font-weight: 700;
+        font-size: 22px;
+        letter-spacing: -.4px;
+        color: var(--foreground);
+        margin: 0;
+    }
 
-a{color:var(--primary);text-decoration:none;font-size:13px;font-weight:500}
-a:hover{color:#00c884}
-.text-muted{color:#637381!important}
+    .brand-top p {
+        font-size: 14px;
+        color: var(--muted-foreground);
+        margin: 4px 0 0;
+    }
 </style>
 </head>
-<body>
-<div class="container" style="display:flex;justify-content:center">
-  @yield('content')
+<body class="auth-body">
+<div class="auth-card">
+    @yield('content')
 </div>
 <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"></script>
 <script>
-if ('serviceWorker' in navigator) {
-    navigator.serviceWorker.register('{{ route('sw') }}');
-}
-let installPrompt = null;
-window.addEventListener('beforeinstallprompt', e => {
-    e.preventDefault();
-    installPrompt = e;
-});
+    if (typeof lucide !== 'undefined') {
+        document.addEventListener('DOMContentLoaded', function() { lucide.createIcons(); });
+    }
+    if ('serviceWorker' in navigator) {
+        navigator.serviceWorker.register('{{ route('sw') }}');
+    }
 </script>
+@stack('scripts')
 </body>
 </html>

@@ -1,8 +1,10 @@
 @extends('layouts.auth')
 
+@section('title', 'Masuk Admin')
+
 @section('content')
 <div class="card">
-    <div class="card-body">
+    <div class="card-body" style="padding:32px !important">
         <div class="brand-top">
             <div class="brand-icon"><img src="{{ asset('style/assets/img/pib-logo.png') }}" alt="PIB"></div>
             <h1>Welcome Back</h1>
@@ -10,13 +12,14 @@
         </div>
 
         @if(session('status'))
-            <div class="alert alert-success">
+            <div class="alert alert-success alert-dismissible fade show" role="alert">
                 {{ session('status') }}
+                <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
             </div>
         @endif
-        
+
         @if($errors->any())
-            <div class="alert alert-danger">
+            <div class="alert alert-danger" role="alert">
                 <ul class="mb-0">
                     @foreach($errors->all() as $error)
                         <li>{{ $error }}</li>
@@ -41,7 +44,9 @@
                     <label class="form-check-label" for="remember">Remember me</label>
                 </div>
             </div>
-            <button type="submit" class="btn btn-primary w-100">Sign In</button>
+            <button type="submit" class="btn btn-primary w-100" style="height:42px">
+                <i data-lucide="log-in" style="width:16px;height:16px"></i> Sign In
+            </button>
         </form>
     </div>
 </div>

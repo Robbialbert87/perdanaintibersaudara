@@ -2,54 +2,6 @@
 
 @section('title', 'Buat Penawaran')
 
-@push('styles')
-<style>
-@media (max-width: 768px) {
-    #itemsTable, #itemsTable thead, #itemsTable tbody,
-    #itemsTable tr, #itemsTable td { display: block; }
-    #itemsTable { min-width: auto !important; }
-    #itemsTable thead { display: none; }
-    #itemsTable tr.item-row {
-        background: #1c252e;
-        border: 1px solid #454f5b;
-        border-radius: 10px;
-        padding: 16px;
-        margin-bottom: 16px;
-    }
-    #itemsTable td {
-        border: none !important;
-        padding: 6px 0 !important;
-        width: 100% !important;
-    }
-    #itemsTable td:before {
-        content: attr(data-label);
-        display: block;
-        font-weight: 600;
-        font-size: 11px;
-        color: #637381;
-        text-transform: uppercase;
-        letter-spacing: .5px;
-        margin-bottom: 4px;
-    }
-    #itemsTable td:last-child {
-        text-align: right;
-        padding-top: 12px !important;
-    }
-    #itemsTable td textarea { min-height: 54px; }
-    #itemsTable tfoot tr {
-        display: flex;
-        align-items: center;
-        gap: 8px;
-    }
-    #itemsTable tfoot td { border: none !important; }
-    #itemsTable tfoot td:first-child { flex: 1; text-align: right; padding: 0 !important; }
-    #itemsTable tfoot td:last-child { flex: 1; padding: 0 !important; }
-    #itemsTable tfoot td:last-child .input-group { margin-bottom: 0; }
-    #itemsTable tfoot td:before { display: none; }
-}
-</style>
-@endpush
-
 @section('content')
 <div class="card shadow-sm border-0 mb-4">
     <div class="card-header bg-white py-3">
@@ -122,88 +74,84 @@
             <hr>
             <h6 class="mb-3">Item Penawaran</h6>
 
-            <div class="table-responsive mb-3">
-                    <table class="table table-bordered align-middle" id="itemsTable" style="min-width:600px;">
-                        <thead class="table-light">
-                            <tr>
-                                <th width="20%">Produk/Jasa (Opsional)</th>
-                                <th width="22%">Deskripsi Detail <span class="text-danger">*</span></th>
-                                <th width="7%">Volume</th>
-                                <th width="9%">Satuan</th>
-                                <th width="11%">Harga Satuan</th>
-                                <th width="8%">Diskon (%)</th>
-                                <th width="11%">Jumlah Harga</th>
-                                <th width="5%" class="text-center">Label<br><small class="text-muted">PDF</small></th>
-                                <th width="7%" class="text-center">Aksi</th>
-                            </tr>
-                        </thead>
-                        <tbody id="itemsBody">
-                            <!-- Baris (jika Kegiatan Optional) pertama (default) -->
-                            <tr class="item-row">
-                                <td data-label="Produk/Jasa">
-                                    <small class="text-primary fw-semibold perihal-badge d-block mb-1"></small>
-                                    <input type="text" name="items[0][nama_item]" class="form-control nama-item-input" placeholder="Nama Barang/Pekerjaan (opsional jika ada label)" data-autofilled="false">
-                                </td>
-                                <td data-label="Deskripsi">
-                                    <textarea name="items[0][deskripsi]" class="form-control deskripsi-input" rows="2" required placeholder="Deskripsi pekerjaan/barang..."></textarea>
-                                </td>
-                                <td data-label="Volume">
-                                    <input type="text" name="items[0][volume]" class="form-control volume-input" value="1" required>
-                                </td>
-                                <td data-label="Satuan">
-                                    <select name="items[0][satuan]" class="form-select satuan-input">
-                                        <option value="" selected>--</option>
-                                        <option value="Unit">Unit</option>
-                                        <option value="Paket">Paket</option>
-                                        <option value="Pcs">Pcs</option>
-                                        <option value="Cm">Cm</option>
-                                        <option value="mm">mm</option>
-                                        <option value="Meter">Meter</option>
-                                        <option value="Set">Set</option>
-                                        <option value="Box">Box</option>
-                                        <option value="Rim">Rim</option>
-                                        <option value="Lembar">Lembar</option>
-                                        <option value="Buah">Buah</option>
-                                        <option value="Bulan">Bulan</option>
-                                        <option value="Tahun">Tahun</option>
-                                    </select>
-                                </td>
-                                <td data-label="Harga Satuan">
-                                    <input type="text" name="items[0][harga_satuan]" class="form-control harga-input currency-format" value="" required>
-                                </td>
-                                <td data-label="Diskon (%)">
-                                    <input type="number" name="items[0][diskon]" class="form-control diskon-input" value="" min="0" max="100" placeholder="0">
-                                </td>
-                                <td data-label="Jumlah Harga">
-                                    <input type="text" name="items[0][subtotal]" class="form-control subtotal-input currency-format" value="0" readonly>
-                                </td>
-                                <td data-label="Label PDF" class="text-center">
-                                    <div class="form-check form-switch d-inline-block m-0">
-                                        <input type="hidden" name="items[0][tampilkan_label]" value="0">
-                                        <input type="checkbox" class="form-check-input" name="items[0][tampilkan_label]" value="1" checked style="cursor:pointer;">
-                                    </div>
-                                </td>
-                                <td data-label="Aksi" class="text-center">
-                                    <button type="button" class="btn btn-danger btn-sm remove-row" disabled><i class="bi bi-trash"></i></button>
-                                </td>
-                            </tr>
-                    </tbody>
-                    <tfoot class="table-dark">
-                        <tr>
-                            <td colspan="6" class="text-end fw-bold align-middle text-white"><strong>TOTAL KESELURUHAN</strong></td>
-                            <td colspan="3">
-                                <div class="input-group">
-                                    <span class="input-group-text">Rp</span>
-                                    <input type="text" id="totalKeseluruhan" class="form-control fw-bold" value="0" readonly>
-                                </div>
-                            </td>
-                        </tr>
-                    </tfoot>
-                </table>
+            <div id="itemsBody" class="ie-items">
+                <!-- Baris (jika Kegiatan Optional) pertama (default) -->
+                <div class="item-row ie-card">
+                    <div class="ie-head">
+                        <div class="ie-head-left">
+                            <span class="ie-no">01</span>
+                            <span class="ie-perihal perihal-badge"></span>
+                        </div>
+                        <div class="ie-head-right">
+                            <label class="ie-pdf-toggle">
+                                <span>Label PDF</span>
+                                <input type="hidden" name="items[0][tampilkan_label]" value="0">
+                                <input type="checkbox" class="form-check-input" name="items[0][tampilkan_label]" value="1" checked style="cursor:pointer;">
+                            </label>
+                            <button type="button" class="ie-remove remove-row" disabled title="Hapus item"><i class="bi bi-trash"></i></button>
+                        </div>
+                    </div>
+                    <div class="row g-3">
+                        <div class="col-md-5">
+                            <label class="ie-label">Produk/Jasa (Opsional)</label>
+                            <input type="text" name="items[0][nama_item]" class="form-control nama-item-input" placeholder="Nama Barang/Pekerjaan (opsional jika ada label)" data-autofilled="false">
+                        </div>
+                        <div class="col-md-7">
+                            <label class="ie-label">Deskripsi Detail <span class="text-danger">*</span></label>
+                            <textarea name="items[0][deskripsi]" class="form-control deskripsi-input" rows="3" required placeholder="Deskripsi pekerjaan/barang..."></textarea>
+                        </div>
+                    </div>
+                    <div class="row g-3">
+                        <div class="col-6 col-md-3">
+                            <label class="ie-label">Volume</label>
+                            <input type="text" name="items[0][volume]" class="form-control volume-input" value="1" required>
+                        </div>
+                        <div class="col-6 col-md-3">
+                            <label class="ie-label">Satuan</label>
+                            <select name="items[0][satuan]" class="form-select satuan-input">
+                                <option value="" selected>--</option>
+                                <option value="Unit">Unit</option>
+                                <option value="Paket">Paket</option>
+                                <option value="Pcs">Pcs</option>
+                                <option value="Cm">Cm</option>
+                                <option value="mm">mm</option>
+                                <option value="Meter">Meter</option>
+                                <option value="Set">Set</option>
+                                <option value="Box">Box</option>
+                                <option value="Rim">Rim</option>
+                                <option value="Lembar">Lembar</option>
+                                <option value="Buah">Buah</option>
+                                <option value="Bulan">Bulan</option>
+                                <option value="Tahun">Tahun</option>
+                            </select>
+                        </div>
+                        <div class="col-6 col-md-3">
+                            <label class="ie-label">Harga Satuan</label>
+                            <input type="text" name="items[0][harga_satuan]" class="form-control harga-input currency-format" value="" required>
+                        </div>
+                        <div class="col-6 col-md-3">
+                            <label class="ie-label">Diskon (%)</label>
+                            <input type="number" name="items[0][diskon]" class="form-control diskon-input" value="" min="0" max="100" placeholder="0">
+                        </div>
+                    </div>
+                    <div class="ie-total">
+                        <span class="ie-total-label">Jumlah Harga</span>
+                        <input type="text" class="ie-total-value subtotal-input currency-format" value="0" readonly>
+                    </div>
+                </div>
             </div>
 
-            <div class="d-flex gap-2 mb-4">
-                <button type="button" id="addRow" class="btn btn-success btn-sm"><i class="bi bi-plus-lg"></i> Tambah Baris</button>
+            <div class="mb-4">
+                <button type="button" id="addRow" class="ie-add-row"><i class="bi bi-plus-lg"></i> Tambah Baris</button>
+            </div>
+
+            <div class="mb-4">
+                <div class="ie-summary">
+                    <div class="ie-summary-row">
+                        <span class="ie-summary-label">Total Keseluruhan</span>
+                        <input type="text" id="totalKeseluruhan" class="ie-total-input" value="0" readonly>
+                    </div>
+                </div>
             </div>
 
             <div class="mb-4">
@@ -429,58 +377,73 @@ document.addEventListener('DOMContentLoaded', function() {
     };
 
     const buildRowHTML = (index, namaItem = '') => {
-        const badgeHTML = namaItem ? `<small class="text-primary fw-semibold perihal-badge d-block mb-1"><i class="bi bi-tag-fill me-1"></i>${namaItem}</small>` : `<small class="text-primary fw-semibold perihal-badge d-block mb-1"></small>`;
+        const badgeHTML = namaItem ? `<i class="bi bi-tag-fill me-1"></i>${namaItem}` : '';
         return `
-        <tr class="item-row">
-            <td data-label="Produk/Jasa">
-                ${badgeHTML}
-                <input type="text" name="items[${index}][nama_item]" class="form-control nama-item-input"
-                    value="${namaItem}" placeholder="Nama Barang/Pekerjaan (opsional jika ada label)"
-                    data-autofilled="${namaItem !== '' ? 'true' : 'false'}">
-            </td>
-            <td data-label="Deskripsi">
-                <textarea name="items[${index}][deskripsi]" class="form-control deskripsi-input" rows="2" required placeholder="Deskripsi pekerjaan/barang..."></textarea>
-            </td>
-            <td data-label="Volume">
-                <input type="text" name="items[${index}][volume]" class="form-control volume-input" value="1" required>
-            </td>
-            <td data-label="Satuan">
-                <select name="items[${index}][satuan]" class="form-select satuan-input">
-                    <option value="" selected>--</option>
-                    <option value="Unit">Unit</option>
-                    <option value="Paket">Paket</option>
-                    <option value="Pcs">Pcs</option>
-                    <option value="Cm">Cm</option>
-                    <option value="mm">mm</option>
-                    <option value="Meter">Meter</option>
-                    <option value="Set">Set</option>
-                    <option value="Box">Box</option>
-                    <option value="Rim">Rim</option>
-                    <option value="Lembar">Lembar</option>
-                    <option value="Buah">Buah</option>
-                    <option value="Bulan">Bulan</option>
-                    <option value="Tahun">Tahun</option>
-                </select>
-            </td>
-            <td data-label="Harga Satuan">
-                <input type="text" name="items[${index}][harga_satuan]" class="form-control harga-input currency-format" value="" required>
-            </td>
-            <td data-label="Diskon (%)">
-                <input type="number" name="items[${index}][diskon]" class="form-control diskon-input" value="" min="0" max="100" placeholder="0">
-            </td>
-            <td data-label="Jumlah Harga">
-                <input type="text" name="items[${index}][subtotal]" class="form-control subtotal-input currency-format" value="0" readonly>
-            </td>
-            <td data-label="Label PDF" class="text-center">
-                <div class="form-check form-switch d-inline-block m-0">
-                    <input type="hidden" name="items[${index}][tampilkan_label]" value="0">
-                    <input type="checkbox" class="form-check-input" name="items[${index}][tampilkan_label]" value="1" checked style="cursor:pointer;">
+        <div class="item-row ie-card">
+            <div class="ie-head">
+                <div class="ie-head-left">
+                    <span class="ie-no">${String(index + 1).padStart(2, '0')}</span>
+                    <span class="ie-perihal perihal-badge">${badgeHTML}</span>
                 </div>
-            </td>
-            <td data-label="Aksi" class="text-center">
-                <button type="button" class="btn btn-danger btn-sm remove-row"><i class="bi bi-trash"></i></button>
-            </td>
-        </tr>`;
+                <div class="ie-head-right">
+                    <label class="ie-pdf-toggle">
+                        <span>Label PDF</span>
+                        <input type="hidden" name="items[${index}][tampilkan_label]" value="0">
+                        <input type="checkbox" class="form-check-input" name="items[${index}][tampilkan_label]" value="1" checked style="cursor:pointer;">
+                    </label>
+                    <button type="button" class="ie-remove remove-row" title="Hapus item"><i class="bi bi-trash"></i></button>
+                </div>
+            </div>
+            <div class="row g-3">
+                <div class="col-md-5">
+                    <label class="ie-label">Produk/Jasa (Opsional)</label>
+                    <input type="text" name="items[${index}][nama_item]" class="form-control nama-item-input"
+                        value="${namaItem}" placeholder="Nama Barang/Pekerjaan (opsional jika ada label)"
+                        data-autofilled="${namaItem !== '' ? 'true' : 'false'}">
+                </div>
+                <div class="col-md-7">
+                    <label class="ie-label">Deskripsi Detail <span class="text-danger">*</span></label>
+                    <textarea name="items[${index}][deskripsi]" class="form-control deskripsi-input" rows="3" required placeholder="Deskripsi pekerjaan/barang..."></textarea>
+                </div>
+            </div>
+            <div class="row g-3">
+                <div class="col-6 col-md-3">
+                    <label class="ie-label">Volume</label>
+                    <input type="text" name="items[${index}][volume]" class="form-control volume-input" value="1" required>
+                </div>
+                <div class="col-6 col-md-3">
+                    <label class="ie-label">Satuan</label>
+                    <select name="items[${index}][satuan]" class="form-select satuan-input">
+                        <option value="" selected>--</option>
+                        <option value="Unit">Unit</option>
+                        <option value="Paket">Paket</option>
+                        <option value="Pcs">Pcs</option>
+                        <option value="Cm">Cm</option>
+                        <option value="mm">mm</option>
+                        <option value="Meter">Meter</option>
+                        <option value="Set">Set</option>
+                        <option value="Box">Box</option>
+                        <option value="Rim">Rim</option>
+                        <option value="Lembar">Lembar</option>
+                        <option value="Buah">Buah</option>
+                        <option value="Bulan">Bulan</option>
+                        <option value="Tahun">Tahun</option>
+                    </select>
+                </div>
+                <div class="col-6 col-md-3">
+                    <label class="ie-label">Harga Satuan</label>
+                    <input type="text" name="items[${index}][harga_satuan]" class="form-control harga-input currency-format" value="" required>
+                </div>
+                <div class="col-6 col-md-3">
+                    <label class="ie-label">Diskon (%)</label>
+                    <input type="number" name="items[${index}][diskon]" class="form-control diskon-input" value="" min="0" max="100" placeholder="0">
+                </div>
+            </div>
+            <div class="ie-total">
+                <span class="ie-total-label">Jumlah Harga</span>
+                <input type="text" class="ie-total-value subtotal-input currency-format" value="0" readonly>
+            </div>
+        </div>`;
     };
 
     const reindexRows = () => {
@@ -488,6 +451,8 @@ document.addEventListener('DOMContentLoaded', function() {
             row.querySelectorAll('[name]').forEach(el => {
                 el.name = el.name.replace(/items\[\d+\]/, `items[${i}]`);
             });
+            const no = row.querySelector('.ie-no');
+            if (no) no.textContent = String(i + 1).padStart(2, '0');
         });
         itemIndex = tbody.querySelectorAll('.item-row').length;
     };
