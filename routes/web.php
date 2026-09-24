@@ -97,6 +97,9 @@ Route::middleware(['auth', 'verified', 'throttle:60,1'])->group(function () {
     Route::resource('activities', ActivityController::class)->except(['show']);
     Route::delete('activities/{activity}/media', [ActivityController::class, 'deleteMedia'])->name('activities.deleteMedia');
     Route::get('quotations/{quotation}/export-pdf', [QuotationController::class, 'exportPdf'])->name('quotations.export_pdf');
+    Route::post('quotations/ai-generate', [QuotationController::class, 'aiGenerate'])->name('quotations.ai_generate');
+    Route::post('quotations/ai-store', [QuotationController::class, 'aiStore'])->name('quotations.ai_store');
+    Route::post('quotations/ai-store-draft', [QuotationController::class, 'aiStoreDraft'])->name('quotations.ai_store_draft');
     Route::resource('quotations', QuotationController::class);
     Route::resource('purchase-orders', PurchaseOrderController::class);
     Route::get('purchase-orders/{purchaseOrder}/export-pdf', [PurchaseOrderController::class, 'exportPdf'])->name('purchase-orders.export_pdf');
