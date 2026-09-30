@@ -10,6 +10,7 @@ use Illuminate\Http\Middleware\AddLinkHeadersForPreloadedAssets;
 use Symfony\Component\HttpKernel\Exception\NotFoundHttpException;
 use Symfony\Component\HttpKernel\Exception\AccessDeniedHttpException;
 use Symfony\Component\HttpKernel\Exception\HttpException;
+use Illuminate\Auth\AuthenticationException;
 use Illuminate\Http\Request;
 use Illuminate\Validation\ValidationException;
 
@@ -32,6 +33,7 @@ return Application::configure(basePath: dirname(__DIR__))
     ->withExceptions(function (Exceptions $exceptions): void {
         $exceptions->render(function (Throwable $e, Request $request) {
             $status = match (true) {
+                $e instanceof AuthenticationException => 401,
                 $e instanceof NotFoundHttpException => 404,
                 $e instanceof AccessDeniedHttpException => 403,
                 $e instanceof ValidationException => 422,
@@ -45,13 +47,20 @@ return Application::configure(basePath: dirname(__DIR__))
 
             if ($request->expectsJson()) {
                 $message = match ($status) {
+                    401 => 'Sesi login sudah berakhir. Silakan login kembali.',
                     404 => 'Halaman tidak ditemukan.',
                     403 => 'Akses ditolak.',
-                    422 => 'Validasi gagal.',
-                    default => 'Terjadi kesalahan.',
+                    422 => 'Validasi gagal. Periksa kembali data yang Anda isi.',
+                    default => 'Terjadi kesalahan. Silakan coba lagi.',
                 };
 
-                return response()->json(['error' => true, 'message' => $message], $status);
+                $payload = ['error' => true, 'message' => $message];
+
+                if ($e instanceof ValidationException) {
+                    $payload['errors'] = $e->errors();
+                }
+
+                return response()->json($payload, $status);
             }
 
             if (view()->exists("errors.{$status}")) {

@@ -59,7 +59,7 @@ class InvoiceController extends Controller
             'items.*.volume' => 'required|string|max:255',
             'items.*.satuan' => 'nullable|string|max:50',
             'items.*.harga_satuan' => 'required',
-            'items.*.subtotal' => 'required',
+            'items.*.subtotal' => 'nullable',
         ]);
 
         $customer = Customer::find($request->customer_id);
@@ -105,14 +105,14 @@ class InvoiceController extends Controller
             'items.*.volume' => 'required|string|max:255',
             'items.*.satuan' => 'nullable|string|max:50',
             'items.*.harga_satuan' => 'required',
-            'items.*.subtotal' => 'required',
+            'items.*.subtotal' => 'nullable',
         ]);
 
         $total = 0;
         $itemsData = [];
         foreach ($request->items as $item) {
             $harga = (float) str_replace(['.', ','], ['', '.'], $item['harga_satuan']);
-            $subtotal = (float) str_replace(['.', ','], ['', '.'], $item['subtotal']);
+            $subtotal = $this->hitungSubtotal($item, $harga);
             $total += $subtotal;
 
             $namaItem = ! empty($item['nama_item']) ? $item['nama_item'] : null;
@@ -203,14 +203,14 @@ class InvoiceController extends Controller
             'items.*.volume' => 'required|string|max:255',
             'items.*.satuan' => 'nullable|string|max:50',
             'items.*.harga_satuan' => 'required',
-            'items.*.subtotal' => 'required',
+            'items.*.subtotal' => 'nullable',
         ]);
 
         $total = 0;
         $itemsData = [];
         foreach ($request->items as $item) {
             $harga = (float) str_replace(['.', ','], ['', '.'], $item['harga_satuan']);
-            $subtotal = (float) str_replace(['.', ','], ['', '.'], $item['subtotal']);
+            $subtotal = $this->hitungSubtotal($item, $harga);
             $total += $subtotal;
 
             $namaItem = ! empty($item['nama_item']) ? $item['nama_item'] : null;
@@ -681,6 +681,26 @@ PROMPT;
 
         $body = $response->json();
         return $body['choices'][0]['message']['content'] ?? '{}';
+    }
+
+    /**
+     * Subtotal item = volume x harga satuan.
+     * Nilai dari form dipakai bila tersedia, jika tidak / 0 dihitung ulang di server
+     * supaya total tetap benar walau field subtotal tidak terkirim.
+     */
+    private function hitungSubtotal(array $item, float $harga): float
+    {
+        $subtotal = isset($item['subtotal']) && $item['subtotal'] !== ''
+            ? (float) str_replace(['.', ','], ['', '.'], $item['subtotal'])
+            : 0.0;
+
+        if ($subtotal > 0) {
+            return $subtotal;
+        }
+
+        $volume = (float) str_replace(',', '.', (string) ($item['volume'] ?? 0));
+
+        return $volume * $harga;
     }
 
     private function convertIndonesianDate($value)

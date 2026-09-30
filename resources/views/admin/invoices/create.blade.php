@@ -104,7 +104,7 @@
                     </div>
                     <div class="ie-total">
                         <span class="ie-total-label">Jumlah Harga</span>
-                        <input type="text" class="ie-total-value subtotal-input" value="" readonly placeholder="Otomatis">
+                        <input type="text" name="items[0][subtotal]" class="ie-total-value subtotal-input" value="" readonly placeholder="Otomatis">
                     </div>
                 </div>
             </div>
@@ -295,7 +295,7 @@ document.addEventListener('DOMContentLoaded', function() {
             </div>
             <div class="ie-total">
                 <span class="ie-total-label">Jumlah Harga</span>
-                <input type="text" class="ie-total-value subtotal-input" value="" readonly placeholder="Otomatis">
+                <input type="text" name="items[${index}][subtotal]" class="ie-total-value subtotal-input" value="" readonly placeholder="Otomatis">
             </div>
         </div>`;
     };

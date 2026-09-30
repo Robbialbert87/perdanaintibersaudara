@@ -113,7 +113,7 @@
                             </div>
                             <div class="ie-total">
                                 <span class="ie-total-label">Jumlah Harga</span>
-                                <input type="text" class="ie-total-value subtotal-input" value="{{ number_format($item->subtotal, 0, ',', '.') }}" readonly placeholder="Otomatis">
+                                <input type="text" name="items[{{ $index }}][subtotal]" class="ie-total-value subtotal-input" value="{{ number_format($item->subtotal, 0, ',', '.') }}" readonly placeholder="Otomatis">
                             </div>
                         </div>
                         @endforeach
@@ -332,7 +332,7 @@ document.addEventListener('DOMContentLoaded', function() {
             </div>
             <div class="ie-total">
                 <span class="ie-total-label">Jumlah Harga</span>
-                <input type="text" class="ie-total-value subtotal-input" value="" readonly placeholder="Otomatis">
+                <input type="text" name="items[${index}][subtotal]" class="ie-total-value subtotal-input" value="" readonly placeholder="Otomatis">
             </div>
         </div>`;
     };
@@ -392,6 +392,48 @@ document.addEventListener('DOMContentLoaded', function() {
         triggerBtn.click();
     };
 
+    // Header agar Laravel membalas JSON (bukan halaman HTML) untuk request AJAX
+    const ajaxHeaders = {
+        'X-CSRF-TOKEN': '{{ csrf_token() }}',
+        'X-Requested-With': 'XMLHttpRequest',
+        'Accept': 'application/json'
+    };
+
+    // Baca respons: JSON -> objek, HTML (halaman login/error/session habis) -> pesan ramah
+    const readResponse = async (response, fallbackMsg) => {
+        const text = await response.text();
+        let data = null;
+        try {
+            data = JSON.parse(text);
+        } catch (err) {
+            data = null;
+        }
+
+        if (data === null) {
+            if (response.redirected || /<!DOCTYPE|<html/i.test(text)) {
+                throw new Error('Sesi login sudah berakhir atau halaman dialihkan. Silakan muat ulang halaman (F5) lalu coba lagi.');
+            }
+            throw new Error(fallbackMsg + ' (kode ' + response.status + '). Server tidak mengembalikan data yang valid.');
+        }
+
+        if (!response.ok) {
+            let msg = fallbackMsg + ' (kode ' + response.status + ').';
+            if (data.errors && typeof data.errors === 'object') {
+                const list = Object.values(data.errors).flat().filter(Boolean);
+                if (list.length) {
+                    msg = list.join('\n');
+                }
+            } else if (typeof data.error === 'string' && data.error) {
+                msg = data.error;
+            } else if (data.message) {
+                msg = data.message;
+            }
+            throw new Error(msg);
+        }
+
+        return data;
+    };
+
     form.addEventListener('submit', function(e) {
         e.preventDefault();
 
@@ -404,17 +446,10 @@ document.addEventListener('DOMContentLoaded', function() {
 
         fetch('{{ route("invoices.preview") }}', {
             method: 'POST',
-            headers: { 'X-CSRF-TOKEN': '{{ csrf_token() }}' },
+            headers: ajaxHeaders,
             body: formData
         })
-        .then(async r => {
-            if (!r.ok) {
-                let msg = 'Gagal memproses (kode ' + r.status + ').';
-                try { const d = await r.json(); if (d.message) msg = d.message; } catch(_) {}
-                throw new Error(msg);
-            }
-            return r.json();
-        })
+        .then(r => readResponse(r, 'Gagal memproses'))
         .then(data => {
             previewContent.innerHTML = data.html;
             showPreviewModal();
@@ -436,17 +471,10 @@ document.addEventListener('DOMContentLoaded', function() {
 
         fetch('{{ route("invoices.update", $invoice->id) }}', {
             method: 'POST',
-            headers: { 'X-CSRF-TOKEN': '{{ csrf_token() }}' },
+            headers: ajaxHeaders,
             body: formData
         })
-        .then(async r => {
-            if (!r.ok) {
-                let msg = 'Gagal menyimpan (kode ' + r.status + ').';
-                try { const d = await r.json(); if (d.message) msg = d.message; } catch(_) {}
-                throw new Error(msg);
-            }
-            return r.json();
-        })
+        .then(r => readResponse(r, 'Gagal menyimpan'))
         .then(data => {
             if (data.redirect) window.location.href = data.redirect;
         })
