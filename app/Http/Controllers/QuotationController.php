@@ -63,6 +63,7 @@ class QuotationController extends Controller
             'kata_pengantar' => 'nullable|string',
             'kata_penutup' => 'nullable|string',
             'items' => 'required|array|min:1',
+            'items.*.group_no' => 'nullable|integer|min:1',
             'items.*.nama_item' => 'nullable|string|max:255',
             'items.*.deskripsi' => 'required|string',
             'items.*.volume' => 'required|string|max:255',
@@ -89,6 +90,7 @@ class QuotationController extends Controller
             $namaItem = ! empty($item['nama_item']) ? $item['nama_item'] : ($perihalArray[$itemIndex] ?? null);
 
             $itemsData[] = [
+                'group_no' => !empty($item['group_no']) ? intval($item['group_no']) : 1,
                 'nama_item' => $namaItem,
                 'deskripsi' => $item['deskripsi'],
                 'volume' => $item['volume'],
@@ -266,6 +268,7 @@ class QuotationController extends Controller
             'kata_pengantar' => 'nullable|string',
             'kata_penutup' => 'nullable|string',
             'items' => 'required|array|min:1',
+            'items.*.group_no' => 'nullable|integer|min:1',
             'items.*.nama_item' => 'nullable|string|max:255',
             'items.*.deskripsi' => 'required|string',
             'items.*.volume' => 'required|string|max:255',
@@ -292,6 +295,7 @@ class QuotationController extends Controller
             $namaItem = ! empty($item['nama_item']) ? $item['nama_item'] : ($perihalArray[$itemIndex] ?? null);
 
             $itemsData[] = [
+                'group_no' => !empty($item['group_no']) ? intval($item['group_no']) : 1,
                 'nama_item' => $namaItem,
                 'deskripsi' => $item['deskripsi'],
                 'volume' => $item['volume'],
@@ -509,6 +513,7 @@ PROMPT;
                 'perihal.*' => 'required|string|max:255',
                 'perihal_surat' => 'nullable|string|max:255',
                 'items' => 'required|array|min:1',
+                'items.*.group_no' => 'nullable|integer|min:1',
                 'items.*.nama_item' => 'nullable|string|max:255',
                 'items.*.deskripsi' => 'required|string',
                 'items.*.volume' => 'required|string|max:255',
@@ -547,6 +552,7 @@ PROMPT;
                 $namaItem = ! empty($item['nama_item']) ? $item['nama_item'] : ($perihalArray[$itemIndex] ?? null);
 
                 $itemsData[] = [
+                    'group_no' => !empty($item['group_no']) ? intval($item['group_no']) : 1,
                     'nama_item' => $namaItem,
                     'deskripsi' => $item['deskripsi'],
                     'volume' => $item['volume'],
@@ -623,6 +629,7 @@ PROMPT;
                 'perihal.*' => 'required|string|max:255',
                 'perihal_surat' => 'nullable|string|max:255',
                 'items' => 'required|array|min:1',
+                'items.*.group_no' => 'nullable|integer|min:1',
                 'items.*.nama_item' => 'nullable|string|max:255',
                 'items.*.deskripsi' => 'required|string',
                 'items.*.volume' => 'required|string|max:255',
@@ -661,6 +668,7 @@ PROMPT;
                 $namaItem = ! empty($item['nama_item']) ? $item['nama_item'] : ($perihalArray[$itemIndex] ?? null);
 
                 $itemsData[] = [
+                    'group_no' => !empty($item['group_no']) ? intval($item['group_no']) : 1,
                     'nama_item' => $namaItem,
                     'deskripsi' => $item['deskripsi'],
                     'volume' => $item['volume'],

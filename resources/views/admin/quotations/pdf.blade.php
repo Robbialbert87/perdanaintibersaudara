@@ -289,26 +289,34 @@
             </tr>
         </thead>
         <tbody>
-            @foreach($quotation->items as $index => $item)
-            <tr>
-                @if($hasPrice && $itemCount > 1)
-                <td class="text-center">{{ $index + 1 }}</td>
-                @endif
-                <td>
-                    @if(!empty($item->nama_item) && $item->tampilkan_label)
-                        <strong>{{ $item->nama_item }}</strong><br>
+            @php
+                $groupedItems = $quotation->items->sortBy('group_no')->groupBy('group_no');
+                $groupSeq = 1;
+            @endphp
+            @foreach($groupedItems as $groupNo => $items)
+                @foreach($items as $itemIndex => $item)
+                <tr>
+                    @if($hasPrice && $itemCount > 1)
+                        @if($itemIndex === 0)
+                            <td class="text-center" rowspan="{{ count($items) }}" style="vertical-align: middle;">{{ $groupSeq++ }}</td>
+                        @endif
                     @endif
-                    <div class="item-desc">{!! nl2br(e($item->deskripsi)) !!}</div>
-                </td>
-                <td class="text-center">{{ $item->volume }} {{ $item->satuan ?? '' }}</td>
-                @if($hasPrice)
-                <td class="text-center">Rp {{ number_format($item->harga_satuan, 0, ',', '.') }}</td>
-                @if($hasDiskon)
-                <td class="text-center">{{ $item->diskon ? rtrim(rtrim(number_format((float) $item->diskon, 2, ',', '.'), '0'), ',.') . '%' : '-' }}</td>
-                @endif
-                <td class="text-center">Rp {{ number_format($calcSubtotal($item), 0, ',', '.') }}</td>
-                @endif
-            </tr>
+                    <td>
+                        @if(!empty($item->nama_item) && $item->tampilkan_label)
+                            <strong>{{ $item->nama_item }}</strong><br>
+                        @endif
+                        <div class="item-desc">{!! nl2br(e($item->deskripsi)) !!}</div>
+                    </td>
+                    <td class="text-center">{{ $item->volume }} {{ $item->satuan ?? '' }}</td>
+                    @if($hasPrice)
+                    <td class="text-center">Rp {{ number_format($item->harga_satuan, 0, ',', '.') }}</td>
+                    @if($hasDiskon)
+                    <td class="text-center">{{ $item->diskon ? rtrim(rtrim(number_format((float) $item->diskon, 2, ',', '.'), '0'), ',.') . '%' : '-' }}</td>
+                    @endif
+                    <td class="text-center">Rp {{ number_format($calcSubtotal($item), 0, ',', '.') }}</td>
+                    @endif
+                </tr>
+                @endforeach
             @endforeach
         </tbody>
         @if($hasPrice)

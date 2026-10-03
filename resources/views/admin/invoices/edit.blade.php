@@ -104,6 +104,7 @@
                                         <option value="Buah" {{ ($item->satuan ?? '') == 'Buah' ? 'selected' : '' }}>Buah</option>
                                         <option value="Bulan" {{ ($item->satuan ?? '') == 'Bulan' ? 'selected' : '' }}>Bulan</option>
                                         <option value="Tahun" {{ ($item->satuan ?? '') == 'Tahun' ? 'selected' : '' }}>Tahun</option>
+                                        <option value="LS" {{ ($item->satuan ?? '') == 'LS' ? 'selected' : '' }}>LS</option>
                                     </select>
                                 </div>
                                 <div class="col-6 col-md-3">
@@ -323,6 +324,7 @@ document.addEventListener('DOMContentLoaded', function() {
                         <option value="Buah">Buah</option>
                         <option value="Bulan">Bulan</option>
                         <option value="Tahun">Tahun</option>
+                        <option value="LS">LS</option>
                     </select>
                 </div>
                 <div class="col-6 col-md-3">

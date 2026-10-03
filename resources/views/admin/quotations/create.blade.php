@@ -81,6 +81,9 @@
                         <div class="ie-head-left">
                             <span class="ie-no">01</span>
                             <span class="ie-perihal perihal-badge"></span>
+                            <span class="ie-group">Grup
+                                <input type="number" name="items[0][group_no]" class="ie-group-input group-no-input" value="1" min="1">
+                            </span>
                         </div>
                         <div class="ie-head-right">
                             <label class="ie-pdf-toggle">
@@ -123,6 +126,7 @@
                                 <option value="Buah">Buah</option>
                                 <option value="Bulan">Bulan</option>
                                 <option value="Tahun">Tahun</option>
+                                <option value="LS">LS</option>
                             </select>
                         </div>
                         <div class="col-6 col-md-3">
@@ -141,8 +145,9 @@
                 </div>
             </div>
 
-            <div class="mb-4">
-                <button type="button" id="addRow" class="ie-add-row"><i class="bi bi-plus-lg"></i> Tambah Baris</button>
+            <div class="d-flex flex-wrap gap-2 mb-4">
+                <button type="button" id="addRow" class="ie-add-row" style="flex:1;"><i class="bi bi-plus-lg"></i> Tambah Baris</button>
+                <button type="button" id="addGroup" class="ie-add-row alt" style="flex:1;"><i class="bi bi-folder-plus"></i> Tambah Grup Baru</button>
             </div>
 
             <div class="mb-4">
@@ -355,7 +360,7 @@ document.addEventListener('DOMContentLoaded', function() {
         perihalSelects.forEach((select, i) => {
             const selectedName = select.value;
             if (!existingRows[i]) {
-                const newRowHTML = buildRowHTML(itemIndex++, selectedName);
+                const newRowHTML = buildRowHTML(itemIndex++, selectedName, getMaxGroupNo());
                 tbody.insertAdjacentHTML('beforeend', newRowHTML);
             } else {
                 const namaInput = existingRows[i].querySelector('.nama-item-input');
@@ -376,7 +381,16 @@ document.addEventListener('DOMContentLoaded', function() {
         calculateTotal();
     };
 
-    const buildRowHTML = (index, namaItem = '') => {
+    const getMaxGroupNo = () => {
+        let max = 1;
+        document.querySelectorAll('.group-no-input').forEach(input => {
+            const val = parseInt(input.value) || 1;
+            if (val > max) max = val;
+        });
+        return max;
+    };
+
+    const buildRowHTML = (index, namaItem = '', groupNo = 1) => {
         const badgeHTML = namaItem ? `<i class="bi bi-tag-fill me-1"></i>${namaItem}` : '';
         return `
         <div class="item-row ie-card">
@@ -384,6 +398,9 @@ document.addEventListener('DOMContentLoaded', function() {
                 <div class="ie-head-left">
                     <span class="ie-no">${String(index + 1).padStart(2, '0')}</span>
                     <span class="ie-perihal perihal-badge">${badgeHTML}</span>
+                    <span class="ie-group">Grup
+                        <input type="number" name="items[${index}][group_no]" class="ie-group-input group-no-input" value="${groupNo}" min="1">
+                    </span>
                 </div>
                 <div class="ie-head-right">
                     <label class="ie-pdf-toggle">
@@ -428,6 +445,7 @@ document.addEventListener('DOMContentLoaded', function() {
                         <option value="Buah">Buah</option>
                         <option value="Bulan">Bulan</option>
                         <option value="Tahun">Tahun</option>
+                        <option value="LS">LS</option>
                     </select>
                 </div>
                 <div class="col-6 col-md-3">
@@ -510,7 +528,7 @@ document.addEventListener('DOMContentLoaded', function() {
         perihalContainer.insertAdjacentHTML('beforeend', newPerihal);
         updatePerihalNumbers();
 
-        tbody.insertAdjacentHTML('beforeend', buildRowHTML(itemIndex++, ''));
+        tbody.insertAdjacentHTML('beforeend', buildRowHTML(itemIndex++, '', getMaxGroupNo()));
         reindexRows();
         updateRemoveButtons();
     });
@@ -554,7 +572,14 @@ document.addEventListener('DOMContentLoaded', function() {
 
     // Manual add item row (independent from perihal)
     document.getElementById('addRow').addEventListener('click', function() {
-        tbody.insertAdjacentHTML('beforeend', buildRowHTML(itemIndex++, ''));
+        tbody.insertAdjacentHTML('beforeend', buildRowHTML(itemIndex++, '', getMaxGroupNo()));
+        reindexRows();
+        updateRemoveButtons();
+    });
+
+    document.getElementById('addGroup').addEventListener('click', function() {
+        const nextGroup = getMaxGroupNo() + 1;
+        tbody.insertAdjacentHTML('beforeend', buildRowHTML(itemIndex++, '', nextGroup));
         reindexRows();
         updateRemoveButtons();
     });

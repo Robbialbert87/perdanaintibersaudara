@@ -94,6 +94,9 @@
                         <div class="ie-head-left">
                             <span class="ie-no">{{ str_pad($index + 1, 2, '0', STR_PAD_LEFT) }}</span>
                             <span class="ie-perihal perihal-badge">{!! $item->nama_item ? '<i class="bi bi-tag-fill me-1"></i>'.e($item->nama_item) : '' !!}</span>
+                            <span class="ie-group">Grup
+                                <input type="number" name="items[{{ $index }}][group_no]" class="ie-group-input group-no-input" value="{{ $item->group_no ?? 1 }}" min="1">
+                            </span>
                         </div>
                         <div class="ie-head-right">
                             <label class="ie-pdf-toggle">
@@ -136,6 +139,7 @@
                                 <option value="Buah" {{ ($item->satuan ?? '') == 'Buah' ? 'selected' : '' }}>Buah</option>
                                 <option value="Bulan" {{ ($item->satuan ?? '') == 'Bulan' ? 'selected' : '' }}>Bulan</option>
                                 <option value="Tahun" {{ ($item->satuan ?? '') == 'Tahun' ? 'selected' : '' }}>Tahun</option>
+                                <option value="LS" {{ ($item->satuan ?? '') == 'LS' ? 'selected' : '' }}>LS</option>
                             </select>
                         </div>
                         <div class="col-6 col-md-3">
@@ -155,8 +159,9 @@
                 @endforeach
             </div>
 
-            <div class="mb-4">
-                <button type="button" id="addRow" class="ie-add-row"><i class="bi bi-plus-lg"></i> Tambah Baris (jika Kegiatan Optional)</button>
+            <div class="d-flex flex-wrap gap-2 mb-4">
+                <button type="button" id="addRow" class="ie-add-row" style="flex:1;"><i class="bi bi-plus-lg"></i> Tambah Baris (jika Kegiatan Optional)</button>
+                <button type="button" id="addGroup" class="ie-add-row alt" style="flex:1;"><i class="bi bi-folder-plus"></i> Tambah Grup Baru</button>
             </div>
 
             <div class="mb-4">
@@ -356,7 +361,16 @@ document.addEventListener('DOMContentLoaded', function() {
         document.querySelectorAll('.perihal-select').forEach(renderImageGallery);
     };
 
-    const buildRowHTML = (index, namaItem = '') => {
+    const getMaxGroupNo = () => {
+        let max = 1;
+        document.querySelectorAll('.group-no-input').forEach(input => {
+            const val = parseInt(input.value) || 1;
+            if (val > max) max = val;
+        });
+        return max;
+    };
+
+    const buildRowHTML = (index, namaItem = '', groupNo = 1) => {
         const badgeHTML = namaItem ? `<i class="bi bi-tag-fill me-1"></i>${namaItem}` : '';
         return `
         <div class="item-row ie-card">
@@ -364,6 +378,9 @@ document.addEventListener('DOMContentLoaded', function() {
                 <div class="ie-head-left">
                     <span class="ie-no">${String(index + 1).padStart(2, '0')}</span>
                     <span class="ie-perihal perihal-badge">${badgeHTML}</span>
+                    <span class="ie-group">Grup
+                        <input type="number" name="items[${index}][group_no]" class="ie-group-input group-no-input" value="${groupNo}" min="1">
+                    </span>
                 </div>
                 <div class="ie-head-right">
                     <label class="ie-pdf-toggle">
@@ -408,6 +425,7 @@ document.addEventListener('DOMContentLoaded', function() {
                         <option value="Buah">Buah</option>
                         <option value="Bulan">Bulan</option>
                         <option value="Tahun">Tahun</option>
+                        <option value="LS">LS</option>
                     </select>
                 </div>
                 <div class="col-6 col-md-3">
@@ -463,7 +481,7 @@ document.addEventListener('DOMContentLoaded', function() {
                 }
                 if (badge) badge.innerHTML = name ? `<i class="bi bi-tag-fill me-1"></i>${name}` : '';
             } else {
-                tbody.insertAdjacentHTML('beforeend', buildRowHTML(itemIndex++, name));
+                tbody.insertAdjacentHTML('beforeend', buildRowHTML(itemIndex++, name, getMaxGroupNo()));
                 reindexRows();
                 updateRemoveButtons();
             }
@@ -491,7 +509,7 @@ document.addEventListener('DOMContentLoaded', function() {
         perihalContainer.insertAdjacentHTML('beforeend', newPerihal);
         updatePerihalNumbers();
 
-        tbody.insertAdjacentHTML('beforeend', buildRowHTML(itemIndex++, ''));
+        tbody.insertAdjacentHTML('beforeend', buildRowHTML(itemIndex++, '', getMaxGroupNo()));
         reindexRows();
         updateRemoveButtons();
     });
@@ -533,7 +551,14 @@ document.addEventListener('DOMContentLoaded', function() {
     };
 
     document.getElementById('addRow').addEventListener('click', function() {
-        tbody.insertAdjacentHTML('beforeend', buildRowHTML(itemIndex++, ''));
+        tbody.insertAdjacentHTML('beforeend', buildRowHTML(itemIndex++, '', getMaxGroupNo()));
+        reindexRows();
+        updateRemoveButtons();
+    });
+
+    document.getElementById('addGroup').addEventListener('click', function() {
+        const nextGroup = getMaxGroupNo() + 1;
+        tbody.insertAdjacentHTML('beforeend', buildRowHTML(itemIndex++, '', nextGroup));
         reindexRows();
         updateRemoveButtons();
     });

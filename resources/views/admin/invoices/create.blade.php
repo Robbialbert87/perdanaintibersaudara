@@ -95,6 +95,7 @@
                                 <option value="Buah">Buah</option>
                                 <option value="Bulan">Bulan</option>
                                 <option value="Tahun">Tahun</option>
+                                <option value="LS">LS</option>
                             </select>
                         </div>
                         <div class="col-6 col-md-3">
@@ -286,6 +287,7 @@ document.addEventListener('DOMContentLoaded', function() {
                         <option value="Buah">Buah</option>
                         <option value="Bulan">Bulan</option>
                         <option value="Tahun">Tahun</option>
+                        <option value="LS">LS</option>
                     </select>
                 </div>
                 <div class="col-6 col-md-3">

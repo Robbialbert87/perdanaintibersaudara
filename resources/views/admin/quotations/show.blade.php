@@ -128,20 +128,28 @@
                     </tr>
                 </thead>
                 <tbody>
-                    @foreach($quotation->items as $index => $item)
-                    <tr>
-                        <td class="text-center">{{ $index + 1 }}</td>
-                        <td>
-                            @if($item->nama_item)
-                                <strong>{{ $item->nama_item }}</strong><br>
+                    @php
+                        $groupedItems = $quotation->items->sortBy('group_no')->groupBy('group_no');
+                        $groupSeq = 1;
+                    @endphp
+                    @foreach($groupedItems as $groupNo => $items)
+                        @foreach($items as $itemIndex => $item)
+                        <tr>
+                            @if($itemIndex === 0)
+                                <td class="text-center align-middle" rowspan="{{ count($items) }}">{{ $groupSeq++ }}</td>
                             @endif
-                            {!! nl2br(e($item->deskripsi)) !!}
-                        </td>
-                        <td class="text-center">{{ $item->volume }} {{ $item->satuan ?? $item->product->satuan ?? '' }}</td>
-                        <td class="text-end">{{ number_format($item->harga_satuan, 0, ',', '.') }}</td>
-                        <td class="text-center">{{ $item->diskon ? $item->diskon . '%' : '-' }}</td>
-                        <td class="text-end">{{ number_format($item->subtotal, 0, ',', '.') }}</td>
-                    </tr>
+                            <td>
+                                @if($item->nama_item)
+                                    <strong>{{ $item->nama_item }}</strong><br>
+                                @endif
+                                {!! nl2br(e($item->deskripsi)) !!}
+                            </td>
+                            <td class="text-center">{{ $item->volume }} {{ $item->satuan ?? $item->product->satuan ?? '' }}</td>
+                            <td class="text-end">{{ number_format($item->harga_satuan, 0, ',', '.') }}</td>
+                            <td class="text-center">{{ $item->diskon ? $item->diskon . '%' : '-' }}</td>
+                            <td class="text-end">{{ number_format($item->subtotal, 0, ',', '.') }}</td>
+                        </tr>
+                        @endforeach
                     @endforeach
                 </tbody>
                 <tfoot class="table-dark">
