@@ -98,7 +98,7 @@
 
     <div class="card mb-4">
         <div class="card-header d-flex justify-content-between align-items-center">
-            <h6 class="mb-0">Daftar Produk</h6>
+            <h6 class="mb-0">Daftar Kegiatan</h6>
             <button type="button" class="btn btn-sm btn-primary" onclick="addItem()">
                 <i class="bi bi-plus"></i> Tambah Item
             </button>
@@ -109,7 +109,7 @@
                     <thead>
                         <tr>
                             <th width="5%">No</th>
-                            <th width="40%">Nama Produk</th>
+                            <th width="40%">Uraian Kegiatan/Produk</th>
                             <th width="15%">Quantity</th>
                             <th width="20%">Kondisi</th>
                             <th width="10%">Aksi</th>
@@ -118,7 +118,7 @@
                     <tbody id="itemsBody">
                         <tr data-index="0">
                             <td class="text-center">1</td>
-                            <td><input type="text" name="items[0][nama_produk]" class="form-control" required placeholder="Nama produk"></td>
+                            <td><input type="text" name="items[0][nama_produk]" class="form-control" required placeholder="Uraian kegiatan/produk"></td>
                             <td><input type="number" name="items[0][quantity]" class="form-control" value="1" min="1" required></td>
                             <td>
                                 <select name="items[0][berfungsi]" class="form-select" required>
@@ -174,7 +174,7 @@ function addItem() {
     row.setAttribute('data-index', itemIndex);
     row.innerHTML = `
         <td class="text-center">${tbody.children.length + 1}</td>
-        <td><input type="text" name="items[${itemIndex}][nama_produk]" class="form-control" required placeholder="Nama produk"></td>
+        <td><input type="text" name="items[${itemIndex}][nama_produk]" class="form-control" required placeholder="Uraian kegiatan/produk"></td>
         <td><input type="number" name="items[${itemIndex}][quantity]" class="form-control" value="1" min="1" required></td>
         <td>
             <select name="items[${itemIndex}][berfungsi]" class="form-select" required>

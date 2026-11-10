@@ -96,16 +96,16 @@
 </div>
 
 <div class="card mb-4">
-    <div class="card-header"><h6 class="mb-0">Daftar Produk</h6></div>
+    <div class="card-header"><h6 class="mb-0">Daftar Kegiatan</h6></div>
     <div class="card-body p-0">
         <div class="table-responsive">
             <table class="table table-hover mb-0">
                 <thead>
                     <tr>
                         <th>No</th>
-                        <th>Nama Produk</th>
+                        <th>Uraian Kegiatan/Produk</th>
                         <th>Quantity</th>
-                        <th>Kondisi</th>
+                        <th>Keterangan Berfungsi/Tidak</th>
                     </tr>
                 </thead>
                 <tbody>

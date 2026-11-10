@@ -138,7 +138,7 @@
     </div>
     @if($purchaseOrders->hasPages())
     <div class="card-footer">
-        {{ $purchaseOrders->withQueryString()->links() }}
+        {{ $purchaseOrders->withQueryString()->links('pagination::bootstrap-5') }}
     </div>
     @endif
 </div>

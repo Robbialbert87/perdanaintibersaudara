@@ -217,14 +217,14 @@
 </table>
 
 <!-- Items Table -->
-<div class="section-title">Daftar Produk :</div>
+<div class="section-title">Daftar Kegiatan :</div>
 <table class="items-table">
     <thead>
         <tr>
             <th width="5%">No</th>
-            <th width="55%">Nama Produk</th>
+            <th width="55%">Uraian Kegiatan/Produk</th>
             <th width="15%">Quantity</th>
-            <th width="25%">Keterangan Berfungsi/Tidak Berfungsi</th>
+            <th width="25%">Keterangan Berfungsi/Tidak</th>
         </tr>
     </thead>
     <tbody>
@@ -233,7 +233,7 @@
             <td class="text-center">{{ $idx + 1 }}</td>
             <td>{{ $item->nama_produk }}</td>
             <td class="text-center">{{ $item->quantity }}</td>
-            <td>&nbsp;</td>
+            <td class="text-center">{{ $item->berfungsi ? 'Berfungsi' : 'Tidak Berfungsi' }}</td>
         </tr>
         @endforeach
     </tbody>

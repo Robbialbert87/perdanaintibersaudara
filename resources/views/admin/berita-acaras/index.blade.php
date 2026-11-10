@@ -133,7 +133,7 @@
     </div>
     @if($beritaAcaras->hasPages())
     <div class="card-footer">
-        {{ $beritaAcaras->links() }}
+        {{ $beritaAcaras->withQueryString()->links('pagination::bootstrap-5') }}
     </div>
     @endif
 </div>
