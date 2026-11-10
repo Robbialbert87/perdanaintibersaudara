@@ -20,7 +20,7 @@
     </a>
 </div>
 
-<form method="POST" action="{{ route('berita-acaras.update', $beritaAcara->id) }}" id="beritaAcaraForm">
+<form method="POST" action="{{ route('berita-acaras.update', $beritaAcara->id) }}" id="beritaAcaraForm" enctype="multipart/form-data">
     @csrf
     @method('PUT')
 
@@ -151,6 +151,30 @@
     </div>
 
     <div class="card mb-4">
+        <div class="card-header"><h6 class="mb-0">Lampiran Kegiatan (Opsional)</h6></div>
+        <div class="card-body">
+            @if(!empty($beritaAcara->lampiran))
+                <div class="mb-3 d-flex flex-wrap gap-2">
+                    @foreach($beritaAcara->lampiran as $img)
+                        <div class="text-center">
+                            <img src="{{ Storage::url($img) }}" alt="Lampiran" style="width:90px;height:70px;object-fit:cover;border-radius:4px;border:1px solid #ddd;">
+                            <div class="form-check mt-1">
+                                <input class="form-check-input" type="checkbox" name="remove_lampiran[]" value="{{ $img }}" id="rm_{{ md5($img) }}">
+                                <label class="form-check-label small text-danger" for="rm_{{ md5($img) }}">Hapus</label>
+                            </div>
+                        </div>
+                    @endforeach
+                </div>
+            @endif
+            <div class="mb-2">
+                <input type="file" name="lampiran[]" id="lampiranInput" class="form-control" accept="image/*" multiple>
+                <small class="text-muted">Tambah gambar baru. Maksimal 10 gambar total, masing-masing maks 5 MB.</small>
+            </div>
+            <div id="lampiranPreview" class="d-flex flex-wrap gap-2 mt-2"></div>
+        </div>
+    </div>
+
+    <div class="card mb-4">
         <div class="card-header"><h6 class="mb-0">Penutup</h6></div>
         <div class="card-body">
             <div class="mb-0">
@@ -222,6 +246,24 @@ function reindexRows() {
             if (name) {
                 el.setAttribute('name', name.replace(/items\[\d+\]/, `items[${i}]`));
             }
+        });
+    });
+}
+
+const lampiranInput = document.getElementById('lampiranInput');
+if (lampiranInput) {
+    lampiranInput.addEventListener('change', function() {
+        const preview = document.getElementById('lampiranPreview');
+        preview.innerHTML = '';
+        Array.from(this.files).forEach(file => {
+            const reader = new FileReader();
+            reader.onload = e => {
+                const img = document.createElement('img');
+                img.src = e.target.result;
+                img.style.cssText = 'width:80px;height:60px;object-fit:cover;border-radius:4px;border:1px solid #ddd;';
+                preview.appendChild(img);
+            };
+            reader.readAsDataURL(file);
         });
     });
 }

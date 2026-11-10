@@ -20,7 +20,7 @@
     </a>
 </div>
 
-<form method="POST" action="{{ route('berita-acaras.store') }}" id="beritaAcaraForm">
+<form method="POST" action="{{ route('berita-acaras.store') }}" id="beritaAcaraForm" enctype="multipart/form-data">
     @csrf
 
     @if($errors->any())
@@ -139,6 +139,17 @@
     </div>
 
     <div class="card mb-4">
+        <div class="card-header"><h6 class="mb-0">Lampiran Kegiatan (Opsional)</h6></div>
+        <div class="card-body">
+            <div class="mb-2">
+                <input type="file" name="lampiran[]" id="lampiranInput" class="form-control" accept="image/*" multiple>
+                <small class="text-muted">Maksimal 10 gambar, masing-masing maks 5 MB (jpg, jpeg, png, webp). 2 gambar per halaman di PDF.</small>
+            </div>
+            <div id="lampiranPreview" class="d-flex flex-wrap gap-2 mt-2"></div>
+        </div>
+    </div>
+
+    <div class="card mb-4">
         <div class="card-header"><h6 class="mb-0">Penutup</h6></div>
         <div class="card-body">
             <div class="mb-0">
@@ -210,6 +221,25 @@ function reindexRows() {
             if (name) {
                 el.setAttribute('name', name.replace(/items\[\d+\]/, `items[${i}]`));
             }
+        });
+    });
+}
+
+// Preview lampiran
+const lampiranInput = document.getElementById('lampiranInput');
+if (lampiranInput) {
+    lampiranInput.addEventListener('change', function() {
+        const preview = document.getElementById('lampiranPreview');
+        preview.innerHTML = '';
+        Array.from(this.files).forEach(file => {
+            const reader = new FileReader();
+            reader.onload = e => {
+                const img = document.createElement('img');
+                img.src = e.target.result;
+                img.style.cssText = 'width:80px;height:60px;object-fit:cover;border-radius:4px;border:1px solid #ddd;';
+                preview.appendChild(img);
+            };
+            reader.readAsDataURL(file);
         });
     });
 }

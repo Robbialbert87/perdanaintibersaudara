@@ -137,4 +137,19 @@
     </div>
 </div>
 @endif
+
+@if(!empty($beritaAcara->lampiran))
+<div class="card mb-4">
+    <div class="card-header"><h6 class="mb-0">Lampiran Kegiatan</h6></div>
+    <div class="card-body">
+        <div class="d-flex flex-wrap gap-2">
+            @foreach($beritaAcara->lampiran as $img)
+                <a href="{{ Storage::url($img) }}" target="_blank">
+                    <img src="{{ Storage::url($img) }}" alt="Lampiran" style="width:120px;height:90px;object-fit:cover;border-radius:4px;border:1px solid #ddd;">
+                </a>
+            @endforeach
+        </div>
+    </div>
+</div>
+@endif
 @endsection

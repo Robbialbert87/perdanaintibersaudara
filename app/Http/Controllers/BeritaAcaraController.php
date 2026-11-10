@@ -7,7 +7,9 @@ use App\Models\BeritaAcara;
 use App\Models\Customer;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
+use Illuminate\Support\Facades\Storage;
 use Illuminate\Support\Str;
+use App\Support\ImageOptimizer;
 
 class BeritaAcaraController extends Controller
 {
@@ -48,11 +50,25 @@ class BeritaAcaraController extends Controller
             'items.*.nama_produk' => 'required|string|max:255',
             'items.*.quantity' => 'required|integer|min:1',
             'items.*.berfungsi' => 'required|boolean',
+            'lampiran' => 'nullable|array|max:10',
+            'lampiran.*' => 'image|mimes:jpg,jpeg,png,webp|max:5120',
         ]);
 
         $customer = Customer::findOrFail($request->customer_id);
 
-        DB::transaction(function () use ($request, $customer) {
+        // Simpan gambar lampiran
+        $lampiranPaths = [];
+        if ($request->hasFile('lampiran')) {
+            foreach ($request->file('lampiran') as $file) {
+                $lampiranPaths[] = $file->store('berita-acaras/lampiran', 'public');
+            }
+            $optimizer = app(\App\Support\ImageOptimizer::class);
+            foreach ($lampiranPaths as $p) {
+                $optimizer->optimizeStoragePath($p);
+            }
+        }
+
+        DB::transaction(function () use ($request, $customer, $lampiranPaths) {
             $month = date('n', strtotime($request->tanggal));
             $year = date('Y', strtotime($request->tanggal));
             $romans = ['I', 'II', 'III', 'IV', 'V', 'VI', 'VII', 'VIII', 'IX', 'X', 'XI', 'XII'];
@@ -83,6 +99,7 @@ class BeritaAcaraController extends Controller
                 'pihak_penerima_nama' => $customer->nama_instansi,
                 'pihak_penerima_alamat' => $customer->alamat ?? null,
                 'closing_text' => $request->filled('closing_text') ? trim($request->closing_text) : null,
+                'lampiran' => $lampiranPaths ?: null,
                 'status' => 'draft',
             ]);
 
@@ -126,12 +143,36 @@ class BeritaAcaraController extends Controller
             'items.*.nama_produk' => 'required|string|max:255',
             'items.*.quantity' => 'required|integer|min:1',
             'items.*.berfungsi' => 'required|boolean',
+            'lampiran' => 'nullable|array|max:10',
+            'lampiran.*' => 'image|mimes:jpg,jpeg,png,webp|max:5120',
+            'remove_lampiran' => 'nullable|array',
         ]);
 
         $beritaAcara = BeritaAcara::findOrFail($id);
         $customer = Customer::findOrFail($request->customer_id);
 
-        DB::transaction(function () use ($request, $beritaAcara, $customer) {
+        // Kelola lampiran: hapus yang dicentang, tambah yang baru
+        $existingLampiran = $beritaAcara->lampiran ?? [];
+        $remove = $request->input('remove_lampiran', []);
+        foreach ($remove as $path) {
+            if (in_array($path, $existingLampiran, true)) {
+                Storage::disk('public')->delete($path);
+                $existingLampiran = array_values(array_filter($existingLampiran, fn($p) => $p !== $path));
+            }
+        }
+        $newLampiranPaths = [];
+        if ($request->hasFile('lampiran')) {
+            foreach ($request->file('lampiran') as $file) {
+                $newLampiranPaths[] = $file->store('berita-acaras/lampiran', 'public');
+            }
+            $optimizer = app(\App\Support\ImageOptimizer::class);
+            foreach ($newLampiranPaths as $p) {
+                $optimizer->optimizeStoragePath($p);
+            }
+        }
+        $finalLampiran = array_values(array_merge($existingLampiran, $newLampiranPaths)) ?: null;
+
+        DB::transaction(function () use ($request, $beritaAcara, $customer, $finalLampiran) {
             $beritaAcara->update([
                 'tanggal' => $request->tanggal,
                 'kegiatan' => $request->kegiatan,
@@ -142,6 +183,7 @@ class BeritaAcaraController extends Controller
                 'pihak_penerima_nama' => $customer->nama_instansi,
                 'pihak_penerima_alamat' => $customer->alamat ?? null,
                 'closing_text' => $request->filled('closing_text') ? trim($request->closing_text) : null,
+                'lampiran' => $finalLampiran,
                 'status' => $request->status,
             ]);
 
@@ -162,6 +204,11 @@ class BeritaAcaraController extends Controller
     public function destroy(string $id)
     {
         $beritaAcara = BeritaAcara::findOrFail($id);
+        if ($beritaAcara->lampiran) {
+            foreach ($beritaAcara->lampiran as $path) {
+                Storage::disk('public')->delete($path);
+            }
+        }
         $beritaAcara->delete();
 
         return redirect()->route('berita-acaras.index')->with('success', 'Berita Acara berhasil dihapus.');

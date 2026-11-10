@@ -274,5 +274,31 @@
     </tr>
 </table>
 
+@if(!empty($beritaAcara->lampiran))
+    @php
+        $lampiranChunks = array_chunk($beritaAcara->lampiran, 2);
+    @endphp
+    @foreach($lampiranChunks as $chunk)
+        <div style="page-break-before: always; padding: 25px 30px;">
+            <h2 style="text-align: center; text-decoration: underline; margin-bottom: 20px; font-size: 14pt;">Lampiran Kegiatan</h2>
+            @foreach($chunk as $imgPath)
+                @php
+                    $fullPath = Storage::disk('public')->path($imgPath);
+                    $imgBase64 = '';
+                    if (file_exists($fullPath)) {
+                        $type = pathinfo($fullPath, PATHINFO_EXTENSION) ?: 'jpg';
+                        $imgBase64 = 'data:image/' . $type . ';base64,' . base64_encode(file_get_contents($fullPath));
+                    }
+                @endphp
+                @if($imgBase64)
+                    <div style="text-align: center; margin-bottom: 15px;">
+                        <img src="{{ $imgBase64 }}" style="max-width: 100%; max-height: 360px;">
+                    </div>
+                @endif
+            @endforeach
+        </div>
+    @endforeach
+@endif
+
 </body>
 </html>

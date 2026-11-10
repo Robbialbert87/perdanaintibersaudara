@@ -20,12 +20,14 @@ class BeritaAcara extends Model
         'pihak_penerima_nama',
         'pihak_penerima_alamat',
         'closing_text',
+        'lampiran',
         'status',
         'verify_token',
     ];
 
     protected $casts = [
         'tanggal' => 'date',
+        'lampiran' => 'array',
     ];
 
     public function items()
