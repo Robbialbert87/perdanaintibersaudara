@@ -118,7 +118,7 @@
                     <tbody id="itemsBody">
                         <tr data-index="0">
                             <td class="text-center">1</td>
-                            <td><input type="text" name="items[0][nama_produk]" class="form-control" required placeholder="Uraian kegiatan/produk"></td>
+                            <td><textarea name="items[0][nama_produk]" class="form-control" rows="2" required placeholder="Uraian kegiatan/produk"></textarea></td>
                             <td><input type="number" name="items[0][quantity]" class="form-control" value="1" min="1" required></td>
                             <td>
                                 <select name="items[0][berfungsi]" class="form-select" required>
@@ -185,7 +185,7 @@ function addItem() {
     row.setAttribute('data-index', itemIndex);
     row.innerHTML = `
         <td class="text-center">${tbody.children.length + 1}</td>
-        <td><input type="text" name="items[${itemIndex}][nama_produk]" class="form-control" required placeholder="Uraian kegiatan/produk"></td>
+        <td><textarea name="items[${itemIndex}][nama_produk]" class="form-control" rows="2" required placeholder="Uraian kegiatan/produk"></textarea></td>
         <td><input type="number" name="items[${itemIndex}][quantity]" class="form-control" value="1" min="1" required></td>
         <td>
             <select name="items[${itemIndex}][berfungsi]" class="form-select" required>

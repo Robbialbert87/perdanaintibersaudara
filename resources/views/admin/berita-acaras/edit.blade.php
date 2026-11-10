@@ -129,7 +129,7 @@
                         @foreach($beritaAcara->items as $idx => $item)
                         <tr data-index="{{ $idx }}">
                             <td class="text-center">{{ $idx + 1 }}</td>
-                            <td><input type="text" name="items[{{ $idx }}][nama_produk]" class="form-control" value="{{ old('items.'.$idx.'.nama_produk', $item->nama_produk) }}" required></td>
+                            <td><textarea name="items[{{ $idx }}][nama_produk]" class="form-control" rows="2" required>{{ old('items.'.$idx.'.nama_produk', $item->nama_produk) }}</textarea></td>
                             <td><input type="number" name="items[{{ $idx }}][quantity]" class="form-control" value="{{ old('items.'.$idx.'.quantity', $item->quantity) }}" min="1" required></td>
                             <td>
                                 <select name="items[{{ $idx }}][berfungsi]" class="form-select" required>
@@ -210,7 +210,7 @@ function addItem() {
     row.setAttribute('data-index', itemIndex);
     row.innerHTML = `
         <td class="text-center">${tbody.children.length + 1}</td>
-        <td><input type="text" name="items[${itemIndex}][nama_produk]" class="form-control" required placeholder="Uraian kegiatan/produk"></td>
+        <td><textarea name="items[${itemIndex}][nama_produk]" class="form-control" rows="2" required placeholder="Uraian kegiatan/produk"></textarea></td>
         <td><input type="number" name="items[${itemIndex}][quantity]" class="form-control" value="1" min="1" required></td>
         <td>
             <select name="items[${itemIndex}][berfungsi]" class="form-select" required>
