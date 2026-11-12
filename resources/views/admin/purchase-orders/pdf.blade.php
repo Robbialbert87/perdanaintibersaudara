@@ -253,8 +253,12 @@
     <thead>
         <tr>
             <th width="8%">No</th>
-            <th width="62%">Jenis Kegiatan</th>
-            <th width="30%" class="text-center">Volume</th>
+            <th width="{{ $purchaseOrder->tampilkan_harga ? '40%' : '62%' }}">Jenis Kegiatan</th>
+            <th width="12%" class="text-center">Volume</th>
+            @if($purchaseOrder->tampilkan_harga)
+            <th width="20%" class="text-center">Harga Satuan</th>
+            <th width="20%" class="text-center">Total Harga</th>
+            @endif
         </tr>
     </thead>
     <tbody>
@@ -263,10 +267,44 @@
             <td>{{ $index + 1 }}</td>
             <td>{{ $item->deskripsi }}</td>
             <td class="text-center">{{ $item->volume }} {{ $item->satuan ?? '' }}</td>
+            @if($purchaseOrder->tampilkan_harga)
+            <td class="text-center">Rp {{ number_format($item->harga_satuan, 0, ',', '.') }}</td>
+            <td class="text-center">Rp {{ number_format($item->subtotal, 0, ',', '.') }}</td>
+            @endif
         </tr>
         @endforeach
         </tbody>
 </table>
+
+@if($purchaseOrder->tampilkan_harga)
+<div style="margin-bottom: 15px;">
+    <table style="width: 100%; border-collapse: collapse; margin-bottom: 8px;">
+        <tr>
+            <td style="padding: 3px 0; width: 70%; text-align: right; font-weight: bold;">Subtotal</td>
+            <td style="padding: 3px 0; text-align: right;">Rp {{ number_format($purchaseOrder->total, 0, ',', '.') }}</td>
+        </tr>
+        @if((float)$purchaseOrder->discount > 0)
+        <tr>
+            <td style="padding: 3px 0; text-align: right; font-weight: bold;">Discount</td>
+            <td style="padding: 3px 0; text-align: right;">Rp {{ number_format($purchaseOrder->discount, 0, ',', '.') }}</td>
+        </tr>
+        @endif
+        @if((float)$purchaseOrder->ppn > 0)
+        <tr>
+            <td style="padding: 3px 0; text-align: right; font-weight: bold;">PPN</td>
+            <td style="padding: 3px 0; text-align: right;">Rp {{ number_format($purchaseOrder->ppn, 0, ',', '.') }}</td>
+        </tr>
+        @endif
+        <tr>
+            <td style="padding: 5px 0; text-align: right; font-weight: bold; border-top: 1px solid #000;">Grand Total</td>
+            <td style="padding: 5px 0; text-align: right; font-weight: bold; border-top: 1px solid #000;">Rp {{ number_format($purchaseOrder->grand_total, 0, ',', '.') }}</td>
+        </tr>
+    </table>
+    <div style="font-style: italic; font-size: 10pt;">
+        <strong>Terbilang :</strong> {{ ucfirst(terbilangKwitansi($purchaseOrder->grand_total)) }} rupiah
+    </div>
+</div>
+@endif
 
 @if($purchaseOrder->catatan)
 <div style="margin-bottom: 15px;">

@@ -136,6 +136,7 @@ class PurchaseOrderController extends Controller
                 'grand_total' => $grandTotal,
                 'status' => 'draft',
                 'catatan' => $request->filled('catatan') ? trim($request->catatan) : null,
+                'tampilkan_harga' => $request->boolean('tampilkan_harga'),
             ]);
 
             foreach ($itemsData as $item) {
@@ -188,7 +189,7 @@ class PurchaseOrderController extends Controller
         $pdf = app('dompdf.wrapper')->loadView('admin.purchase-orders.pdf', compact('purchaseOrder', 'qrCode'))
             ->setPaper([0, 0, 595.28, 935.43], 'portrait');
 
-        return $pdf->inline();
+        return $pdf->stream('Purchase_Order_'.str_replace('/', '_', $purchaseOrder->nomor_surat).'.pdf');
     }
 
     public function print(string $id)
@@ -297,6 +298,7 @@ class PurchaseOrderController extends Controller
                 'total_dp' => $totalDp,
                 'grand_total' => $grandTotal,
                 'catatan' => $request->filled('catatan') ? trim($request->catatan) : null,
+                'tampilkan_harga' => $request->boolean('tampilkan_harga'),
             ]);
 
             $purchaseOrder->items()->delete();

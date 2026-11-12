@@ -249,7 +249,7 @@ class BeritaAcaraController extends Controller
         $pdf = app('dompdf.wrapper')->loadView('admin.berita-acaras.pdf', compact('beritaAcara', 'qrCode'))
             ->setPaper([0, 0, 595.28, 935.43], 'portrait');
 
-        return $pdf->inline();
+        return $pdf->stream('Berita_Acara_'.str_replace('/', '_', $beritaAcara->nomor_surat).'.pdf');
     }
 
     public function print(string $id)

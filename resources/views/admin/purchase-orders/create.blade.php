@@ -507,6 +507,15 @@
             <textarea name="catatan" class="form-control" rows="3" placeholder="Tulis keterangan tambahan jika diperlukan...">{{ old('catatan') }}</textarea>
         </div>
 
+        <!-- Opsi Tampil Harga & Total -->
+        <div class="po-form-section">
+            <div class="form-check form-switch">
+                <input type="hidden" name="tampilkan_harga" value="0">
+                <input class="form-check-input" type="checkbox" id="tampilkanHarga" name="tampilkan_harga" value="1" checked>
+                <label class="form-check-label fw-semibold" for="tampilkanHarga">Tampilkan Harga Satuan & Total di PDF</label>
+            </div>
+        </div>
+
         <!-- Signature -->
         <div class="po-signature">
             <div class="po-signature-box">

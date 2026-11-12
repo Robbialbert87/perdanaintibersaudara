@@ -39,6 +39,7 @@ class PurchaseOrder extends Model
         'ppn',
         'grand_total',
         'total_dp',
+        'tampilkan_harga',
     ];
 
     protected $casts = [
@@ -49,6 +50,7 @@ class PurchaseOrder extends Model
         'ppn' => 'decimal:2',
         'grand_total' => 'decimal:2',
         'total' => 'decimal:2',
+        'tampilkan_harga' => 'boolean',
     ];
 
     public function customer()
