@@ -140,6 +140,7 @@ class QuotationController extends Controller
                 'tampilkan_gambar' => !empty($selectedImages),
                 'selected_images' => $selectedImages,
                 'status' => 'draft',
+                'tampilkan_total' => $request->boolean('tampilkan_total'),
                 'total' => 0, // will be calculated
             ]);
 
@@ -327,6 +328,7 @@ class QuotationController extends Controller
             'kata_penutup' => $request->kata_penutup,
             'tampilkan_gambar' => !empty($selectedImages),
             'selected_images' => $selectedImages,
+            'tampilkan_total' => $request->boolean('tampilkan_total'),
         ]);
 
         // Hapus items lama
@@ -596,6 +598,7 @@ PROMPT;
                     'status' => 'draft',
                     'tampilkan_gambar' => false,
                     'selected_images' => [],
+                    'tampilkan_total' => true,
                     'total' => 0, // will be calculated
                 ]);
 
@@ -712,6 +715,7 @@ PROMPT;
                     'status' => 'draft',
                     'tampilkan_gambar' => false,
                     'selected_images' => [],
+                    'tampilkan_total' => true,
                     'total' => 0, // will be calculated
                 ]);
 

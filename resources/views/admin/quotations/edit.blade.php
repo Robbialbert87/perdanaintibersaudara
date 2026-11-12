@@ -165,6 +165,11 @@
             </div>
 
             <div class="mb-4">
+                <div class="form-check form-switch mb-2">
+                    <input type="hidden" name="tampilkan_total" value="0">
+                    <input class="form-check-input" type="checkbox" id="tampilkanTotal" name="tampilkan_total" value="1" {{ $quotation->tampilkan_total ? 'checked' : '' }}>
+                    <label class="form-check-label fw-semibold" for="tampilkanTotal">Tampilkan Total Keseluruhan di PDF</label>
+                </div>
                 <div class="ie-summary">
                     <div class="ie-summary-row">
                         <span class="ie-summary-label">Total Keseluruhan</span>

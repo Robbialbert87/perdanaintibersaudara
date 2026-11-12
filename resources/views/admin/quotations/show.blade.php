@@ -152,12 +152,14 @@
                         @endforeach
                     @endforeach
                 </tbody>
+                @if($quotation->tampilkan_total)
                 <tfoot class="table-dark">
                     <tr>
                         <td colspan="5" class="text-end fw-bold"><strong>TOTAL</strong></td>
                         <td class="text-end fw-bold"><strong>Rp {{ number_format($quotation->total, 0, ',', '.') }}</strong></td>
                     </tr>
                 </tfoot>
+                @endif
             </table>
         </div>
 

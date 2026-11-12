@@ -319,7 +319,7 @@
                 @endforeach
             @endforeach
         </tbody>
-        @if($hasPrice)
+        @if($hasPrice && $quotation->tampilkan_total)
         <tfoot>
             <tr>
                 <td colspan="{{ ($itemCount > 1 ? 4 : 3) + ($hasDiskon ? 1 : 0) }}" class="text-right" style="font-weight: bold; border: 1px solid black; padding: 6px 8px;"><strong>TOTAL</strong></td>

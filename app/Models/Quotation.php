@@ -23,12 +23,14 @@ class Quotation extends Model
         'kata_penutup',
         'tampilkan_gambar',
         'selected_images',
+        'tampilkan_total',
     ];
 
     protected $casts = [
         'tanggal' => 'date',
         'perihal' => 'array',
         'selected_images' => 'array',
+        'tampilkan_total' => 'boolean',
     ];
 
     public function customer()
