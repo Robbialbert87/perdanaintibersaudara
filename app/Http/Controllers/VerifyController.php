@@ -7,6 +7,7 @@ use App\Models\Invoice;
 use App\Models\Kwitansi;
 use App\Models\PurchaseOrder;
 use App\Models\Quotation;
+use App\Models\Surat;
 use App\Models\WarrantyCard;
 use Carbon\Carbon;
 
@@ -88,5 +89,18 @@ class VerifyController extends Controller
         $tanggalGenerate = Carbon::now('Asia/Jakarta')->locale('id')->translatedFormat('d F Y H:i').' WIB';
 
         return view('style.verify-kwitansi', compact('kwitansi', 'tanggalGenerate'));
+    }
+
+    public function showSurat(string $token)
+    {
+        $surat = Surat::where('verify_token', $token)->first();
+
+        if (! $surat) {
+            return view('style.verify-not-found');
+        }
+
+        $tanggalGenerate = Carbon::now('Asia/Jakarta')->locale('id')->translatedFormat('d F Y H:i').' WIB';
+
+        return view('style.verify-surat', compact('surat', 'tanggalGenerate'));
     }
 }

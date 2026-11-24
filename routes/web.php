@@ -9,6 +9,7 @@ use App\Http\Controllers\ProductController;
 use App\Http\Controllers\PurchaseOrderController;
 use App\Http\Controllers\QuotationController;
 use App\Http\Controllers\ServiceController;
+use App\Http\Controllers\SuratController;
 use App\Http\Controllers\UserController;
 use App\Http\Controllers\VerifyController;
 use App\Http\Controllers\WarrantyCardController;
@@ -65,6 +66,7 @@ Route::get('/verify-purchase-order/{token}', [VerifyController::class, 'showPurc
 Route::get('/verify-warranty-card/{token}', [VerifyController::class, 'showWarrantyCard'])->name('verify.warranty_card');
 Route::get('/verify-berita-acara/{token}', [VerifyController::class, 'showBeritaAcara'])->name('verify.berita_acara');
 Route::get('/verify-kwitansi/{token}', [VerifyController::class, 'showKwitansi'])->name('verify.kwitansi');
+Route::get('/verify-surat/{token}', [VerifyController::class, 'showSurat'])->name('verify.surat');
 Route::get('/produk/{id}', function ($id) {
     $product = Product::findOrFail($id);
 
@@ -120,6 +122,10 @@ Route::middleware(['auth', 'verified', 'throttle:60,1'])->group(function () {
     Route::resource('invoices', InvoiceController::class);
     Route::get('kwitansis/{kwitansi}/export-pdf', [KwitansiController::class, 'exportPdf'])->name('kwitansis.export_pdf');
     Route::resource('kwitansis', KwitansiController::class);
+    Route::get('surats/{surat}/export-pdf', [SuratController::class, 'exportPdf'])->name('surats.export_pdf');
+    Route::get('surats/{surat}/preview-pdf', [SuratController::class, 'previewPdf'])->name('surats.preview_pdf');
+    Route::get('surats/{surat}/print', [SuratController::class, 'print'])->name('surats.print');
+    Route::resource('surats', SuratController::class);
     Route::resource('users', UserController::class)->except(['show']);
 });
 

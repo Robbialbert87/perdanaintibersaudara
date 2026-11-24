@@ -55,6 +55,9 @@
             <a class="sb-link {{ request()->routeIs('kwitansis.*') ? 'active' : '' }}" href="{{ route('kwitansis.index') }}">
                 <i data-lucide="banknote"></i><span class="hide-when-collapsed">Kwitansi</span>
             </a>
+            <a class="sb-link {{ request()->routeIs('surats.*') ? 'active' : '' }}" href="{{ route('surats.index') }}">
+                <i data-lucide="mail"></i><span class="hide-when-collapsed">Surat</span>
+            </a>
         </div>
 
         <div class="sb-group">
