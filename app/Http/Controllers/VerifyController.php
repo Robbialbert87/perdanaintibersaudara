@@ -21,7 +21,7 @@ class VerifyController extends Controller
             return view('style.verify-not-found');
         }
 
-        $tanggalGenerate = Carbon::now('Asia/Jakarta')->locale('id')->translatedFormat('d F Y H:i').' WIB';
+        $tanggalGenerate = $this->formatTanggal($invoice->tanggal);
 
         return view('style.verify', compact('invoice', 'tanggalGenerate'));
     }
@@ -34,7 +34,7 @@ class VerifyController extends Controller
             return view('style.verify-not-found');
         }
 
-        $tanggalGenerate = Carbon::now('Asia/Jakarta')->locale('id')->translatedFormat('d F Y H:i').' WIB';
+        $tanggalGenerate = $this->formatTanggal($quotation->tanggal);
 
         return view('style.verify-quotation', compact('quotation', 'tanggalGenerate'));
     }
@@ -47,7 +47,7 @@ class VerifyController extends Controller
             return view('style.verify-not-found');
         }
 
-        $tanggalGenerate = Carbon::now('Asia/Jakarta')->locale('id')->translatedFormat('d F Y H:i').' WIB';
+        $tanggalGenerate = $this->formatTanggal($purchaseOrder->tanggal);
 
         return view('style.verify-purchase-order', compact('purchaseOrder', 'tanggalGenerate'));
     }
@@ -60,7 +60,7 @@ class VerifyController extends Controller
             return view('style.verify-not-found');
         }
 
-        $tanggalGenerate = Carbon::now('Asia/Jakarta')->locale('id')->translatedFormat('d F Y H:i').' WIB';
+        $tanggalGenerate = $this->formatTanggal($warrantyCard->tanggal);
 
         return view('style.verify-warranty-card', compact('warrantyCard', 'tanggalGenerate'));
     }
@@ -73,7 +73,7 @@ class VerifyController extends Controller
             return view('style.verify-not-found');
         }
 
-        $tanggalGenerate = Carbon::now('Asia/Jakarta')->locale('id')->translatedFormat('d F Y H:i').' WIB';
+        $tanggalGenerate = $this->formatTanggal($beritaAcara->tanggal);
 
         return view('style.verify-berita-acara', compact('beritaAcara', 'tanggalGenerate'));
     }
@@ -86,7 +86,7 @@ class VerifyController extends Controller
             return view('style.verify-not-found');
         }
 
-        $tanggalGenerate = Carbon::now('Asia/Jakarta')->locale('id')->translatedFormat('d F Y H:i').' WIB';
+        $tanggalGenerate = $this->formatTanggal($kwitansi->tanggal);
 
         return view('style.verify-kwitansi', compact('kwitansi', 'tanggalGenerate'));
     }
@@ -99,8 +99,17 @@ class VerifyController extends Controller
             return view('style.verify-not-found');
         }
 
-        $tanggalGenerate = Carbon::now('Asia/Jakarta')->locale('id')->translatedFormat('d F Y H:i').' WIB';
+        $tanggalGenerate = $this->formatTanggal($surat->tanggal);
 
         return view('style.verify-surat', compact('surat', 'tanggalGenerate'));
+    }
+
+    private function formatTanggal($tanggal): string
+    {
+        if (! $tanggal) {
+            return '-';
+        }
+
+        return Carbon::parse($tanggal)->locale('id')->translatedFormat('d F Y');
     }
 }

@@ -104,24 +104,7 @@ class QuotationController extends Controller
         }
 
         DB::transaction(function () use ($request, $itemsData, $total) {
-            $month = date('n', strtotime($request->tanggal));
-            $year = date('Y', strtotime($request->tanggal));
-            $romans = ['I', 'II', 'III', 'IV', 'V', 'VI', 'VII', 'VIII', 'IX', 'X', 'XI', 'XII'];
-            $romanMonth = $romans[$month - 1];
-
-            $lastQuotation = Quotation::whereYear('tanggal', $year)
-                ->whereMonth('tanggal', $month)
-                ->orderBy('id', 'desc')
-                ->first();
-
-            $nextNumber = $month * 100 + 1;
-            if ($lastQuotation) {
-                $parts = explode('/', $lastQuotation->nomor_surat);
-                $lastNumber = intval($parts[0]);
-                $nextNumber = max($month * 100 + 1, $lastNumber + 1);
-            }
-
-            $nomorSurat = sprintf('%03d/SP/PIB-JMB/%s/%s', $nextNumber, $romanMonth, $year);
+            $nomorSurat = $this->generateNomorSurat($request->tanggal);
 
             $selectedImages = $request->input('selected_images', '');
             if (is_string($selectedImages)) {
@@ -311,27 +294,33 @@ class QuotationController extends Controller
 
         $quotation = Quotation::findOrFail($id);
 
-        DB::transaction(function () use ($request, $quotation, $itemsData, $total) {
+        $dataUpdate = [
+            'tanggal' => $request->tanggal,
+            'customer_id' => $request->customer_id,
+            'perihal' => json_encode($request->perihal),
+            'perihal_surat' => $request->perihal_surat,
+            'status' => $request->status,
+            'catatan' => $request->filled('catatan') ? trim($request->catatan) : null,
+            'kata_pengantar' => $request->kata_pengantar,
+            'kata_penutup' => $request->kata_penutup,
+            'tampilkan_total' => $request->boolean('tampilkan_total'),
+        ];
+
+        if ($request->tanggal !== $quotation->tanggal->format('Y-m-d')) {
+            $dataUpdate['nomor_surat'] = $this->generateNomorSurat($request->tanggal, $quotation->id);
+        }
+
+        DB::transaction(function () use ($request, $quotation, $itemsData, $total, $dataUpdate) {
             $selectedImages = $request->input('selected_images', '');
             if (is_string($selectedImages)) {
                 $selectedImages = json_decode($selectedImages, true) ?? [];
             }
 
-            $quotation->update([
-                'tanggal' => $request->tanggal,
-                'customer_id' => $request->customer_id,
-                'perihal' => json_encode($request->perihal),
-                'perihal_surat' => $request->perihal_surat,
-                'status' => $request->status,
-            'catatan' => $request->filled('catatan') ? trim($request->catatan) : null,
-            'kata_pengantar' => $request->kata_pengantar,
-            'kata_penutup' => $request->kata_penutup,
-            'tampilkan_gambar' => !empty($selectedImages),
-            'selected_images' => $selectedImages,
-            'tampilkan_total' => $request->boolean('tampilkan_total'),
-        ]);
+            $dataUpdate['tampilkan_gambar'] = !empty($selectedImages);
+            $dataUpdate['selected_images'] = $selectedImages;
+            $quotation->update($dataUpdate);
 
-        // Hapus items lama
+            // Hapus items lama
             $quotation->items()->delete();
 
             foreach ($itemsData as $item) {
@@ -568,28 +557,12 @@ PROMPT;
             }
 
             $quotation = DB::transaction(function () use ($request, $itemsData, $total, $perihalArray) {
-                $month = date('n');
-                $year = date('Y');
-                $romans = ['I', 'II', 'III', 'IV', 'V', 'VI', 'VII', 'VIII', 'IX', 'X', 'XI', 'XII'];
-                $romanMonth = $romans[$month - 1];
-
-                $lastQuotation = Quotation::whereYear('tanggal', $year)
-                    ->whereMonth('tanggal', $month)
-                    ->orderBy('id', 'desc')
-                    ->first();
-
-                $nextNumber = $month * 100 + 1;
-                if ($lastQuotation) {
-                    $parts = explode('/', $lastQuotation->nomor_surat);
-                    $lastNumber = intval($parts[0]);
-                    $nextNumber = max($month * 100 + 1, $lastNumber + 1);
-                }
-
-                $nomorSurat = sprintf('%03d/SP/PIB-JMB/%s/%s', $nextNumber, $romanMonth, $year);
+                $tanggal = now()->format('Y-m-d');
+                $nomorSurat = $this->generateNomorSurat($tanggal);
 
                 $quotation = Quotation::create([
                     'nomor_surat' => $nomorSurat,
-                    'tanggal' => now()->format('Y-m-d'),
+                    'tanggal' => $tanggal,
                     'customer_id' => $request->customer_id,
                     'perihal' => json_encode(array_values($perihalArray)),
                     'perihal_surat' => $request->perihal_surat,
@@ -685,28 +658,12 @@ PROMPT;
             }
 
             $quotation = DB::transaction(function () use ($request, $itemsData, $total, $perihalArray) {
-                $month = date('n');
-                $year = date('Y');
-                $romans = ['I', 'II', 'III', 'IV', 'V', 'VI', 'VII', 'VIII', 'IX', 'X', 'XI', 'XII'];
-                $romanMonth = $romans[$month - 1];
-
-                $lastQuotation = Quotation::whereYear('tanggal', $year)
-                    ->whereMonth('tanggal', $month)
-                    ->orderBy('id', 'desc')
-                    ->first();
-
-                $nextNumber = $month * 100 + 1;
-                if ($lastQuotation) {
-                    $parts = explode('/', $lastQuotation->nomor_surat);
-                    $lastNumber = intval($parts[0]);
-                    $nextNumber = max($month * 100 + 1, $lastNumber + 1);
-                }
-
-                $nomorSurat = sprintf('%03d/SP/PIB-JMB/%s/%s', $nextNumber, $romanMonth, $year);
+                $tanggal = now()->format('Y-m-d');
+                $nomorSurat = $this->generateNomorSurat($tanggal);
 
                 $quotation = Quotation::create([
                     'nomor_surat' => $nomorSurat,
-                    'tanggal' => now()->format('Y-m-d'),
+                    'tanggal' => $tanggal,
                     'customer_id' => $request->customer_id,
                     'perihal' => json_encode(array_values($perihalArray)),
                     'perihal_surat' => $request->perihal_surat,
@@ -746,6 +703,38 @@ PROMPT;
         $quotation->delete();
 
         return redirect()->route('quotations.index')->with('success', 'Penawaran berhasil dihapus.');
+    }
+
+    private function generateNomorSurat(string $tanggal, ?int $exceptId = null): string
+    {
+        $month = (int) date('n', strtotime($tanggal));
+        $year = date('Y', strtotime($tanggal));
+        $romans = ['I', 'II', 'III', 'IV', 'V', 'VI', 'VII', 'VIII', 'IX', 'X', 'XI', 'XII'];
+
+        $lastQuotation = Quotation::whereYear('tanggal', $year)
+            ->whereMonth('tanggal', $month)
+            ->when($exceptId, fn($q) => $q->where('id', '!=', $exceptId))
+            ->orderBy('id', 'desc')
+            ->first();
+
+        $nextNumber = $month * 100 + 1;
+        if ($lastQuotation && $lastQuotation->nomor_surat) {
+            $parts = explode('/', $lastQuotation->nomor_surat);
+            $nextNumber = max($nextNumber, (int) $parts[0] + 1);
+        }
+
+        while (true) {
+            $nomorSurat = sprintf('%03d/SP/PIB-JMB/%s/%s', $nextNumber, $romans[$month - 1], $year);
+            $terpakai = Quotation::where('nomor_surat', $nomorSurat)
+                ->when($exceptId, fn($q) => $q->where('id', '!=', $exceptId))
+                ->exists();
+
+            if (! $terpakai) {
+                return $nomorSurat;
+            }
+
+            $nextNumber++;
+        }
     }
 
     private function callGemini($systemPrompt, $userPrompt)

@@ -130,23 +130,7 @@ class InvoiceController extends Controller
         }
 
         $invoice = DB::transaction(function () use ($request, $itemsData, $total) {
-            $month = date('n', strtotime($request->tanggal));
-            $year = date('Y', strtotime($request->tanggal));
-            $romans = ['I', 'II', 'III', 'IV', 'V', 'VI', 'VII', 'VIII', 'IX', 'X', 'XI', 'XII'];
-            $romanMonth = $romans[$month - 1];
-
-            $lastInvoice = Invoice::whereYear('tanggal', $year)
-                ->whereMonth('tanggal', $month)
-                ->orderBy('id', 'desc')
-                ->first();
-
-            $nextNumber = $month * 100 + 1;
-            if ($lastInvoice) {
-                $parts = explode('/', $lastInvoice->nomor_invoice);
-                $nextNumber = max($month * 100 + 1, intval($parts[0]) + 1);
-            }
-
-            $nomorInvoice = sprintf('%03d/INV/PIB-JMB/%s/%s', $nextNumber, $romanMonth, $year);
+            $nomorInvoice = $this->generateNomorInvoice($request->tanggal);
 
             $invoice = Invoice::create([
                 'nomor_invoice' => $nomorInvoice,
@@ -229,14 +213,20 @@ class InvoiceController extends Controller
 
         $invoice = Invoice::findOrFail($id);
 
-        DB::transaction(function () use ($request, $invoice, $itemsData, $total) {
-            $invoice->update([
-                'tanggal' => $request->tanggal,
-                'customer_id' => $request->customer_id,
-                'catatan' => $request->filled('catatan') ? trim($request->catatan) : null,
-                'kata_penutup' => $request->kata_penutup,
-                'ppn_active' => $request->boolean('ppn_active'),
-            ]);
+        $dataUpdate = [
+            'tanggal' => $request->tanggal,
+            'customer_id' => $request->customer_id,
+            'catatan' => $request->filled('catatan') ? trim($request->catatan) : null,
+            'kata_penutup' => $request->kata_penutup,
+            'ppn_active' => $request->boolean('ppn_active'),
+        ];
+
+        if ($request->tanggal !== $invoice->tanggal->format('Y-m-d')) {
+            $dataUpdate['nomor_invoice'] = $this->generateNomorInvoice($request->tanggal, $invoice->id);
+        }
+
+        DB::transaction(function () use ($request, $invoice, $itemsData, $total, $dataUpdate) {
+            $invoice->update($dataUpdate);
 
             $invoice->items()->delete();
 
@@ -421,27 +411,12 @@ PROMPT;
             }
 
             $invoice = DB::transaction(function () use ($request, $itemsData, $total) {
-                $month = date('n');
-                $year = date('Y');
-                $romans = ['I', 'II', 'III', 'IV', 'V', 'VI', 'VII', 'VIII', 'IX', 'X', 'XI', 'XII'];
-                $romanMonth = $romans[$month - 1];
-
-                $lastInvoice = Invoice::whereYear('tanggal', $year)
-                    ->whereMonth('tanggal', $month)
-                    ->orderBy('id', 'desc')
-                    ->first();
-
-                $nextNumber = $month * 100 + 1;
-                if ($lastInvoice) {
-                    $parts = explode('/', $lastInvoice->nomor_invoice);
-                    $nextNumber = max($month * 100 + 1, intval($parts[0]) + 1);
-                }
-
-                $nomorInvoice = sprintf('%03d/INV/PIB-JMB/%s/%s', $nextNumber, $romanMonth, $year);
+                $tanggal = now()->format('Y-m-d');
+                $nomorInvoice = $this->generateNomorInvoice($tanggal);
 
                 $invoice = Invoice::create([
                     'nomor_invoice' => $nomorInvoice,
-                    'tanggal' => now()->format('Y-m-d'),
+                    'tanggal' => $tanggal,
                     'customer_id' => $request->customer_id,
                 'catatan' => $request->filled('catatan') ? trim($request->catatan) : null,
                 'kata_penutup' => $request->kata_penutup,
@@ -506,27 +481,12 @@ PROMPT;
             }
 
             $invoice = DB::transaction(function () use ($request, $itemsData, $total) {
-                $month = date('n');
-                $year = date('Y');
-                $romans = ['I', 'II', 'III', 'IV', 'V', 'VI', 'VII', 'VIII', 'IX', 'X', 'XI', 'XII'];
-                $romanMonth = $romans[$month - 1];
-
-                $lastInvoice = Invoice::whereYear('tanggal', $year)
-                    ->whereMonth('tanggal', $month)
-                    ->orderBy('id', 'desc')
-                    ->first();
-
-                $nextNumber = $month * 100 + 1;
-                if ($lastInvoice) {
-                    $parts = explode('/', $lastInvoice->nomor_invoice);
-                    $nextNumber = max($month * 100 + 1, intval($parts[0]) + 1);
-                }
-
-                $nomorInvoice = sprintf('%03d/INV/PIB-JMB/%s/%s', $nextNumber, $romanMonth, $year);
+                $tanggal = now()->format('Y-m-d');
+                $nomorInvoice = $this->generateNomorInvoice($tanggal);
 
                 $invoice = Invoice::create([
                     'nomor_invoice' => $nomorInvoice,
-                    'tanggal' => now()->format('Y-m-d'),
+                    'tanggal' => $tanggal,
                     'customer_id' => $request->customer_id,
                     'catatan' => $request->filled('catatan') ? trim($request->catatan) : null,
                     'kata_penutup' => $request->kata_penutup,
@@ -602,6 +562,38 @@ PROMPT;
         ]);
 
         return redirect()->route('invoices.index')->with('success', 'Invoice berhasil ditandai sebagai Lunas.');
+    }
+
+    private function generateNomorInvoice(string $tanggal, ?int $exceptId = null): string
+    {
+        $month = (int) date('n', strtotime($tanggal));
+        $year = date('Y', strtotime($tanggal));
+        $romans = ['I', 'II', 'III', 'IV', 'V', 'VI', 'VII', 'VIII', 'IX', 'X', 'XI', 'XII'];
+
+        $lastInvoice = Invoice::whereYear('tanggal', $year)
+            ->whereMonth('tanggal', $month)
+            ->when($exceptId, fn($q) => $q->where('id', '!=', $exceptId))
+            ->orderBy('id', 'desc')
+            ->first();
+
+        $nextNumber = $month * 100 + 1;
+        if ($lastInvoice && $lastInvoice->nomor_invoice) {
+            $parts = explode('/', $lastInvoice->nomor_invoice);
+            $nextNumber = max($nextNumber, (int) $parts[0] + 1);
+        }
+
+        while (true) {
+            $nomorInvoice = sprintf('%03d/INV/PIB-JMB/%s/%s', $nextNumber, $romans[$month - 1], $year);
+            $terpakai = Invoice::where('nomor_invoice', $nomorInvoice)
+                ->when($exceptId, fn($q) => $q->where('id', '!=', $exceptId))
+                ->exists();
+
+            if (! $terpakai) {
+                return $nomorInvoice;
+            }
+
+            $nextNumber++;
+        }
     }
 
     private function callGemini($systemPrompt, $userPrompt)
