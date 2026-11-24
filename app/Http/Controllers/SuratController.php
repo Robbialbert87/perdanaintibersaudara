@@ -90,8 +90,8 @@ class SuratController extends Controller
             'jenis' => $validated['jenis'],
             'tanggal' => $validated['tanggal'],
             'customer_id' => $customer?->id,
-            'tujuan_nama' => $validated['tujuan_nama'] ?: ($customer?->nama_instansi ?? ''),
-            'tujuan_alamat' => $validated['tujuan_alamat'] ?: ($customer->alamat ?? null),
+            'tujuan_nama' => ($validated['tujuan_nama'] ?? null) ?: ($customer?->nama_instansi ?? ''),
+            'tujuan_alamat' => ($validated['tujuan_alamat'] ?? null) ?: ($customer->alamat ?? null),
             'perihal' => $validated['perihal'],
             'isi' => $validated['isi'],
             'lampiran' => $lampiranPaths ?: null,
@@ -120,9 +120,34 @@ class SuratController extends Controller
         return view('admin.surats.edit', compact('surat', 'customers', 'jenisOptions'));
     }
 
+    public function ajaxNomor(Request $request)
+    {
+        $data = $request->validate([
+            'jenis' => 'required|in:'.implode(',', self::JENIS),
+            'tanggal' => 'required|date',
+            'except' => 'nullable|integer|exists:surats,id',
+        ]);
+
+        return response()->json([
+            'nomor' => $this->generateNomorSurat($data['jenis'], $data['tanggal'], $data['except'] ?? null),
+        ]);
+    }
+
     public function update(Request $request, string $id)
     {
         $surat = Surat::findOrFail($id);
+
+        $jenisBaru = (string) $request->input('jenis', '');
+        $tanggalBaru = (string) $request->input('tanggal', '');
+        if (
+            in_array($jenisBaru, self::JENIS, true)
+            && preg_match('/^\d{4}-\d{2}-\d{2}$/', $tanggalBaru)
+            && ($jenisBaru !== $surat->jenis || $tanggalBaru !== $surat->tanggal->format('Y-m-d'))
+        ) {
+            $request->merge([
+                'nomor_surat' => $this->generateNomorSurat($jenisBaru, $tanggalBaru, $surat->id),
+            ]);
+        }
 
         $validated = $request->validate([
             'nomor_surat' => 'nullable|string|max:100|unique:surats,nomor_surat,'.$surat->id,
@@ -164,7 +189,7 @@ class SuratController extends Controller
         }
 
         if (empty($validated['nomor_surat'])) {
-            $validated['nomor_surat'] = $this->generateNomorSurat($validated['jenis'], $validated['tanggal']);
+            $validated['nomor_surat'] = $this->generateNomorSurat($validated['jenis'], $validated['tanggal'], $surat->id);
         }
 
         $surat->update([
@@ -172,8 +197,8 @@ class SuratController extends Controller
             'jenis' => $validated['jenis'],
             'tanggal' => $validated['tanggal'],
             'customer_id' => $customer?->id,
-            'tujuan_nama' => $validated['tujuan_nama'] ?: ($customer->nama_instansi ?? $surat->tujuan_nama),
-            'tujuan_alamat' => $validated['tujuan_alamat'] ?: ($customer->alamat ?? null),
+            'tujuan_nama' => ($validated['tujuan_nama'] ?? null) ?: ($customer->nama_instansi ?? $surat->tujuan_nama),
+            'tujuan_alamat' => ($validated['tujuan_alamat'] ?? null) ?: ($customer->alamat ?? null),
             'perihal' => $validated['perihal'],
             'isi' => $validated['isi'],
             'lampiran' => $lampiran ?: null,
@@ -236,7 +261,7 @@ class SuratController extends Controller
         return QRCodeHelper::generate(route('verify.surat', $surat->verify_token), 150);
     }
 
-    private function generateNomorSurat(string $jenis, string $tanggal): string
+    private function generateNomorSurat(string $jenis, string $tanggal, ?int $exceptId = null): string
     {
         $month = (int) date('n', strtotime($tanggal));
         $year = date('Y', strtotime($tanggal));
@@ -245,6 +270,7 @@ class SuratController extends Controller
         $last = Surat::where('jenis', $jenis)
             ->whereYear('tanggal', $year)
             ->whereMonth('tanggal', $month)
+            ->when($exceptId, fn($q) => $q->where('id', '!=', $exceptId))
             ->orderBy('id', 'desc')
             ->first();
 
@@ -256,6 +282,17 @@ class SuratController extends Controller
 
         $kode = self::KODE_JENIS[$jenis] ?? 'SURAT';
 
-        return sprintf('%03d/%s/PIB-JMB/%s/%s', $nextNumber, $kode, $romans[$month - 1], $year);
+        while (true) {
+            $nomor = sprintf('%03d/%s/PIB-JMB/%s/%s', $nextNumber, $kode, $romans[$month - 1], $year);
+            $terpakai = Surat::where('nomor_surat', $nomor)
+                ->when($exceptId, fn($q) => $q->where('id', '!=', $exceptId))
+                ->exists();
+
+            if (! $terpakai) {
+                return $nomor;
+            }
+
+            $nextNumber++;
+        }
     }
 }

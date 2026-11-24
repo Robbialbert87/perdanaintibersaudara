@@ -122,6 +122,7 @@ Route::middleware(['auth', 'verified', 'throttle:60,1'])->group(function () {
     Route::resource('invoices', InvoiceController::class);
     Route::get('kwitansis/{kwitansi}/export-pdf', [KwitansiController::class, 'exportPdf'])->name('kwitansis.export_pdf');
     Route::resource('kwitansis', KwitansiController::class);
+    Route::get('surats/ajax-nomor', [SuratController::class, 'ajaxNomor'])->name('surats.ajax_nomor');
     Route::get('surats/{surat}/export-pdf', [SuratController::class, 'exportPdf'])->name('surats.export_pdf');
     Route::get('surats/{surat}/preview-pdf', [SuratController::class, 'previewPdf'])->name('surats.preview_pdf');
     Route::get('surats/{surat}/print', [SuratController::class, 'print'])->name('surats.print');

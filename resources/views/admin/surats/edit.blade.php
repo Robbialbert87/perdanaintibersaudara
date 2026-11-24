@@ -46,7 +46,7 @@
                     </div>
                     <div class="mb-3">
                         <label class="form-label">Tanggal <span class="text-danger">*</span></label>
-                        <input type="date" name="tanggal" class="form-control" value="{{ old('tanggal', $surat->tanggal->format('Y-m-d')) }}" required>
+                        <input type="date" name="tanggal" id="tanggalSurat" class="form-control" value="{{ old('tanggal', $surat->tanggal->format('Y-m-d')) }}" required>
                     </div>
                     <div class="mb-0">
                         <label class="form-label">Status</label>
@@ -154,14 +154,29 @@
 
 @push('scripts')
 <script>
-const kodeJenis = {
-    'Permintaan': 'SPM',
-    'Pengantar': 'SPG',
-    'Keterangan': 'SK',
-    'Pemberitahuan': 'SPB',
-    'Permohonan': 'SPMOH',
-    'Lainnya': 'SURAT'
-};
+const nomorInput = document.getElementById('nomorSurat');
+const jenisInput = document.getElementById('jenisSurat');
+const tanggalInput = document.getElementById('tanggalSurat');
+const ajaxNomorUrl = "{{ route('surats.ajax_nomor') }}";
+const exceptId = {{ $surat->id ?? 'null' }};
+
+async function updateNomor() {
+    if (!jenisInput.value || !tanggalInput.value) return;
+    try {
+        const url = new URL(ajaxNomorUrl, window.location.origin);
+        url.searchParams.set('jenis', jenisInput.value);
+        url.searchParams.set('tanggal', tanggalInput.value);
+        if (exceptId) url.searchParams.set('except', exceptId);
+        const response = await fetch(url, {
+            headers: { 'X-Requested-With': 'XMLHttpRequest' }
+        });
+        if (!response.ok) return;
+        const data = await response.json();
+        if (data.nomor) nomorInput.value = data.nomor;
+    } catch (error) {
+        // Biarkan nomor diisi manual jika endpoint tidak tersedia.
+    }
+}
 
 document.getElementById('customer_id').addEventListener('change', function() {
     const option = this.options[this.selectedIndex];
@@ -171,11 +186,8 @@ document.getElementById('customer_id').addEventListener('change', function() {
     }
 });
 
-document.getElementById('jenisSurat').addEventListener('change', function() {
-    const nomor = document.getElementById('nomorSurat');
-    const kode = kodeJenis[this.value] || 'SURAT';
-    nomor.value = nomor.value.replace(/^(\d{3}\/)[A-Z]+(\/)/, '$1' + kode + '$2');
-});
+jenisInput.addEventListener('change', updateNomor);
+tanggalInput.addEventListener('change', updateNomor);
 
 const lampiranInput = document.getElementById('lampiranInput');
 if (lampiranInput) {
